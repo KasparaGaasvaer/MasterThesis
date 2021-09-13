@@ -125,7 +125,7 @@ class Slices:
         start = []
         end = []
         s = []
-        print("       Start date                          End date                 Slice num")
+        print("       Start date                          End date                 Slice num     Num nodes in slice")
         for i in sorted_slices:
             #print("%s        %s           %s" %(self.slices[i]['start_date'],self.slices[i]['end_date'],i))
             start.append(self.slices[i]['start_date'])
@@ -135,8 +135,10 @@ class Slices:
 
         #print(sorted(zip(s,start,end)))
 
-        for sl, st, ed in sorted(zip(s,start,end)):
-            print("%s        %s           %i" %(st, ed, sl))
+        with open("./experiment6/dates.txt","w") as outfile:
+            outfile.write("       Start date                          End date                 Slice num     Num nodes in slice\n")
+            for sl, st, ed in sorted(zip(s,start,end)):
+                outfile.write("%s        %s           %i               %i\n" %(st, ed, sl, int(self.slices[str(sl)]['num_nodes'])))
 
 
     def find_clustering_coef(self):
