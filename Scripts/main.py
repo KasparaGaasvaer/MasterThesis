@@ -13,4 +13,4 @@ path = "./experiment6/experiment_6/"
 
 my_class = Slices(path)
 #print(my_class.G)
-print(my_class.slices)
+#print(my_class.slices)

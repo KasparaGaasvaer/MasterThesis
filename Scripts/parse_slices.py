@@ -7,19 +7,21 @@ import sys
 import datetime as dt
 
 
+
 class Slices:
     def __init__(self, path_to_directory):
         self.path2dir = path_to_directory
         all_files = os.listdir(self.path2dir)
-        self.all_slices = ["slice_1","slice_2"]
+        #self.all_slices = ["slice_1","slice_2"]
+        self.all_slices = []
         self.graphs = []
         self.slices = {} #Add first and llast date as keys
 
-        """
+
         for file in all_files:
             if "slice_" in file:
                 self.all_slices.append(file)
-        """
+
         self.ReadSlice()
 
 
@@ -31,8 +33,9 @@ class Slices:
             self.make_node_attributes()
             self.make_graph()
             self.find_timeline()
+            self.find_num_nodes()
 
-
+        self.find_num_deleted_users()
 
     def make_node_attributes(self):
         filename = self.path + "labels_" + str(self.slice_num) + ".csv"
@@ -52,6 +55,7 @@ class Slices:
 
 
 
+
     def make_graph(self):
         filename = self.path + "graph_" + str(self.slice_num) + ".mat"
         types = ["source", "target", "weight"]
@@ -68,6 +72,7 @@ class Slices:
 
         self.graphs.append(self.G)
         self.slices[str(self.slice_num)] = {'graph':self.G}
+        self.slices[str(self.slice_num)]['node_attributes'] = self.node_attributes
 
 
     def find_timeline(self):
@@ -79,26 +84,24 @@ class Slices:
         last_node = 0
         last_date = "1900-06-10T20:38:27.000"
         last_date = dt.datetime.strptime(last_date,"%Y-%m-%dT%H:%M:%S.%f")
-        nodes = self.G.nodes()
-        for n in nodes:
-            date = nx.get_node_attributes(self.G,"date")[n]
+
+        for n in self.node_attributes:
+            date = self.node_attributes[n]["date"]
             date = dt.datetime.strptime(date,"%Y-%m-%dT%H:%M:%S.%f")
             if date < first_date:
                 first_date = date
-                first_node = nx.get_node_attributes(self.G,"index")[n]
+                first_node = n
             if date > last_date:
                 last_date = date
-                last_node = nx.get_node_attributes(self.G,"index")[n]
-            #print("FIRST:     ",first_date)
-            #print("LAST:     ",last_date)
-            #print(n)
+                last_node = n
 
-        first_date = dt.datetime.strftime(first_date,"%Y-%m-%dT%H:%M:%S.%f")
-        last_date = dt.datetime.strftime(last_date,"%Y-%m-%dT%H:%M:%S.%f")
-        self.slices[str(self.slice_num)]["start_date"] = first_date
-        self.slices[str(self.slice_num)]["end_date"] = last_date
-        self.slices[str(self.slice_num)]["start_date_node_index"] = first_node
-        self.slices[str(self.slice_num)]["end_date_node_index"] = last_node
+
+        first_date = dt.datetime.strftime(first_date,"%Y-%m-%d-%H-%M-%S-%f")
+        last_date = dt.datetime.strftime(last_date,"%Y-%m-%d-%H-%M-%S-%f")
+        self.slices[str(self.slice_num)]['start_date'] = first_date
+        self.slices[str(self.slice_num)]['end_date'] = last_date
+        self.slices[str(self.slice_num)]['start_date_node_index'] = first_node
+        self.slices[str(self.slice_num)]['end_date_node_index'] = last_node
         #VERY SLOW, MUST FIND BETTER WAY
 
         first_date = "2100-06-10T20:38:27.000"
@@ -108,6 +111,36 @@ class Slices:
         last_date = "1900-06-10T20:38:27.000"
         last_date = dt.datetime.strptime(last_date,"%Y-%m-%dT%H:%M:%S.%f")
 
+
+    def find_num_nodes(self):
+        self.slices[str(self.slice_num)]['num_nodes'] = len(self.slices[str(self.slice_num)]['node_attributes'].keys())
+
+    def find_num_components(self):
+        a = 1
+
+    def find_num_deleted_users(self):
+        #for key in sorted(self.slices):
+        #    print("%s: %s" % (key, self.slices[key]))
+        sorted_slices = (sorted(self.slices.keys()))
+        start = []
+        end = []
+        s = []
+        print("       Start date                          End date                 Slice num")
+        for i in sorted_slices:
+            #print("%s        %s           %s" %(self.slices[i]['start_date'],self.slices[i]['end_date'],i))
+            start.append(self.slices[i]['start_date'])
+            end.append(self.slices[i]['end_date'])
+            s.append(int(i))
+        #print(s)
+
+        #print(sorted(zip(s,start,end)))
+
+        for sl, st, ed in sorted(zip(s,start,end)):
+            print("%s        %s           %i" %(st, ed, sl))
+
+
+    def find_clustering_coef(self):
+        a = 1
 
 
 
