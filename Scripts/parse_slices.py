@@ -6,7 +6,7 @@ import os
 import sys
 import datetime as dt
 from matplotlib.dates import date2num
-
+import json
 
 
 class Slices:
@@ -33,6 +33,15 @@ class Slices:
         #Calls function for reading slices and extracting information
         self.ReadSlice()
 
+        path2save = self.path2dir.split("/")[1]
+        path2save = "./" + path2save +"/"
+
+
+        with open(path2save + 'all_slices.json', 'w') as fp:
+            json.dump(self.slices, fp)
+
+        with open(path2save + 'attributes_to_all_slices.json', 'w') as fp:
+            json.dump(self.attributes_to_slice_set, fp)
 
     def ReadSlice(self):
         #Loops over all slices in dir
@@ -42,12 +51,12 @@ class Slices:
             print("Working on slice_",self.slice_num)
             self.path = self.path2dir + folder +"/"             #Sets path
             self.make_node_attributes()                         #Calls function for producing dict with node attributes from corresponding labels.csv file
-            self.make_graph()                                   #Calls function for producing networkx graph from corresponding graph.mat file
+            #self.make_graph()                                   #Calls function for producing networkx graph from corresponding graph.mat file
             self.find_timeline()                                #Calls function for extracting first and last tweet in slice
             self.find_num_nodes()                               #Calls function for extracting number of nodes (tweets) in slice
         self.find_timeline_of_set()                             #Calls function for extracting first and last tweet in the entire set of slices in dir
         #self.plot_dates_dist()                                 #Calls function for plotting time distribution of tweets in slices  (one plot for each slice)
-        self.find_num_deleted_users()                           #Calls function for finding the number of deleted users from first to last slice
+        #self.find_num_deleted_users()                           #Calls function for finding the number of deleted users from first to last slice
         #self.plot_tweets_before_2020()                         #Calls function for plotting tweets before 2020 in all slices (same plot)
         #self.simple_information_txt()
 
@@ -67,6 +76,7 @@ class Slices:
                 self.node_attributes[i][key] = self.node_at[key][idx]
 
         #print(self.node_attributes)
+        self.slices[str(self.slice_num)] = {'node_attributes':self.node_attributes}
 
 
 
@@ -86,8 +96,8 @@ class Slices:
         #plt.show()
 
         self.graphs[str(self.slice_num)] = self.G
-        self.slices[str(self.slice_num)] = {'graph':self.G}
-        self.slices[str(self.slice_num)]['node_attributes'] = self.node_attributes
+        #self.slices[str(self.slice_num)] = {'graph':self.G}
+
 
     def plot_tweets_before_2020(self):
         tweets = []

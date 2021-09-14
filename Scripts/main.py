@@ -15,6 +15,10 @@ my_class = Slices(path)
 #print(my_class.G)
 #print(my_class.slices)
 
+
+
+#my_class = ExtractSlices()
+
 """
 x = [1,2,3,4]
 l = [2,8,5,6]

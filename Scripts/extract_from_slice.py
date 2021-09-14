@@ -8,5 +8,12 @@ import sys
 from parse_slices import *
 
 class ExtractSlices():
-    def __init__(self, path_to_directory):
-        a = "lol"
+    def __init__(self, slice_file, common_attributes_file):
+
+        with open(slice_file, 'r') as fp:
+            self.slices = json.load(fp)
+
+        with open(common_attributes_file, 'r') as fp:
+            self.common_attributes = json.load(fp)
+
+        
