@@ -80,41 +80,33 @@ class Slices:
 
     def plot_tweets_before_2020(self):
         tweets = []
-        for slice in self.slices:
-            tweets.append(0)
-        tweets.append(0)
-
+        slice_arange = []
         boundary = dt.datetime(2020,1,1)
         for slice in self.slices:
             nodes = self.slices[slice]['node_attributes']
             num_nodes = self.slices[slice]['num_nodes']
-            #print("Number of nodes in slice %s = %i" %(slice,num_nodes))
+            counter = 0
             for n in nodes:
                 date = dt.datetime.strptime((nodes[n]['date']),"%Y-%m-%dT%H:%M:%S.%f")
                 if date < boundary:
-                    tweets[int(slice)] += 1
-            #tweets[int(slice)]/=num_nodes
+                    counter += 1
+            tweets.append(counter/num_nodes)
+            slice_arange.append(int(slice))
 
-        tweets.pop(0)
-        #print(tweets)
+        slice_arange,tweets = zip(*sorted(zip(slice_arange,tweets)))
 
-        names = sorted([slice for slice in self.slices])
-        x_pos = [int(i) for i in names]
         zeros = [0 for i in range(len(tweets))]
 
-        plt.vlines(x = x_pos, ymin = zeros, ymax = tweets, lw = 2)
-        #for i in range(len(tweets)):
-        #    plt.text(x_pos[i],tweets[i],names[i])
+        plt.vlines(x = slice_arange, ymin = zeros, ymax = tweets, lw = 2)
         plt.ylim(ymin=0)
         plt.title("Tweets before 2020",fontsize = 14)
         plt.xlabel("Slice number", fontsize = 12)
-        #plt.ylabel("$\\frac{\mathrm{Number\,of\,tweets\,<\,2020}}{\mathrm{Total\,number\,of\,tweets\,in\,slice}}$", fontsize = 14)
-        plt.ylabel("Number of tweets before 2020", fontsize = 12)
+        plt.ylabel("$\\frac{\mathrm{Number\,of\,tweets\,<\,2020}}{\mathrm{Total\,number\,of\,tweets\,in\,slice}}$", fontsize = 14)
+        #plt.ylabel("Number of tweets before 2020", fontsize = 12)
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=10)
-        plt.savefig("./experiment6/plots/num_tweets_before_2020/bins.jpg")
+        plt.savefig("./experiment6/plots/num_tweets_before_2020/normalized_bins.jpg")
         plt.clf()
-
 
 
 
