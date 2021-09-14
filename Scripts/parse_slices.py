@@ -228,8 +228,6 @@ class Slices:
     def find_num_nodes(self):
         self.slices[str(self.slice_num)]['num_nodes'] = len(self.slices[str(self.slice_num)]['node_attributes'].keys())
 
-    def find_num_components(self):
-        a = 1
 
     def find_num_deleted_users(self):
         ids_first_slice = []

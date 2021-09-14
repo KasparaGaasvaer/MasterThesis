@@ -53,3 +53,6 @@ class ExtractSlices():
     def find_clustering_coef(self):
         CC = nx.average_clustering(self.graphs[str(self.slice_num)]['graph'])
         self.graphs[str(self.slice_num)]['CC'] = CC
+
+    def find_num_components(self):
+        a = 1
