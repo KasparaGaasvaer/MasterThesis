@@ -12,36 +12,47 @@ from matplotlib.dates import date2num
 class Slices:
     def __init__(self, path_to_directory):
         self.path2dir = path_to_directory
-        all_files = os.listdir(self.path2dir)
+        all_files = os.listdir(self.path2dir)     #List all files in dir = self.path2dir
         #self.all_slices = ["slice_1","slice_2"]
-        self.all_slices = []
-        self.graphs = []
-        self.slices = {} #Add first and llast date as keys
-        self.attributes_to_slice_set = {}
+        self.all_slices = []                      #Container for all filenames to be used
+        self.graphs = {}                          #Container for graphs made from all slices in dir
+        self.slices = {}                          #Container for all information about all slices in dir
+        self.attributes_to_slice_set = {}         #Container for information about the entire set of slices in dir
 
 
+
+        #Find all slice folders and sort after number
+        nums = []
         for file in all_files:
             if "slice_" in file:
                 self.all_slices.append(file)
+                s, num = file.split("_")
+                nums.append(int(num))
+        nums, self.all_slices = zip(*sorted(zip(nums,self.all_slices)))
 
+        #Calls function for reading slices and extracting information
         self.ReadSlice()
 
 
     def ReadSlice(self):
+        #Loops over all slices in dir
         for slices in self.all_slices:
-            self.folder = slices
-            self.slice_num = int(slices.replace("slice_",""))
-            self.path = self.path2dir + self.folder +"/"
-            self.make_node_attributes()
-            self.make_graph()
-            self.find_timeline()
-            self.find_num_nodes()
-        self.find_timeline_of_set()
-        #self.plot_dates_dist()
-        #self.find_num_deleted_users()
-        self.plot_tweets_before_2020()
+            folder = slices
+            self.slice_num = int(slices.replace("slice_",""))   #Extracts slice number
+            print("Working on slice_",self.slice_num)
+            self.path = self.path2dir + folder +"/"             #Sets path
+            self.make_node_attributes()                         #Calls function for producing dict with node attributes from corresponding labels.csv file
+            self.make_graph()                                   #Calls function for producing networkx graph from corresponding graph.mat file
+            self.find_timeline()                                #Calls function for extracting first and last tweet in slice
+            self.find_num_nodes()                               #Calls function for extracting number of nodes (tweets) in slice
+        self.find_timeline_of_set()                             #Calls function for extracting first and last tweet in the entire set of slices in dir
+        #self.plot_dates_dist()                                 #Calls function for plotting time distribution of tweets in slices  (one plot for each slice)
+        self.find_num_deleted_users()                           #Calls function for finding the number of deleted users from first to last slice
+        #self.plot_tweets_before_2020()                         #Calls function for plotting tweets before 2020 in all slices (same plot)
+        #self.simple_information_txt()
 
     def make_node_attributes(self):
+
         filename = self.path + "labels_" + str(self.slice_num) + ".csv"
         self.node_at = pd.read_csv(filename,header = 0, quotechar='"', error_bad_lines=False, warn_bad_lines=True,false_values= ['false'], true_values= ['true'])
         #self.node_at = self.node_at.fillna(value=False)
@@ -74,7 +85,7 @@ class Slices:
         #nx.draw(self.G, with_labels=True, node_color = node_colors)
         #plt.show()
 
-        self.graphs.append(self.G)
+        self.graphs[str(self.slice_num)] = self.G
         self.slices[str(self.slice_num)] = {'graph':self.G}
         self.slices[str(self.slice_num)]['node_attributes'] = self.node_attributes
 
@@ -90,7 +101,8 @@ class Slices:
                 date = dt.datetime.strptime((nodes[n]['date']),"%Y-%m-%dT%H:%M:%S.%f")
                 if date < boundary:
                     counter += 1
-            tweets.append(counter/num_nodes)
+            #tweets.append(counter/num_nodes)
+            tweets.append(counter)
             slice_arange.append(int(slice))
 
         slice_arange,tweets = zip(*sorted(zip(slice_arange,tweets)))
@@ -101,11 +113,12 @@ class Slices:
         plt.ylim(ymin=0)
         plt.title("Tweets before 2020",fontsize = 14)
         plt.xlabel("Slice number", fontsize = 12)
-        plt.ylabel("$\\frac{\mathrm{Number\,of\,tweets\,<\,2020}}{\mathrm{Total\,number\,of\,tweets\,in\,slice}}$", fontsize = 14)
-        #plt.ylabel("Number of tweets before 2020", fontsize = 12)
+        #plt.ylabel("$\\frac{\mathrm{Number\,of\,tweets\,<\,2020}}{\mathrm{Total\,number\,of\,tweets\,in\,slice}}$", fontsize = 14)
+        plt.ylabel("Number of tweets before 2020", fontsize = 12)
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=10)
-        plt.savefig("./experiment6/plots/num_tweets_before_2020/normalized_bins.jpg")
+        #plt.savefig("./experiment6/plots/num_tweets_before_2020/normalized_bins.jpg")
+        plt.savefig("./experiment6/plots/num_tweets_before_2020/bins.jpg")
         plt.clf()
 
 
@@ -167,13 +180,7 @@ class Slices:
         self.attributes_to_slice_set['end_slice'] = last_slice
 
 
-
-
-
-
     def find_timeline(self):
-
-        print("Working on slice_",self.slice_num)
         first_date = "2100-06-10T20:38:27.000"
         first_date = dt.datetime.strptime(first_date,"%Y-%m-%dT%H:%M:%S.%f")
         first_node = 0
@@ -215,6 +222,46 @@ class Slices:
         a = 1
 
     def find_num_deleted_users(self):
+        ids_first_slice = []
+        users = self.slices['1']['node_attributes']
+        for user in users:
+            ids_first_slice.append(users[user]['id'])
+
+        self.deleted_users  = []
+        self.deleted_users_slice = []
+        for slice in self.slices:
+            ids = []
+            if slice != '1':
+                users = self.slices[slice]['node_attributes']
+                for user in users:
+                    ids.append(users[user]['id'])
+                #print("\n\n",len(ids),"\n\n")
+                for index in ids_first_slice:
+                    if index not in ids:
+                        self.deleted_users.append(index)
+                        self.deleted_users_slice.append(int(slice))
+                        print("user %s was deleted in slice %s" % (index, slice))
+                    #else:
+                        #print("user %s still in set in slice %s" %(index, slice))
+
+        """
+        count_deleted_users = np.zeros(max(self.deleted_users_slice)+1)
+        for i in range(len(self.deleted_users)):
+            idx = self.deleted_users_slice[i]
+            count_deleted_users[idx] += 1
+
+        print(count_deleted_users)
+        """
+
+
+
+
+
+    def find_clustering_coef(self):
+        a = 1
+
+
+    def simple_information_txt(self):
         #for key in sorted(self.slices):
         #    print("%s: %s" % (key, self.slices[key]))
         sorted_slices = (sorted(self.slices.keys()))
@@ -237,17 +284,13 @@ class Slices:
                 outfile.write("%s        %s           %i               %i\n" %(st, ed, sl, int(self.slices[str(sl)]['num_nodes'])))
 
 
-    def find_clustering_coef(self):
-        a = 1
 
 
 
 
 
 
-
-
-# What to do with metrics and components? Number of nodes, num components, num deleted users, clustering coefficient, slices over time starts somewhere and the networks expands
+# What to do with metrics and components?  num components, num deleted users, clustering coefficient, slices over time starts somewhere and the networks expands
 # from one source or severeal sources. Whiche source grows faster/bigger?
 #bot or not?
 # How "important" is a very active user?
