@@ -264,13 +264,6 @@ class Slices:
         """
 
 
-
-
-
-    def find_clustering_coef(self):
-        a = 1
-
-
     def simple_information_txt(self):
         #for key in sorted(self.slices):
         #    print("%s: %s" % (key, self.slices[key]))

@@ -9,15 +9,15 @@ exp_num = 40
 
 #path = "./Scripts/slice_"+str(exp_num)+"/"
 #path = "./Scripts/"
-path = "./experiment6/experiment_6/"
+#path = "./experiment6/experiment_6/"
 
-my_class = Slices(path)
+#my_class = Slices(path)
 #print(my_class.G)
 #print(my_class.slices)
 
 
-
-#my_class = ExtractSlices()
+path = "./experiment6/"
+my_class = ExtractSlices(path + "all_slices.json", path + "attributes_to_all_slices.json")
 
 """
 x = [1,2,3,4]
