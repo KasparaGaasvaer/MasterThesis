@@ -57,7 +57,7 @@ class Slices:
         self.find_timeline_of_set()                             #Calls function for extracting first and last tweet in the entire set of slices in dir
         #self.plot_dates_dist()                                 #Calls function for plotting time distribution of tweets in slices  (one plot for each slice)
         #self.find_num_deleted_users()                           #Calls function for finding the number of deleted users from first to last slice
-        #self.plot_tweets_before_2020()                         #Calls function for plotting tweets before 2020 in all slices (same plot)
+        self.plot_tweets_before_2020()                         #Calls function for plotting tweets before 2020 in all slices (same plot)
         #self.simple_information_txt()
 
     def make_node_attributes(self):
@@ -111,8 +111,8 @@ class Slices:
                 date = dt.datetime.strptime((nodes[n]['date']),"%Y-%m-%dT%H:%M:%S.%f")
                 if date < boundary:
                     counter += 1
-            #tweets.append(counter/num_nodes)
-            tweets.append(counter)
+            tweets.append(counter/num_nodes)
+            #tweets.append(counter)
             slice_arange.append(int(slice))
 
         slice_arange,tweets = zip(*sorted(zip(slice_arange,tweets)))
@@ -123,12 +123,12 @@ class Slices:
         plt.ylim(ymin=0)
         plt.title("Tweets before 2020",fontsize = 14)
         plt.xlabel("Slice number", fontsize = 12)
-        #plt.ylabel("$\\frac{\mathrm{Number\,of\,tweets\,<\,2020}}{\mathrm{Total\,number\,of\,tweets\,in\,slice}}$", fontsize = 14)
-        plt.ylabel("Number of tweets before 2020", fontsize = 12)
+        plt.ylabel("$\\frac{\mathrm{Number\,of\,tweets\,<\,2020}}{\mathrm{Total\,number\,of\,tweets\,in\,slice}}$", fontsize = 14)
+        #plt.ylabel("Number of tweets before 2020", fontsize = 12)
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=10)
-        #plt.savefig("./experiment6/plots/num_tweets_before_2020/normalized_bins.jpg")
-        plt.savefig("./experiment6/plots/num_tweets_before_2020/bins.jpg")
+        plt.savefig("./experiment6/plots/num_tweets_before_2020/normalized_bins.jpg")
+        #plt.savefig("./experiment6/plots/num_tweets_before_2020/bins.jpg")
         plt.clf()
 
 
@@ -137,14 +137,13 @@ class Slices:
     def plot_dates_dist(self):
         three_months = dt.timedelta(days = 90)
         for slice in self.slices:
-            start = dt.datetime.strptime(self.slices[slice]['start_date'],"%Y-%m-%d-%H-%M-%S-%f")
-            end = dt.datetime.strptime(self.slices[slice]['end_date'],"%Y-%m-%d-%H-%M-%S-%f")
+            #start = dt.datetime.strptime(self.slices[slice]['start_date'],"%Y-%m-%d-%H-%M-%S-%f")
+            #end = dt.datetime.strptime(self.slices[slice]['end_date'],"%Y-%m-%d-%H-%M-%S-%f")
             date_list = []
             nodes = self.slices[slice]['node_attributes']
             for n in nodes:
                 date_list.append(dt.datetime.strptime((nodes[n]['date']),"%Y-%m-%dT%H:%M:%S.%f"))
 
-            date_list.remove(start)
             date_list_num = date2num(date_list)
             bins = np.arange(date_list_num.min(), date_list_num.max()+1, 90)
 
