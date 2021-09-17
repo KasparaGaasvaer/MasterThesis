@@ -8,8 +8,19 @@ import datetime as dt
 from matplotlib.dates import date2num
 import json
 
+"""
+Class for reading and parsing twitter slice objects.
+Purpose is to collect and store information from slices in dictionaries for easy extraction.
+"""
+
 
 class Slices:
+    """
+    Initialize class:
+    - Create dicts for storing
+    - Call methods for reading and sorting
+    - Save dicts to .json files
+    """
     def __init__(self, path_to_directory):
         self.path2dir = path_to_directory
         all_files = os.listdir(self.path2dir)     #List all files in dir = self.path2dir
@@ -51,16 +62,21 @@ class Slices:
             print("Working on slice_",self.slice_num)
             self.path = self.path2dir + folder +"/"             #Sets path
             self.make_node_attributes()                         #Calls function for producing dict with node attributes from corresponding labels.csv file
-            #self.make_graph()                                   #Calls function for producing networkx graph from corresponding graph.mat file
-            self.find_timeline()                                #Calls function for extracting first and last tweet in slice
-            self.find_num_nodes()                               #Calls function for extracting number of nodes (tweets) in slice
-        self.find_timeline_of_set()                             #Calls function for extracting first and last tweet in the entire set of slices in dir
+            self.make_graph()                                   #Calls function for producing networkx graph from corresponding graph.mat file
+            #self.find_timeline()                               #Calls function for extracting first and last tweet in slice
+            #self.find_num_nodes()                              #Calls function for extracting number of nodes (tweets) in slice
+        #self.find_timeline_of_set()                            #Calls function for extracting first and last tweet in the entire set of slices in dir
         #self.plot_dates_dist()                                 #Calls function for plotting time distribution of tweets in slices  (one plot for each slice)
-        #self.find_num_deleted_users()                           #Calls function for finding the number of deleted users from first to last slice
-        self.plot_tweets_before_2020()                         #Calls function for plotting tweets before 2020 in all slices (same plot)
+        #self.find_num_deleted_users()                          #Calls function for finding the number of deleted users from first to last slice
+        #self.plot_tweets_before_2020()                         #Calls function for plotting tweets before 2020 in all slices (same plot)
         #self.simple_information_txt()
 
     def make_node_attributes(self):
+        """
+        Function for reading .csv file containing node attributes.
+        Stores attributes in dictionary accessable by key = node number
+        in main dictionary self.slices
+        """
 
         filename = self.path + "labels_" + str(self.slice_num) + ".csv"
         self.node_at = pd.read_csv(filename,header = 0, quotechar='"', error_bad_lines=False, warn_bad_lines=True,false_values= ['false'], true_values= ['true'])
@@ -82,6 +98,12 @@ class Slices:
 
 
     def make_graph(self):
+        """
+        Function for reading .mat file containg edges between nodes.
+        Utilizes networkx package to create graph objects.
+        Stores graph objects in self.graphs.
+        FIND WAY TO STORE!!
+        """
         filename = self.path + "graph_" + str(self.slice_num) + ".mat"
         types = ["source", "target", "weight"]
         dataframe = pd.read_csv(filename, names = types, delim_whitespace = True)
@@ -90,16 +112,19 @@ class Slices:
         #print(self.G)
         #nodes = self.G.nodes()
         #for n in nodes:
-            #nodes[n]['color'] = 'm' if nodes[n]["statuses_count"] > 100000 else "c"
+        #    nodes[n]['color'] = 'm' if nodes[n]["statuses_count"] > 100000 else "c"
         #node_colors = [nodes[n]["color"] for n in nodes]
-        #nx.draw(self.G, with_labels=True, node_color = node_colors)
-        #plt.show()
+        nx.draw(self.G, with_labels=True, node_color = node_colors)
+        plt.show()
 
         self.graphs[str(self.slice_num)] = self.G
-        #self.slices[str(self.slice_num)] = {'graph':self.G}
 
 
     def plot_tweets_before_2020(self):
+        """
+        Function for plotting histogram of number of tweets (normalized and not normalized)
+        before 2020. Produces one plot.
+        """
         tweets = []
         slice_arange = []
         boundary = dt.datetime(2020,1,1)
@@ -135,17 +160,20 @@ class Slices:
 
 
     def plot_dates_dist(self):
+        """
+        Function for plotting time distibution of tweets.
+        Produces one plot for each slice.
+        """
         three_months = dt.timedelta(days = 90)
+        bin_size_in_days = 90
         for slice in self.slices:
-            #start = dt.datetime.strptime(self.slices[slice]['start_date'],"%Y-%m-%d-%H-%M-%S-%f")
-            #end = dt.datetime.strptime(self.slices[slice]['end_date'],"%Y-%m-%d-%H-%M-%S-%f")
             date_list = []
             nodes = self.slices[slice]['node_attributes']
             for n in nodes:
                 date_list.append(dt.datetime.strptime((nodes[n]['date']),"%Y-%m-%dT%H:%M:%S.%f"))
 
             date_list_num = date2num(date_list)
-            bins = np.arange(date_list_num.min(), date_list_num.max()+1, 90)
+            bins = np.arange(date_list_num.min(), date_list_num.max()+1, bin_size_in_days)
 
             plt.title("Slice "+slice,fontsize = 14)
             plt.xlabel("Date", fontsize = 14)
@@ -157,6 +185,10 @@ class Slices:
             plt.clf()
 
     def find_timeline_of_set(self):
+        """
+        Function for finding the first and last tweets posted in set of slices.
+        Adds findings as attribute to dict self.attributes_to_slice_set.
+        """
         first_date = "2100-06-10-20-38-27-000"
         first_date = dt.datetime.strptime(first_date,"%Y-%m-%d-%H-%M-%S-%f")
         first_node = 0
@@ -190,6 +222,10 @@ class Slices:
 
 
     def find_timeline(self):
+        """
+        Function for finding the first and last tweet posted in slice.
+        Adds findings as attribute to dict self.slices.
+        """
         first_date = "2100-06-10T20:38:27.000"
         first_date = dt.datetime.strptime(first_date,"%Y-%m-%dT%H:%M:%S.%f")
         first_node = 0
@@ -214,21 +250,17 @@ class Slices:
         self.slices[str(self.slice_num)]['end_date'] = last_date
         self.slices[str(self.slice_num)]['start_date_node_index'] = first_node
         self.slices[str(self.slice_num)]['end_date_node_index'] = last_node
-        #VERY SLOW, MUST FIND BETTER WAY
-
-        first_date = "2100-06-10T20:38:27.000"
-        first_date = dt.datetime.strptime(first_date,"%Y-%m-%dT%H:%M:%S.%f")
-        first_node = 0
-        last_node = 0
-        last_date = "1900-06-10T20:38:27.000"
-        last_date = dt.datetime.strptime(last_date,"%Y-%m-%dT%H:%M:%S.%f")
 
 
     def find_num_nodes(self):
+        """Function for finding number of nodes in a slice"""
         self.slices[str(self.slice_num)]['num_nodes'] = len(self.slices[str(self.slice_num)]['node_attributes'].keys())
 
 
     def find_num_deleted_users(self):
+        """
+        Functions for locating missing users in slice_x, x!= 1, based on users in slice_1.
+        """
         ids_first_slice = []
         users = self.slices['1']['node_attributes']
         for user in users:

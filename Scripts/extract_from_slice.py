@@ -27,15 +27,15 @@ class ExtractSlices():
 
 
     def do_stuff(self):
-        #for slice in self.slices:
-            #self.slice_num = int(slice)
-            #self.node_attributes = self.slices[slice]['node_attributes']
-            #self.make_graph()
+        for slice in self.slices:
+            self.slice_num = int(slice)
+            self.node_attributes = self.slices[slice]['node_attributes']
+            self.make_graph()
             #self.find_clustering_coef()
         #self.produce_deltas()
-        self.load_deltas()
-        self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
-        self.plot_tweets_before_2020(self.delta_slices, plot_folder = "delta_slices/")
+        #self.load_deltas()
+        #self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
+        #self.plot_tweets_before_2020(self.delta_slices, plot_folder = "delta_slices/")
 
     def load_deltas(self):
         with open("./experiment6/"+ 'delta_slices.json', 'r') as fp:
@@ -53,13 +53,13 @@ class ExtractSlices():
         dataframe = pd.read_csv(filename, names = types, delim_whitespace = True)
         self.G = nx.from_pandas_edgelist(dataframe, types[0], types[1], edge_attr = types[2])
         nx.set_node_attributes(self.G, self.node_attributes)
-        #print(self.G)
-        #nodes = self.G.nodes()
-        #for n in nodes:
-            #nodes[n]['color'] = 'm' if nodes[n]["statuses_count"] > 100000 else "c"
-        #node_colors = [nodes[n]["color"] for n in nodes]
-        #nx.draw(self.G, with_labels=True, node_color = node_colors)
-        #plt.show()
+        print(self.G)
+        nodes = self.G.nodes()
+        for n in nodes:
+            nodes[n]['color'] = 'm' if nodes[n]["statuses_count"] > 100000 else "c"
+        node_colors = [nodes[n]["color"] for n in nodes]
+        nx.draw(self.G, with_labels=True, node_color = node_colors)
+        plt.show()
 
         self.graphs[str(self.slice_num)] = {'graph' :self.G}
 
