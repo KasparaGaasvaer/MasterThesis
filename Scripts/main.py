@@ -7,17 +7,15 @@ from parse_slices import *
 from extract_from_slice import *
 exp_num = 40
 
-#path = "./Scripts/slice_"+str(exp_num)+"/"
-#path = "./Scripts/"
-path = "./experiment6/experiment_6/"
 
-my_class = Slices(path)
-#print(my_class.G)
-#print(my_class.slices)
+#path = "./experiment6/experiment_6/"
+
+#my_class = Slices(path)
 
 
-#path = "./experiment6/"
-#my_class = ExtractSlices(path + "all_slices.json", path + "attributes_to_all_slices.json")
+
+path = "./experiment6/parsed_dictionaries/"
+my_class = ExtractSlices("all_slices.json","attributes_to_all_slices.json", path)
 
 """
 x = [1,2,3,4]
