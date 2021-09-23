@@ -15,7 +15,7 @@ exp_num = 40
 
 
 path = "./experiment6/parsed_dictionaries/"
-my_class = ExtractSlices("all_slices.json","attributes_to_all_slices.json", path)
+my_class = ExtractSlices(path)
 
 """
 x = [1,2,3,4]

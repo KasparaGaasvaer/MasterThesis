@@ -11,20 +11,19 @@ from parse_slices import *
 #Figure out how to save nx.graphs
 
 class ExtractSlices():
-    def __init__(self, slice_file, common_attributes_file, path):
+    def __init__(self, path):
 
         self.outer_path = path
 
-        with open(self.outer_path + slice_file, 'r') as fp:
+        with open(self.outer_path + "all_slices.json", 'r') as fp:
             self.slices = json.load(fp)
 
-        with open(self.outer_path + common_attributes_file, 'r') as fp:
+        with open(self.outer_path + "attributes_to_all_slices.json", 'r') as fp:
             self.common_attributes = json.load(fp)
 
 
         with open(self.outer_path + "graph_all_slices.json", 'r') as fp:
             self.graphs = json.load(fp)
-
 
         self.nx_graphs = {}
         self.do_stuff()
