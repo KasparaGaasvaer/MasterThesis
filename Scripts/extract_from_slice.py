@@ -8,6 +8,8 @@ import copy
 
 from parse_slices import *
 
+"""Conected components, Louvain method, Leiden method, last two are clustering methods MODULARITY"""
+
 #Figure out how to save nx.graphs
 
 class ExtractSlices():
@@ -29,15 +31,16 @@ class ExtractSlices():
         self.do_stuff()
 
 
+
     def do_stuff(self):
         for slice in self.slices.keys():
             self.slice_num = int(slice)
             self.node_attributes = self.slices[slice]['node_attributes']
-            #self.make_graph()
+            self.make_graph()
             #self.find_clustering_coef(self.nx_graphs[str(self.slice_num)])
-        #self.plot_nx_graph(self.nx_graph['1'])#[str(self.slice_num)])
+        #self.plot_nx_graph(self.nx_graphs['1'])#[str(self.slice_num)])
         #self.produce_deltas()
-        self.load_deltas()
+        #self.load_deltas()
         #self.find_num_deleted_users(self.slices)
         #self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
         #self.plot_tweets_before_2020(self.delta_slices, plot_folder = "delta_slices/")

@@ -8,6 +8,8 @@ import datetime as dt
 from matplotlib.dates import date2num
 import json
 
+
+#==============================Loading and storing slices==============================
 """
 Class for reading and parsing twitter slice objects.
 Purpose is to collect and store information from slices in dictionaries for easy extraction.

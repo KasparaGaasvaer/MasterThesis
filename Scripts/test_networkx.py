@@ -106,7 +106,7 @@ print(edge_colors)
 
 nx.draw(G, with_labels=True, node_color=carac['type'].cat.codes, cmap=cmap, node_size=node_sizes, edge_color = edge_colors)
 plt.show()
-"""
+
 
 types = ["source", "target", "weight"]
 df = pd.read_csv("graph_1.mat", delim_whitespace = True,names = types)[:100]
@@ -121,3 +121,4 @@ print(G)
 #node_sizes = [4000 if (n==1 or n==0) else 100 for n in nodes]
 nx.draw(G, with_labels=True, font_weight='bold', node_color = node_colors)#, width = weights, node_size = node_sizes)
 plt.show()
+"""
