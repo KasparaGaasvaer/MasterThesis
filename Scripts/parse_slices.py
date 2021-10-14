@@ -75,6 +75,8 @@ class Slices:
             self.find_num_nodes()                              #Calls function for extracting number of nodes (tweets) in slice
         self.find_timeline_of_set()                            #Calls function for extracting first and last tweet in the entire set of slices in dir
 
+
+
     def make_node_attributes(self):
         """
         Function for reading .csv file containing node attributes.
@@ -102,7 +104,6 @@ class Slices:
         Function for reading .mat file containg edges between nodes.
         Utilizes networkx package to create graph objects.
         Stores graph objects in self.graphs.
-        FIND WAY TO STORE!!
         """
         filename = self.path + "graph_" + str(self.slice_num) + ".mat"
         types = ["source", "target", "weight"]

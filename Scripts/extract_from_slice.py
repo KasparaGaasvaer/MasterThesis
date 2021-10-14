@@ -5,12 +5,10 @@ import pandas as pd
 import os
 import sys
 import copy
+import json
 
-from parse_slices import *
+#from parse_slices import *
 
-"""Conected components, Louvain method, Leiden method, last two are clustering methods MODULARITY"""
-
-#Figure out how to save nx.graphs
 
 class ExtractSlices():
     def __init__(self, path):
@@ -28,8 +26,7 @@ class ExtractSlices():
             self.graphs = json.load(fp)
 
         self.nx_graphs = {}
-        self.do_stuff()
-
+        self.all_slices_graphs()
 
 
     def do_stuff(self):
@@ -44,6 +41,13 @@ class ExtractSlices():
         #self.find_num_deleted_users(self.slices)
         #self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
         #self.plot_tweets_before_2020(self.delta_slices, plot_folder = "delta_slices/")
+
+
+    def all_slices_graphs(self):
+        for slice in self.slices.keys():
+            self.slice_num = int(slice)
+            self.node_attributes = self.slices[slice]['node_attributes']
+            self.make_graph()
 
 
     def load_deltas(self):
@@ -84,8 +88,7 @@ class ExtractSlices():
 
     def find_num_components(self):
         a = 1
-
-    #Should this be in parse_slices instead?
+    #Should this be in parse_slices instead? Difficult since parse slices is optimized for parsing self.slices, not functions who takes dicts or files
     def produce_deltas(self):
         self.delta_slices = copy.deepcopy(self.slices)
         for i in range(1,len(self.slices.keys())):
@@ -108,7 +111,6 @@ class ExtractSlices():
         self.find_timeline(self.delta_slices)
         with open(self.outer_path + 'delta_slices.json', 'w') as fp:
             json.dump(self.delta_slices, fp)
-
 
     def plot_dates_dist(self, slices_dict,plot_folder):
         days_delta = 90    #Bin size in days
@@ -194,7 +196,6 @@ class ExtractSlices():
             slices_dict[slice]['end_date'] = last_date
             slices_dict[slice]['start_date_node_index'] = first_node
             slices_dict[slice]['end_date_node_index'] = last_node
-
 
     def find_num_deleted_users(self, slices_dict):
         """
