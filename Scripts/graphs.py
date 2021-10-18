@@ -7,6 +7,9 @@ import sys
 import copy
 import json
 
+
+#==============================Produce Graphs Using NetworkX / Igraph==============================
+
 class Graphs():
     def __init__(self, path, graph_type):
 
@@ -18,6 +21,15 @@ class Graphs():
 
         if graph_type == "ig":
             self.make_ig_graphs()
+
+
+
+    def open_dicts(self, path):
+        with open(path + "all_slices.json", 'r') as fp:
+            self.slices = json.load(fp)
+
+        with open(path + "graph_all_slices.json", 'r') as fp:
+            self.graphs_from_file = json.load(fp)
 
 
     def make_nx_graphs(self):
@@ -36,13 +48,6 @@ class Graphs():
             nx.set_node_attributes(G, self.node_attributes)
             self.graphs[slice] = {'graph':G}
 
-
-    def open_dicts(self, path):
-        with open(path + "all_slices.json", 'r') as fp:
-            self.slices = json.load(fp)
-
-        with open(path + "graph_all_slices.json", 'r') as fp:
-            self.graphs_from_file = json.load(fp)
 
     def make_ig_graphs(self):
         for slice in self.slices.keys():

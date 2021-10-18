@@ -62,9 +62,9 @@ class ExtractSlices():
 
     def all_slices_graphs(self):
         for slice in self.slices.keys():
-            self.slice_num = int(slice)
-            self.node_attributes = self.slices[slice]['node_attributes']
-            self.make_graph()
+                self.slice_num = int(slice)
+                self.node_attributes = self.slices[slice]['node_attributes']
+                self.make_graph()
 
 
     def load_deltas(self):
@@ -104,9 +104,9 @@ class ExtractSlices():
         graph_obj = graph['graph']
         nodes = graph_obj.nodes()
         for n in nodes:
-            nodes[n]['color'] = 'm' if nodes[n]["statuses_count"] > 100000 else "c"
+            nodes[n]['color'] = 'm' if nodes[n]["followers_count"] > 10000 else "c"
         node_colors = [nodes[n]["color"] for n in nodes]
-        nx.draw(graph_obj, with_labels=True, node_color = node_colors)
+        nx.draw(graph_obj, node_color = node_colors)
         plt.show()
 
     def find_clustering_coef(self,graph):
