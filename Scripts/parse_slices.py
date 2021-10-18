@@ -10,19 +10,19 @@ import json
 
 
 #==============================Loading and storing slices==============================
-"""
-Class for reading and parsing twitter slice objects.
-Purpose is to collect and store information from slices in dictionaries for easy extraction.
-"""
+#
+#Class for reading and parsing twitter slice objects.
+#Purpose is to collect and store information from slices in dictionaries for easy extraction.
+#
 
 
 class Slices:
-    """
-    Initialize class:
-    - Create dicts for storing
-    - Call methods for reading and sorting
-    - Save dicts to .json files
-    """
+    #
+    # Initialize class:
+    # - Create dicts for storing
+    # - Call methods for reading and sorting
+    # - Save dicts to .json files
+    #
     def __init__(self, path_to_directory):
         self.path2dir = path_to_directory
         all_files = os.listdir(self.path2dir)     #List all files in dir = self.path2dir
@@ -30,6 +30,7 @@ class Slices:
         self.graphs = {}                          #Container for graphs made from all slices in dir
         self.slices = {}                          #Container for all information about all slices in dir
         self.attributes_to_slice_set = {}         #Container for information about the entire set of slices in dir
+
 
         #Find all slice folders and sort after number
         nums = []
@@ -42,6 +43,25 @@ class Slices:
 
         #Calls function for reading slices and extracting information
         self.ReadSlice()
+        self.SaveSlice()
+
+
+        
+
+    def ReadSlice(self):
+        #Loops over all slices in dir/experiment
+        for slices in self.all_slices:
+            folder = slices
+            self.slice_num = int(slices.replace("slice_",""))        #Extracts slice number
+            print("Working on slice_",self.slice_num)
+            self.path = self.path2dir + folder +"/"                  #Sets path
+            self.make_node_attributes()                              #Calls function for producing dict with node attributes from corresponding labels.csv file
+            self.make_graph_dict()                                   #Calls function for producing networkx graph from corresponding graph.mat file
+            self.find_timeline()                                     #Calls function for extracting first and last tweet in slice
+            self.find_num_nodes()                                    #Calls function for extracting number of nodes (tweets) in slice
+        self.find_timeline_of_set()                                  #Calls function for extracting first and last tweet in the entire set of slices in dir
+
+    def SaveSlice(self):
 
         path2save = self.path2dir.split("/")[1]
         path2save = "./" + path2save +"/"
@@ -62,27 +82,13 @@ class Slices:
         with open(dict_dir + 'attributes_to_all_slices.json', 'w') as fp:
             json.dump(self.attributes_to_slice_set, fp)
 
-    def ReadSlice(self):
-        #Loops over all slices in dir
-        for slices in self.all_slices:
-            folder = slices
-            self.slice_num = int(slices.replace("slice_",""))   #Extracts slice number
-            print("Working on slice_",self.slice_num)
-            self.path = self.path2dir + folder +"/"             #Sets path
-            self.make_node_attributes()                         #Calls function for producing dict with node attributes from corresponding labels.csv file
-            self.make_graph_dict()                                   #Calls function for producing networkx graph from corresponding graph.mat file
-            self.find_timeline()                               #Calls function for extracting first and last tweet in slice
-            self.find_num_nodes()                              #Calls function for extracting number of nodes (tweets) in slice
-        self.find_timeline_of_set()                            #Calls function for extracting first and last tweet in the entire set of slices in dir
-
-
 
     def make_node_attributes(self):
-        """
-        Function for reading .csv file containing node attributes.
-        Stores attributes in dictionary accessable by key = node number
-        in main dictionary self.slices
-        """
+        #
+        # Function for reading .csv file containing node attributes.
+        # Stores attributes in dictionary accessable by key = node number
+        # in main dictionary self.slices
+        #
 
         filename = self.path + "labels_" + str(self.slice_num) + ".csv"
         self.node_at = pd.read_csv(filename,header = 0, quotechar='"', error_bad_lines=False, warn_bad_lines=True,false_values= ['false'], true_values= ['true'])
@@ -100,11 +106,12 @@ class Slices:
         self.slices[str(self.slice_num)] = {'node_attributes':self.node_attributes}
 
     def make_graph_dict(self):
-        """
-        Function for reading .mat file containg edges between nodes.
-        Utilizes networkx package to create graph objects.
-        Stores graph objects in self.graphs.
-        """
+        #
+        # Function for reading .mat file containg edges between nodes.
+        # Utilizes networkx package to create graph objects.
+        # Stores graph objects in self.graphs.
+        #
+
         filename = self.path + "graph_" + str(self.slice_num) + ".mat"
         types = ["source", "target", "weight"]
         dataframe = pd.read_csv(filename, names = types, delim_whitespace = True)
@@ -112,10 +119,11 @@ class Slices:
         self.graphs[str(self.slice_num)] = dataframe
 
     def find_timeline_of_set(self):
-        """
-        Function for finding the first and last tweets posted in set of slices.
-        Adds findings as attribute to dict self.attributes_to_slice_set.
-        """
+        #
+        # Function for finding the first and last tweets posted in set of slices.
+        # Adds findings as attribute to dict self.attributes_to_slice_set.
+        #
+
         first_date = "2100-06-10-20-38-27-000"
         first_date = dt.datetime.strptime(first_date,"%Y-%m-%d-%H-%M-%S-%f")
         first_node = 0
@@ -148,10 +156,11 @@ class Slices:
         self.attributes_to_slice_set['end_slice'] = last_slice
 
     def find_timeline(self):
-        """
-        Function for finding the first and last tweet posted in slice.
-        Adds findings as attribute to dict self.slices.
-        """
+        #
+        # Function for finding the first and last tweet posted in slice.
+        # Adds findings as attribute to dict self.slices.
+        #
+
         first_date = "2100-06-10T20:38:27.000"
         first_date = dt.datetime.strptime(first_date,"%Y-%m-%dT%H:%M:%S.%f")
         first_node = 0
@@ -178,7 +187,7 @@ class Slices:
         self.slices[str(self.slice_num)]['end_date_node_index'] = last_node
 
     def find_num_nodes(self):
-        """Function for finding number of nodes in a slice"""
+        # Function for finding number of nodes in a slice
         self.slices[str(self.slice_num)]['num_nodes'] = len(self.slices[str(self.slice_num)]['node_attributes'].keys())
 
 

@@ -10,37 +10,54 @@ import json
 #from parse_slices import *
 
 
+#==============================Extracting from slices dictionaries==============================
+
+
+
 class ExtractSlices():
+    #
+    # Test class for extracting simple information from slices dictionaries (from Slices class)
+    # - Produce NetworkX graphs
+    # - Visualize NetworkX graphs
+    # - Find clustering coefficient from NetworkX graphs
+    # - Produce delta slices
+    # - Find number of deleted users from one slice to another
+    # - Plot distribution of tweets (3 month intervals for now)
+    # - Plot distribution of tweets before 2020
+
     def __init__(self, path):
 
         self.outer_path = path
+        self.open_dicts()
 
+        self.nx_graphs = {}
+        self.all_slices_graphs()
+        #self.do_stuff()
+
+
+
+    def open_dicts(self):
         with open(self.outer_path + "all_slices.json", 'r') as fp:
             self.slices = json.load(fp)
 
         with open(self.outer_path + "attributes_to_all_slices.json", 'r') as fp:
             self.common_attributes = json.load(fp)
 
-
         with open(self.outer_path + "graph_all_slices.json", 'r') as fp:
             self.graphs = json.load(fp)
-
-        self.nx_graphs = {}
-        self.all_slices_graphs()
-
 
     def do_stuff(self):
         for slice in self.slices.keys():
             self.slice_num = int(slice)
             self.node_attributes = self.slices[slice]['node_attributes']
             self.make_graph()
-            #self.find_clustering_coef(self.nx_graphs[str(self.slice_num)])
-        #self.plot_nx_graph(self.nx_graphs['1'])#[str(self.slice_num)])
-        #self.produce_deltas()
-        #self.load_deltas()
-        #self.find_num_deleted_users(self.slices)
-        #self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
-        #self.plot_tweets_before_2020(self.delta_slices, plot_folder = "delta_slices/")
+            self.find_clustering_coef(self.nx_graphs[str(self.slice_num)])
+        self.plot_nx_graph(self.nx_graphs['1'])#[str(self.slice_num)])
+        self.produce_deltas()
+        self.load_deltas()
+        self.find_num_deleted_users(self.slices)
+        self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
+        self.plot_tweets_before_2020(self.delta_slices, plot_folder = "delta_slices/")
 
 
     def all_slices_graphs(self):
@@ -59,7 +76,13 @@ class ExtractSlices():
         for slice in slices_dict:
             slices_dict[slice]['num_nodes'] = len(slices_dict[slice]['node_attributes'].keys())
 
+
     def make_graph(self):
+        #
+        # Function for producing NetworkX graph.
+        # Adds node attributes from slices dict and edges/nodes from graph dict.
+        #
+
         graph = self.graphs[str(self.slice_num)]
         sources = graph['source']
         targets = graph['target']
@@ -74,6 +97,10 @@ class ExtractSlices():
         self.nx_graphs[str(self.slice_num)] = {'graph':G}
 
     def plot_nx_graph(self, graph):
+        #
+        # Function for plotting NetworkX graph.
+        #
+
         graph_obj = graph['graph']
         nodes = graph_obj.nodes()
         for n in nodes:
@@ -88,8 +115,15 @@ class ExtractSlices():
 
     def find_num_components(self):
         a = 1
+
+
     #Should this be in parse_slices instead? Difficult since parse slices is optimized for parsing self.slices, not functions who takes dicts or files
     def produce_deltas(self):
+        #
+        # Function for producing delta slices.
+        # Each delta slice is slice i+1 - slice i for all slices in experiment.
+        #
+
         self.delta_slices = copy.deepcopy(self.slices)
         for i in range(1,len(self.slices.keys())):
             id_in_1 = []
@@ -113,6 +147,12 @@ class ExtractSlices():
             json.dump(self.delta_slices, fp)
 
     def plot_dates_dist(self, slices_dict,plot_folder):
+        #
+        # Function for plotting time distribution of tweets.
+        # Produces N-plots (N = number of slices in experiment) with time period on the x-axis
+        # number of tweets in time period on y-axis.
+        #
+
         days_delta = 90    #Bin size in days
         for slice in slices_dict:
             date_list = []
@@ -133,6 +173,12 @@ class ExtractSlices():
             plt.clf()
 
     def plot_tweets_before_2020(self, slices_dict, plot_folder):
+        #
+        # Function for plotting tweets before 2020.
+        # Produces one plot with slices on x-axis and normalized or not normalized
+        # number of tweets before 2020 in that slice.
+        #
+
         tweets = []
         slice_arange = []
         boundary = dt.datetime(2020,1,1)
@@ -166,10 +212,11 @@ class ExtractSlices():
         #plt.show()
 
     def find_timeline(self, slices_dict):
-        """
-        Function for finding the first and last tweet posted in slice.
-        Adds findings as attribute to dict self.slices.
-        """
+        #
+        # Function for finding the first and last tweet posted in slice.
+        # Adds findings as attribute to dict self.slices.
+        #
+
         for slice in slices_dict.keys():
             atts = slices_dict[slice]['node_attributes']
             first_date = "2100-06-10T20:38:27.000"
@@ -198,9 +245,10 @@ class ExtractSlices():
             slices_dict[slice]['end_date_node_index'] = last_node
 
     def find_num_deleted_users(self, slices_dict):
-        """
-        Functions for locating missing users in slice_x, x!= 1, based on users in slice_1.
-        """
+        #
+        # Functions for locating missing users in slice_x, x!= 1, based on users in slice_1.
+        #
+
         ids_first_slice = []
         users = slices_dict['1']['node_attributes']
         for user in users:

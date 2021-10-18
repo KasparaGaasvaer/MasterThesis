@@ -10,11 +10,7 @@ import json
 class Graphs():
     def __init__(self, path, graph_type):
 
-        with open(path + "all_slices.json", 'r') as fp:
-            self.slices = json.load(fp)
-
-        with open(path + "graph_all_slices.json", 'r') as fp:
-            self.graphs_from_file = json.load(fp)
+        self.open_dicts(path)
 
         self.graphs = {}
         if graph_type == "nx":
@@ -40,6 +36,13 @@ class Graphs():
             nx.set_node_attributes(G, self.node_attributes)
             self.graphs[slice] = {'graph':G}
 
+
+    def open_dicts(self, path):
+        with open(path + "all_slices.json", 'r') as fp:
+            self.slices = json.load(fp)
+
+        with open(path + "graph_all_slices.json", 'r') as fp:
+            self.graphs_from_file = json.load(fp)
 
     def make_ig_graphs(self):
         for slice in self.slices.keys():
