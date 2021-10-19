@@ -23,14 +23,20 @@ Method for Louvain cluster detection on igraph and networkx graphs.
 """
 
 class Louvain(Graphs):
+
     def __init__(self, path, graph_type):
         super().__init__(path, graph_type)
 
         if graph_type == "nx":
-            self.nx_louvain()
+            #self.nx_louvain()
+            self.sknet_louvain()
 
         if graph_type == "ig":
             self.ig_louvain()
+        
+        if graph_type == "skn":
+            self.sknet_louvain()
+
 
     def nx_louvain(self):
         # Loading graph
@@ -47,6 +53,10 @@ class Louvain(Graphs):
         nx.draw_networkx_nodes(G, pos, partition.keys(), node_size=40, cmap=cmap, node_color=list(partition.values()))
         nx.draw_networkx_edges(G, pos, alpha=0.5)
         plt.show()
+    
+    def sknet_louvain(self):
+        a = 1
+
 
     def ig_louvain(self):
 

@@ -1,6 +1,7 @@
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
+import datetime as dt
 import pandas as pd
 import os
 import sys
@@ -31,8 +32,8 @@ class ExtractSlices():
         self.open_dicts()
 
         self.nx_graphs = {}
-        self.all_slices_graphs()
-        #self.do_stuff()
+        #self.all_slices_graphs()
+        self.do_stuff()
 
 
 
@@ -52,12 +53,12 @@ class ExtractSlices():
             self.node_attributes = self.slices[slice]['node_attributes']
             self.make_graph()
             self.find_clustering_coef(self.nx_graphs[str(self.slice_num)])
-        self.plot_nx_graph(self.nx_graphs['1'])#[str(self.slice_num)])
+        #self.plot_nx_graph(self.nx_graphs['1'])#[str(self.slice_num)])
         self.produce_deltas()
         self.load_deltas()
-        self.find_num_deleted_users(self.slices)
-        self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
-        self.plot_tweets_before_2020(self.delta_slices, plot_folder = "delta_slices/")
+        #self.find_num_deleted_users(self.slices)
+        #self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
+        #self.plot_tweets_before_2020(self.delta_slices, plot_folder = "delta_slices/")
 
 
     def all_slices_graphs(self):

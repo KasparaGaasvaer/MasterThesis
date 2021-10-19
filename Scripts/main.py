@@ -17,4 +17,5 @@ from Clustering.leiden import *
 
 
 path = "./experiment6/parsed_dictionaries/"
-my_class = Louvain(path,"nx")
+#my_class = Louvain(path,"skn")
+my_class = Graphs(path,"skn")
