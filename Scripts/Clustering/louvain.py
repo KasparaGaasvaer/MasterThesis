@@ -13,6 +13,8 @@ sys.path.append("..") # Adds higher directory to python modules path, looking fo
 import community as cluster_louvain
 from graphs import Graphs
 
+#Colour by cluster
+#CHECK IF IT ONLY DOES FIRST PASS
 #==============================Louvain Cluster Detection==============================
 
 """

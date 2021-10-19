@@ -8,7 +8,7 @@ import copy
 import json
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-from cdlib import algorithms
+#from cdlib import algorithms
 sys.path.append("..") # Adds higher directory to python modules path, looking for Graphs-class one level up
 
 import leidenalg as la
