@@ -12,9 +12,9 @@ from Clustering.leiden import *
 #my_class = Slices(path)
 
 
-path = "./experiment6/parsed_dictionaries/"
-my_class = ExtractSlices(path)
-
-
 #path = "./experiment6/parsed_dictionaries/"
-#my_class = Louvain(path,"nx")
+#my_class = ExtractSlices(path)
+
+
+path = "./experiment6/parsed_dictionaries/"
+my_class = Louvain(path,"nx")

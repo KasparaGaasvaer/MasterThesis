@@ -36,6 +36,7 @@ class Louvain(Graphs):
 
         # compute the best partition
         partition = cluster_louvain.best_partition(G)
+        print(partition)
 
         # draw the graph
         pos = nx.spring_layout(G)
