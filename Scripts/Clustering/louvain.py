@@ -29,6 +29,7 @@ class Louvain(Graphs):
 
         self.path_to_dict = path
         self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/"
+        self.num_total_slices = len(self.graphs.keys())
         
         if graph_type == "nx":
             self.nx_louvain()
@@ -44,14 +45,17 @@ class Louvain(Graphs):
     def nx_louvain(self):
         # Loading graph
         self.partition_dict = {}
+        counter = 0
         #ratios = []
-        for i in range(1,11):
+        for i in range(1,self.num_total_slices):
             self.slice_num = str(i)
             G = self.graphs[str(i)]["graph"]
             #print(f"Number of nodes = {G.number_of_nodes()}")
             # compute the best partition
             partition = cluster_louvain.best_partition(G)
             self.nx_make_partition_dict(G,partition)
+            counter +=1
+            print("done with slice ", counter)
 
             """
             vals = list(partition.values())
@@ -64,9 +68,10 @@ class Louvain(Graphs):
             print(f"Ratio nodes/parts = {ratio:0.5f}")
             ratios.append(ratio)
             print(" ")
+            """
 
             #self.plot_louvain(G,partition)
-            """
+            
         with open(self.path_to_dict +'nx_partitions.json', 'w') as fp:
            json.dump(self.partition_dict, fp)
         #mean = np.mean(ratios)

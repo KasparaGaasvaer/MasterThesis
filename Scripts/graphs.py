@@ -83,20 +83,20 @@ class Graphs():
         import networkx as nx
         T_netx_s = time.perf_counter()
         for slice in self.slices.keys():
-            if int(slice) <= 10 :
-                self.node_attributes = self.slices[slice]['node_attributes']
-                graph = self.graphs_from_file[slice]
-                sources = graph['source']
-                targets = graph['target']
-                weights = graph['weight']
-                list_of_edges = []
-                for i in range(len(sources)):
-                    list_of_edges.append((str(sources[i]),str(targets[i]),{'weight': weights[i]}))
+            #if int(slice) <= 10 :
+            self.node_attributes = self.slices[slice]['node_attributes']
+            graph = self.graphs_from_file[slice]
+            sources = graph['source']
+            targets = graph['target']
+            weights = graph['weight']
+            list_of_edges = []
+            for i in range(len(sources)):
+                list_of_edges.append((str(sources[i]),str(targets[i]),{'weight': weights[i]}))
 
-                G = nx.Graph()
-                G.add_edges_from(list_of_edges)
-                nx.set_node_attributes(G, self.node_attributes)
-                self.graphs[slice] = {'graph':G}
+            G = nx.Graph()
+            G.add_edges_from(list_of_edges)
+            nx.set_node_attributes(G, self.node_attributes)
+            self.graphs[slice] = {'graph':G}
 
         T_netx_e = time.perf_counter()
         print(f"NetworkX graph maker took {T_netx_e-T_netx_s:0.4f} s")
