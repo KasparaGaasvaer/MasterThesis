@@ -33,7 +33,7 @@ class ExtractSlices():
 
         self.nx_graphs = {}
         #self.all_slices_graphs()
-        self.do_stuff()
+        self.extract()
 
 
 
@@ -47,7 +47,7 @@ class ExtractSlices():
         with open(self.outer_path + "graph_all_slices.json", 'r') as fp:
             self.graphs = json.load(fp)
 
-    def do_stuff(self):
+    def extract(self):
         for slice in self.slices.keys():
             self.slice_num = int(slice)
             self.node_attributes = self.slices[slice]['node_attributes']

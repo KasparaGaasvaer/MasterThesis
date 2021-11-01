@@ -18,6 +18,6 @@ from networkx_partition_worker import *
 
 
 path = "./experiment6/parsed_dictionaries/"
-my_class = Louvain(path,"nx")
-#my_class = Graphs(path,"skn")
+#my_class = Louvain(path,"nx")
+my_class = Graphs(path,"nx")
 #my_class = NetworkX_Partition_Worker(path)

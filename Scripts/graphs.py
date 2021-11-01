@@ -23,12 +23,14 @@ class Graphs():
         if graph_type == "nx":
             self.make_nx_graphs()
 
+
         if graph_type == "ig":
             self.make_ig_graphs()
 
         if graph_type == "skn":
             self.make_skn_graphs()
 
+    
     def open_dicts(self, path):
         with open(path + "all_slices.json", 'r') as fp:
             self.slices = json.load(fp)
@@ -125,3 +127,22 @@ class Graphs():
 
 
             self.graphs[slice] = {'graph':G}
+
+    def find_relation_nodes_edges(self):
+        num_slices = len(self.slices.keys())
+        rels = np.zeros(num_slices+1)
+        for i in range(1,num_slices+1):
+            G = self.graphs[str(i)]['graph']
+            n = G.number_of_nodes()
+            m = G.number_of_edges()
+            rels[i] = m/n
+
+        
+        with open("relation_edges_nodes.txt","w") as outfile:
+            outfile.write('Slice number       edges/nodes\n')
+            for i in range(1,num_slices+1):
+                outfile.write(f'{i}          {rels[i]}\n')
+
+
+
+
