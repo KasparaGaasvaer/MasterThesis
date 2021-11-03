@@ -25,6 +25,10 @@ class Leiden(Graphs):
     def __init__(self, path, graph_type):
         super().__init__(path, graph_type)
 
+        self.path_to_dict = path
+        self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Leiden/"
+        self.num_total_slices = len(self.graphs.keys())
+
         if graph_type == "nx":
             self.nx_leiden()
 
@@ -33,18 +37,23 @@ class Leiden(Graphs):
 
 
     def nx_leiden(self):
+        self.partition_dict = {}
         # leidenalg only works with igraph?
-        g = self.graphs["1"]["graph"]
-        G = ig.Graph.from_networkx(g)
+        for i in range(1,2):
+            self.slice_num = str(i)
+            g = self.graphs[str(i)]["graph"]
+            G = ig.Graph.from_networkx(g)
 
-        partition = la.find_partition(G, la.ModularityVertexPartition)
+            partition = la.find_partition(G, la.ModularityVertexPartition)
+            self.nx_make_partition_dict(G,partition)
+            print(partition[0])
         #partition = la.find_partition(G, la.CPMVertexPartition, resolution_parameter = 0.05)
 
-        ig.plot(partition)
+        #ig.plot(partition)
 
         #layout = G.layout(layout='auto')
         #ig.plot(G, layout = layout)
-        plt.show()
+       # plt.show()
 
 
 
@@ -60,3 +69,23 @@ class Leiden(Graphs):
         #layout = G.layout(layout='auto')
         #ig.plot(G, layout = layout)
         plt.show()
+
+
+
+    def nx_make_partition_dict(self, G, partition):
+        self.partition_dict[self.slice_num] = {}
+        s = self.partition_dict[self.slice_num]
+
+        vals = list(partition.values())
+        partition_num = []
+        for v in vals:
+            if v not in partition_num:
+                partition_num.append(v)
+        
+        keys = list(partition.keys())
+
+        for p in partition_num:
+            s[p] = []
+            for key in keys:
+                if partition[key] == p:
+                    s[p].append(key)

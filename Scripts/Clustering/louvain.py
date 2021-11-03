@@ -28,7 +28,7 @@ class Louvain(Graphs):
         super().__init__(path, graph_type)
 
         self.path_to_dict = path
-        self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/"
+        self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Louvain/"
         self.num_total_slices = len(self.graphs.keys())
         
         if graph_type == "nx":

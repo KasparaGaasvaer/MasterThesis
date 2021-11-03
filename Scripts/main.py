@@ -15,9 +15,11 @@ from networkx_partition_worker import *
 
 #path = "./experiment6/parsed_dictionaries/"
 #my_class = ExtractSlices(path)
+#my_class.extract()
 
 
 path = "./experiment6/parsed_dictionaries/"
+my_class = Leiden(path,"nx")
 #my_class = Louvain(path,"nx")
-my_class = Graphs(path,"nx")
+#my_class = Graphs(path,"nx")
 #my_class = NetworkX_Partition_Worker(path)
