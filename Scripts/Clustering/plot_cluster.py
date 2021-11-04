@@ -10,10 +10,13 @@ from graphs import Graphs
 import community as cluster_louvain
 
 class PlotCluster(Graphs):
-    def __init__(self, path, method):
+    def __init__(self, path, method, selection):
         super().__init__(path, "nx")
         self.path_to_partitions = path
         self.num_total_slices = len(self.graphs.keys())
+
+        self.pick_selection(selection)
+
 
         if method == "louvain":
             with open(self.path_to_partitions + "nx_partitions_louvain.json", 'r') as fp:
@@ -34,7 +37,7 @@ class PlotCluster(Graphs):
 
         
     def plot_louvain(self):
-        for s in range(1,11):
+        for s in range(1,self.selection):
             G = self.graphs[str(s)]["graph"]
             p = self.partition_dict[str(s)]
             #keys = len(p) + 1 
@@ -60,7 +63,7 @@ class PlotCluster(Graphs):
             
 
     def plot_leiden(self):
-        for s in range(1,11):
+        for s in range(1,self.selection):
             G = self.graphs[str(s)]["graph"]
             p = self.partition_dict[str(s)]
             #keys = len(p) + 1 
@@ -81,3 +84,13 @@ class PlotCluster(Graphs):
             nx.draw_networkx(induced_G)
             plt.savefig(self.path_to_plots + "Leiden_induced_slice"+str(s)+".pdf")
             plt.close() 
+
+    def pick_selection(self, selection):
+        if selection == "10":
+            self.selection = 11
+        
+        elif selection == "all":
+            self.selection = self.num_total_slices +1 
+        
+        else:
+            raise ValueError(selection + " is not a valid selection.")

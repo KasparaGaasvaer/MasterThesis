@@ -193,11 +193,3 @@ class Slices:
 
 
 
-
-
-
-# What to do with metrics and components?  num components, num deleted users, clustering coefficient, slices over time starts somewhere and the networks expands
-# from one source or severeal sources. Whiche source grows faster/bigger?
-#bot or not?
-# How "important" is a very active user?
-#

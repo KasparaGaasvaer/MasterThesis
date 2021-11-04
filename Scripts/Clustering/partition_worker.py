@@ -7,8 +7,9 @@ import copy
 import json
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+sys.path.append("..") # Adds higher directory to python modules path, looking for Graphs-class one level up
 
-class NetworkX_Partition_Worker():
+class PartitionWorker():
 
     def __init__(self, path, method):
         self.path_to_partitions = path
@@ -16,25 +17,25 @@ class NetworkX_Partition_Worker():
 
 
         if method == "louvain":
-            self.filename_jumpers = "all_slices_partition_jumper_stats_louvain.py"
+            self.filename_jumpers = "all_slices_partition_jumper_stats_louvain.txt"
 
-            with open(self.path_to_partitions + "nx_partitions_louvain.json", 'r') as fp:
+            with open(self.path_to_partitions + "partitions_louvain.json", 'r') as fp:
                 self.partition_dict = json.load(fp)
 
         if method == "leiden":
-            self.filename_jumpers = "all_slices_partition_jumper_stats_leiden.py"
+            self.filename_jumpers = "all_slices_partition_jumper_stats_leiden.txt"
 
-            with open(self.path_to_partitions + "nx_partitions_leiden.json", 'r') as fp:
+            with open(self.path_to_partitions + "partitions_leiden.json", 'r') as fp:
                 self.partition_dict = json.load(fp)
 
         self.num_total_slices = len(self.partition_dict.keys())
 
-        #self.nx_compare_partitions()
-        self.nx_count_jumpers()
+        #self.compare_partitions()
+        self.count_jumpers()
 
 
 
-    def nx_compare_partitions(self):
+    def compare_partitions(self):
 
 
         slice_num1 = "1"
@@ -68,7 +69,7 @@ class NetworkX_Partition_Worker():
                 print(f"Static nodes in partiton are {static_nodes}\n")
 
 
-    def nx_count_jumpers(self):
+    def count_jumpers(self):
 
         num_jumpers = np.zeros(self.num_total_slices)
         ratio_jumpers_nodes = np.zeros(self.num_total_slices)
