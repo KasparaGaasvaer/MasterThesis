@@ -47,7 +47,7 @@ class Louvain(Graphs):
         self.partition_dict = {}
         counter = 0
         #ratios = []
-        for i in range(1,self.num_total_slices):
+        for i in range(1,self.num_total_slices+1):
             self.slice_num = str(i)
             G = self.graphs[str(i)]["graph"]
             #print(f"Number of nodes = {G.number_of_nodes()}")
@@ -72,7 +72,7 @@ class Louvain(Graphs):
 
             #self.plot_louvain(G,partition)
             
-        with open(self.path_to_dict +'nx_partitions.json', 'w') as fp:
+        with open(self.path_to_dict +'nx_partitions_louvain.json', 'w') as fp:
            json.dump(self.partition_dict, fp)
         #mean = np.mean(ratios)
         #std = np.std(ratios)

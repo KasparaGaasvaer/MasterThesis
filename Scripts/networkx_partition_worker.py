@@ -10,12 +10,22 @@ import matplotlib.pyplot as plt
 
 class NetworkX_Partition_Worker():
 
-    def __init__(self, path):
+    def __init__(self, path, method):
         self.path_to_partitions = path
-        self.filename_jumpers = "all_slices_partition_jumper_stats.py"
+        self.path_to_stats_results = "./experiment6/statistics/"
+        
 
-        with open(self.path_to_partitions + "nx_partitions.json", 'r') as fp:
-            self.partition_dict = json.load(fp)
+        if method == "louvain":
+            self.filename_jumpers = "all_slices_partition_jumper_stats_louvain.py"
+
+            with open(self.path_to_partitions + "nx_partitions_louvain.json", 'r') as fp:
+                self.partition_dict = json.load(fp)
+
+        if method == "leiden":
+            self.filename_jumpers = "all_slices_partition_jumper_stats_leiden.py"
+
+            with open(self.path_to_partitions + "nx_partitions_leiden.json", 'r') as fp:
+                self.partition_dict = json.load(fp)
 
         self.num_total_slices = len(self.partition_dict.keys())
 
@@ -64,7 +74,7 @@ class NetworkX_Partition_Worker():
         ratio_jumpers_nodes = np.zeros(self.num_total_slices)
         ratio_jumpers_partitions = np.zeros(self.num_total_slices)
 
-        for i in range(1, self.num_total_slices-1):
+        for i in range(1, self.num_total_slices):
             slice_i = str(i)
             slice_ip1 = str(i+1)
             s_i = self.partition_dict[slice_i]
@@ -89,9 +99,9 @@ class NetworkX_Partition_Worker():
             ratio_jumpers_nodes[i] = num_jumpers[i]/num_nodes_ip1
 
         
-        with open(self.filename_jumpers,"w") as outfile:
+        with open(self.path_to_stats_results + self.filename_jumpers,"w") as outfile:
             outfile.write(f'Slice_i to Slice_ip1| Total number of jumpers |  Ratio jumpers/total number of nodes in slice_ip1 | Ratio jumpers/total number of partitions in slice_ip1\n')
-            for i in range(1,self.num_total_slices-1):
+            for i in range(1,self.num_total_slices):
                 outfile.write(f'       {i}-{i+1:<20} {num_jumpers[i]:<40} {ratio_jumpers_nodes[i]:.6f} {ratio_jumpers_partitions[i]:45.6f}\n')
     
         
