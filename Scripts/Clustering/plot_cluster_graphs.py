@@ -9,7 +9,7 @@ sys.path.append("..") # Adds higher directory to python modules path, looking fo
 from graphs import Graphs
 import community as cluster_louvain
 
-class PlotCluster(Graphs):
+class PlotClusterGraphs(Graphs):
     def __init__(self, path, method, selection):
         super().__init__(path, "nx")
         self.path_to_partitions = path
@@ -24,7 +24,7 @@ class PlotCluster(Graphs):
 
             
             self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Louvain/"
-            self.plot_louvain()
+            self.plot_graphs_louvain()
 
 
         if method == "leiden":
@@ -32,11 +32,11 @@ class PlotCluster(Graphs):
                 self.partition_dict = json.load(fp)
             
             self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Leiden/"
-            self.plot_leiden()
+            self.plot_graphs_leiden()
 
 
         
-    def plot_louvain(self):
+    def plot_graphs_louvain(self):
         for s in range(1,self.selection):
             G = self.graphs[str(s)]["graph"]
             p = self.partition_dict[str(s)]
@@ -62,7 +62,7 @@ class PlotCluster(Graphs):
 
             
 
-    def plot_leiden(self):
+    def plot_graphs_leiden(self):
         for s in range(1,self.selection):
             G = self.graphs[str(s)]["graph"]
             p = self.partition_dict[str(s)]
