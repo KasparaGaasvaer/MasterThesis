@@ -23,7 +23,7 @@ class PlotClusterGraphs(Graphs):
                 self.partition_dict = json.load(fp)
 
             
-            self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Louvain/"
+            self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Louvain/Graphs/"
             self.plot_graphs_louvain()
 
 
@@ -31,7 +31,7 @@ class PlotClusterGraphs(Graphs):
             with open(self.path_to_partitions + "nx_partitions_leiden.json", 'r') as fp:
                 self.partition_dict = json.load(fp)
             
-            self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Leiden/"
+            self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Leiden/Graphs/"
             self.plot_graphs_leiden()
 
 

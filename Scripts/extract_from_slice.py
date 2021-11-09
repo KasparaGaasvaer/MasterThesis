@@ -47,15 +47,21 @@ class ExtractSlices():
         with open(self.outer_path + "graph_all_slices.json", 'r') as fp:
             self.graphs = json.load(fp)
 
+        print("dicts are open")
+
     def extract(self):
         for slice in self.slices.keys():
             self.slice_num = int(slice)
-            self.node_attributes = self.slices[slice]['node_attributes']
-            self.make_graph()
-            self.find_clustering_coef(self.nx_graphs[str(self.slice_num)])
+            #self.node_attributes = self.slices[slice]['node_attributes']
+            #self.make_graph()
+            #self.find_clustering_coef(self.nx_graphs[str(self.slice_num)])
         #self.plot_nx_graph(self.nx_graphs['1'])#[str(self.slice_num)])
-        self.produce_deltas()
+        #self.produce_deltas()
         self.load_deltas()
+        print("Deltas loaded")
+        self.produce_delta_graph_dict()
+        print("delta graphs produced")
+        #self.find_num_nodes(self.delta_slices)
         #self.find_num_deleted_users(self.slices)
         #self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
         #self.plot_tweets_before_2020(self.delta_slices, plot_folder = "delta_slices/")
@@ -146,6 +152,59 @@ class ExtractSlices():
         self.find_timeline(self.delta_slices)
         with open(self.outer_path + 'delta_slices.json', 'w') as fp:
             json.dump(self.delta_slices, fp)
+
+    """
+    def produce_delta_graph_dict(self):
+        self.delta_graphs = copy.deepcopy(self.graphs)
+        for slice in self.delta_slices.keys():
+            if slice != "1":
+                s = self.delta_slices[slice]
+                g = self.delta_graphs[slice]
+                delta_nodes = list(s["node_attributes"].keys())
+                delta_nodes = [int(dn) for dn in delta_nodes]
+                #import pdb; pdb.set_trace()
+                len_g = len(g["source"])
+                #print(g["source"])
+                i = 0
+                while i < len_g:
+                    n = int(g["source"][i])
+                    if n not in delta_nodes:
+                        len_g-=1
+                        g["source"].pop(i)
+                        g["target"].pop(i)
+                        g["weight"].pop(i)
+                    i+=1
+            
+                j = 0
+                while j < len_g:
+                    n = int(g["target"][j])
+                    if n not in delta_nodes:
+                        len_g -=1
+                        g["target"].pop(j)
+                        g["source"].pop(j)
+                        g["weight"].pop(j)
+                    j+=1
+                #print(g["source"])
+        with open(self.outer_path + 'delta_graphs.json', 'w') as fp:
+            json.dump(self.delta_graphs, fp)
+                    
+    """
+
+    def produce_delta_graph_dict(self):
+        self.delta_graphs = copy.deepcopy(self.graphs)
+        slices = list(self.slices.keys())
+        slices = [int(s) for s in slices]
+        slices.pop(0)
+        for s in slices[0:1]:
+            g1 = self.graphs[str(s-1)]
+            g2 = self.graphs[str(s)]
+            source1 = g1["source"]
+            source2 = g2["source"]
+            mlist = np.setdiff1d(source2,source1,assume_unique=False)
+            print(mlist)
+        
+       
+
 
     def plot_dates_dist(self, slices_dict,plot_folder):
         #

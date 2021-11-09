@@ -42,8 +42,7 @@ class PlotClusterStats:
                 num_nodes.append(int(vals[2]))
                 normed.append(float(vals[3]))
                 normed_m.append(float(vals[-1]))
-
-        print(normed_m)
+                
         clusters = np.array(clusters)
         num_nodes = np.array(num_nodes)
         slices = np.array(slices)
@@ -54,7 +53,7 @@ class PlotClusterStats:
         plt.ylabel("Number of nodes in largest cluster", fontsize = 12)
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=10)
-        plt.savefig(self.path_to_plots+"num_nodes_in_largest_cluster.pdf")
+        plt.savefig(self.path_to_plots+"Largest_Cluster/num_nodes_in_largest_cluster.pdf")
         plt.clf()
 
         plt.vlines(x = slices, ymin = zeros, ymax = normed, lw = 2)
@@ -62,7 +61,7 @@ class PlotClusterStats:
         plt.ylabel("Number of nodes in largest cluster /\nAll nodes in slice", fontsize = 12)
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=10)
-        plt.savefig(self.path_to_plots+"normalized_num_nodes_in_largest_cluster.pdf")
+        plt.savefig(self.path_to_plots+"Largest_Cluster/normalized_num_nodes_in_largest_cluster.pdf")
         plt.clf()
 
         plt.vlines(x = slices, ymin = zeros, ymax = normed_m, lw = 2)
@@ -70,7 +69,7 @@ class PlotClusterStats:
         plt.ylabel("Number of nodes in largest cluster /\nAll nodes in slice - Num nodes largest", fontsize = 12)
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=10)
-        plt.savefig(self.path_to_plots+"normalized_m_num_nodes_in_largest_cluster.pdf")
+        plt.savefig(self.path_to_plots+"Largest_Cluster/normalized_m_num_nodes_in_largest_cluster.pdf")
         plt.clf()
 
     def number_of_clusters(self):
@@ -81,11 +80,12 @@ class PlotClusterStats:
             all_data = json.load(fp)
 
         for s in all_data.keys():
+            print("Slice ", s)
             data = all_data[s]
             plt.xlabel("Num nodes in cluster", fontsize = 14)
             plt.ylabel("Frequency", fontsize = 14)
             plt.xticks(fontsize=12)
             plt.yticks(fontsize=12)
-            plt.hist(data)
+            plt.bar(range(len(data)),data)
             plt.savefig(self.path_to_plots + "Cluster_Size_Dist/cluster_size_distribution_slice" + s + ".pdf")
             plt.clf()
