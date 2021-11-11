@@ -191,20 +191,53 @@ class ExtractSlices():
     """
 
     def produce_delta_graph_dict(self):
-        self.delta_graphs = copy.deepcopy(self.graphs)
+        #Insanely slow, but all other methods I've tried have failed. 
+        self.delta_graphs = {}
+        for s in self.slices.keys():
+            self.delta_graphs[s] = {
+                "source" : [],
+                "target" : [],
+                "weight" : []
+            }
+        for k in ["source","target","weight"]:
+            self.delta_graphs["1"][k] = copy.deepcopy(self.graphs["1"][k])
+        
         slices = list(self.slices.keys())
         slices = [int(s) for s in slices]
         slices.pop(0)
-        for s in slices[0:1]:
+        for s in slices:
             g1 = self.graphs[str(s-1)]
             g2 = self.graphs[str(s)]
             source1 = g1["source"]
             source2 = g2["source"]
-            mlist = np.setdiff1d(source2,source1,assume_unique=False)
-            print(mlist)
-        
-       
+            target1 = g1["target"]
+            target2 = g2["target"]
+            diff_s = np.setdiff1d(source2,source1,assume_unique=False)
+            diff_t = np.setdiff1d(target2,target1,assume_unique=False)
+            for v in range(len(source2)):
+                for d in diff_s:
+                    if source2[v] == d:
+                        for k in ["source","target","weight"]:
+                             self.delta_graphs[str(s)][k].append(g2[k][v])
+                for t in diff_t:
+                    if target2[v] == t:
+                        for k in ["source","target","weight"]:
+                             self.delta_graphs[str(s)][k].append(g2[k][v])
 
+            print("Done with slice ",s)
+
+        self.test_dict_conservation(self.delta_graphs)
+        
+        
+        with open(self.outer_path + 'delta_graphs.json', 'w') as fp:
+            json.dump(self.delta_graphs, fp)
+
+    def test_dict_conservation(self,graph_dict):
+        for s in graph_dict.keys():
+            slice =  graph_dict[s]
+            assert (len(slice["source"]) == len(slice["target"])) 
+            assert (len(slice["source"]) == len(slice["weight"]))
+        
 
     def plot_dates_dist(self, slices_dict,plot_folder):
         #
