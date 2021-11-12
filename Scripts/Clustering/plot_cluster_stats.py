@@ -87,5 +87,5 @@ class PlotClusterStats:
             plt.xticks(fontsize=12)
             plt.yticks(fontsize=12)
             plt.bar(range(len(data)),data)
-            plt.savefig(self.path_to_plots + "Cluster_Size_Dist/cluster_size_distribution_slice" + s + ".pdf")
+            plt.savefig(self.path_to_plots + "Cluster_Size_Dist/LOG_cluster_size_distribution_slice" + s + ".pdf")
             plt.clf()

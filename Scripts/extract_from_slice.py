@@ -153,42 +153,6 @@ class ExtractSlices():
         with open(self.outer_path + 'delta_slices.json', 'w') as fp:
             json.dump(self.delta_slices, fp)
 
-    """
-    def produce_delta_graph_dict(self):
-        self.delta_graphs = copy.deepcopy(self.graphs)
-        for slice in self.delta_slices.keys():
-            if slice != "1":
-                s = self.delta_slices[slice]
-                g = self.delta_graphs[slice]
-                delta_nodes = list(s["node_attributes"].keys())
-                delta_nodes = [int(dn) for dn in delta_nodes]
-                #import pdb; pdb.set_trace()
-                len_g = len(g["source"])
-                #print(g["source"])
-                i = 0
-                while i < len_g:
-                    n = int(g["source"][i])
-                    if n not in delta_nodes:
-                        len_g-=1
-                        g["source"].pop(i)
-                        g["target"].pop(i)
-                        g["weight"].pop(i)
-                    i+=1
-            
-                j = 0
-                while j < len_g:
-                    n = int(g["target"][j])
-                    if n not in delta_nodes:
-                        len_g -=1
-                        g["target"].pop(j)
-                        g["source"].pop(j)
-                        g["weight"].pop(j)
-                    j+=1
-                #print(g["source"])
-        with open(self.outer_path + 'delta_graphs.json', 'w') as fp:
-            json.dump(self.delta_graphs, fp)
-                    
-    """
 
     def produce_delta_graph_dict(self):
         #Insanely slow, but all other methods I've tried have failed. 

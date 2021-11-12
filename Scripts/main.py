@@ -15,8 +15,8 @@ from Clustering.plot_cluster_stats import *
 #my_class = Slices(path)
 
 
-path = "./experiment6/parsed_dictionaries/"
-my_class = ExtractSlices(path)
+#path = "./experiment6/parsed_dictionaries/"
+#my_class = ExtractSlices(path)
 #my_class.extract()
 
 
@@ -27,5 +27,5 @@ my_class = ExtractSlices(path)
 #my_class = PartitionWorker(path,"louvain")
 #my_class = PlotClusterGraphs(path,"leiden","20")
 
-#path = "./experiment6/statistics/"
-#my_class = PlotClusterStats(path,"louvain")
+path = "./experiment6/statistics/"
+my_class = PlotClusterStats(path,"louvain")
