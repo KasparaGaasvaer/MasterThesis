@@ -57,10 +57,11 @@ class ExtractSlices():
             #self.find_clustering_coef(self.nx_graphs[str(self.slice_num)])
         #self.plot_nx_graph(self.nx_graphs['1'])#[str(self.slice_num)])
         #self.produce_deltas()
-        self.load_deltas()
-        print("Deltas loaded")
-        self.produce_delta_graph_dict()
-        print("delta graphs produced")
+        self.load_delta_graphs()
+        print("Deltas graphs loaded")
+        self.test_delta_lenght()
+        #self.produce_delta_graph_dict_v2()
+        #print("delta graphs produced")
         #self.find_num_nodes(self.delta_slices)
         #self.find_num_deleted_users(self.slices)
         #self.plot_dates_dist(self.delta_slices, plot_folder = "delta_slices/")
@@ -72,6 +73,10 @@ class ExtractSlices():
                 self.slice_num = int(slice)
                 self.node_attributes = self.slices[slice]['node_attributes']
                 self.make_graph()
+
+    def load_delta_graphs(self):
+        with open(self.outer_path + 'delta_graphs_v2.json', 'r') as fp:
+            self.delta_graphs = json.load(fp)
 
 
     def load_deltas(self):
@@ -153,6 +158,54 @@ class ExtractSlices():
         with open(self.outer_path + 'delta_slices.json', 'w') as fp:
             json.dump(self.delta_slices, fp)
 
+    def produce_delta_graph_dict_v2(self):
+        self.delta_graphs = copy.deepcopy(self.graphs)
+        slices = list(self.slices.keys())
+        slices = [int(s) for s in slices]
+        slices.pop(0)
+        for s in slices:
+            idx =[]
+            g1 = self.graphs[str(s-1)]
+            g2 = self.graphs[str(s)]
+            dg = self.delta_graphs[str(s)]
+            delta_source = dg["source"]
+            delta_target = dg["target"]
+            delta_weight = dg["weight"]
+            source1 = g1["source"]
+            source2 = g2["source"]
+            target1 = g1["target"]
+            target2 = g2["target"]
+            weight1 = g1["weight"]
+            weight2 = g2["weight"]
+            for i in range(len(source2)):
+                for j in range(len(source1)):
+                    if (source1[j] == source2[i]) and (target1[j]==target2[i]):
+                        if weight1[j] != weight2[i]:
+                            weight2[i] -= weight1[j]
+
+                        else:
+                            idx.append(i)
+
+            #print(sorted(idx))
+            for i in sorted(idx, reverse=True):
+                delta_source.pop(i)
+                delta_target.pop(i)
+                delta_weight.pop(i)
+            print("Done with slice ",s)
+
+        self.test_dict_conservation(self.delta_graphs)
+
+        #n1 =self.slices["1"]["num_nodes"]
+        #n2 = self.slices["2"]["num_nodes"]
+        #print(f"num_nodes s1 {n1}")
+        #print(f"num_nodes s2 {n2}")
+
+        #print("len all graphs 2 = ", len(self.graphs["2"]["source"]))
+        #print("len delta graphs 2 = ", len(self.delta_graphs["2"]["source"]))
+
+        with open(self.outer_path + 'delta_graphs_v2.json', 'w') as fp:
+            json.dump(self.delta_graphs, fp)
+            
 
     def produce_delta_graph_dict(self):
         #Insanely slow, but all other methods I've tried have failed. 
@@ -202,6 +255,17 @@ class ExtractSlices():
             assert (len(slice["source"]) == len(slice["target"])) 
             assert (len(slice["source"]) == len(slice["weight"]))
         
+    def test_delta_lenght(self):
+        for s in self.slices.keys():
+            d = self.delta_graphs[s]
+            a = self.graphs[s]
+            assert len(d["source"]) == len(d["target"])
+            assert len(d["source"]) == len(d["weight"])
+            ds = d["source"]
+            ass = a["source"]
+            print("slice ", s)
+            print(f"delta len source {len(ds)}")
+            print(f"original len source {len(ass)}\n")
 
     def plot_dates_dist(self, slices_dict,plot_folder):
         #
