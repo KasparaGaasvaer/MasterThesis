@@ -3,6 +3,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import sys
 import json
+import os
 
 sys.path.append(
     ".."
@@ -22,22 +23,26 @@ class PlotClusterGraphs(Graphs):
 
         if method == "louvain":
             with open(
-                self.path_to_partitions + "nx_partitions_louvain.json", "r"
+                self.path_to_partitions + "partitions_louvain.json", "r"
             ) as fp:
                 self.partition_dict = json.load(fp)
 
             self.path_to_plots = (
                 "./" + path.split("/")[1] + "/plots/Clustering/Louvain/Graphs/"
             )
+            if not os.path.exists(self.path_to_plots):
+                os.makedirs(self.path_to_plots)
             self.plot_graphs_louvain()
 
         if method == "leiden":
-            with open(self.path_to_partitions + "nx_partitions_leiden.json", "r") as fp:
+            with open(self.path_to_partitions + "partitions_leiden.json", "r") as fp:
                 self.partition_dict = json.load(fp)
 
             self.path_to_plots = (
                 "./" + path.split("/")[1] + "/plots/Clustering/Leiden/Graphs/"
             )
+            if not os.path.exists(self.path_to_plots):
+                os.makedirs(self.path_to_plots)
             self.plot_graphs_leiden()
 
     def plot_graphs_louvain(self):
@@ -51,7 +56,7 @@ class PlotClusterGraphs(Graphs):
                 for n in p[part]:
                     P[n] = int(part)
 
-            pos = nx.kamada_kawai_layout(G)
+            pos = nx.spring_layout(G)
             cmap = cm.get_cmap("viridis", max(P.values()) + 1)
             nx.draw_networkx_nodes(
                 G, pos, P.keys(), node_size=1, cmap=cmap, node_color=list(P.values())
@@ -78,7 +83,7 @@ class PlotClusterGraphs(Graphs):
                 for n in p[part]:
                     P[n] = int(part)
 
-            pos = nx.kamada_kawai_layout(G)
+            pos = nx.spring_layout(G)
             cmap = cm.get_cmap("viridis", max(P.values()) + 1)
             nx.draw_networkx_nodes(
                 G, pos, P.keys(), node_size=1, cmap=cmap, node_color=list(P.values())
