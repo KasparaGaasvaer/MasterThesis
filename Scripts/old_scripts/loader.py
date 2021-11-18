@@ -4,6 +4,7 @@ import gzip
 import shutil
 from scipy.io import loadmat
 
+
 class Loader:
     """
     def __init__(self, tweettype):

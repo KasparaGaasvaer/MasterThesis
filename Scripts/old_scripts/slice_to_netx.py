@@ -5,15 +5,16 @@ import pandas as pd
 
 exp_num = 40
 
-path = "./Scripts/slice_"+str(exp_num)+"/"
+path = "./Scripts/slice_" + str(exp_num) + "/"
+
 
 def node_attributes():
     filename = path + "labels_" + str(exp_num) + ".csv"
-    attributes = pd.read_csv(filename,header = 0, quotechar='"', error_bad_lines=False, warn_bad_lines=True)
+    attributes = pd.read_csv(
+        filename, header=0, quotechar='"', error_bad_lines=False, warn_bad_lines=True
+    )
     attributes = attributes.fillna(value=False)
-    attributes = attributes.to_dict(orient='list')
-
-
+    attributes = attributes.to_dict(orient="list")
 
 
 """
