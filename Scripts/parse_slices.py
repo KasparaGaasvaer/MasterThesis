@@ -53,11 +53,11 @@ class Slices:
             self.slice_num = int(slices.replace("slice_", ""))  # Extracts slice number
             print("Working on slice_", self.slice_num)
             self.path = self.path2dir + folder + "/"  # Sets path
-            self.make_node_attributes()  # Calls function for producing dict with node attributes from corresponding labels.csv file
+            #self.make_node_attributes()  # Calls function for producing dict with node attributes from corresponding labels.csv file
             self.make_graph_dict()  # Calls function for producing networkx graph from corresponding graph.mat file
-            self.find_timeline()  # Calls function for extracting first and last tweet in slice
-            self.find_num_nodes()  # Calls function for extracting number of nodes (tweets) in slice
-        self.find_timeline_of_set()  # Calls function for extracting first and last tweet in the entire set of slices in dir
+            #self.find_timeline()  # Calls function for extracting first and last tweet in slice
+            #self.find_num_nodes()  # Calls function for extracting number of nodes (tweets) in slice
+       # self.find_timeline_of_set()  # Calls function for extracting first and last tweet in the entire set of slices in dir
 
     def SaveSlice(self):
 
@@ -73,12 +73,12 @@ class Slices:
             json.dump(self.graphs, fp)
 
         # Saves slices with attributes to .json file
-        with open(dict_dir + "all_slices.json", "w") as fp:
-            json.dump(self.slices, fp)
+        #with open(dict_dir + "all_slices.json", "w") as fp:
+            #json.dump(self.slices, fp)
 
         # Saves common attributes of all slices to .json file
-        with open(dict_dir + "attributes_to_all_slices.json", "w") as fp:
-            json.dump(self.attributes_to_slice_set, fp)
+        #with open(dict_dir + "attributes_to_all_slices.json", "w") as fp:
+            #json.dump(self.attributes_to_slice_set, fp)
 
     def make_node_attributes(self):
         #

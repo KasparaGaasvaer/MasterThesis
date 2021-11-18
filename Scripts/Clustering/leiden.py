@@ -26,11 +26,14 @@ Method for Leiden cluster detection on igraph and networkx graphs.
 
 
 class Leiden(Graphs):
-    def __init__(self, path, graph_type):
-        super().__init__(path, graph_type)
+    def __init__(self, path, graph_type, attributes_bool):
+        super().__init__(path, graph_type, attributes_bool)
 
         self.path_to_dict = path
         self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Leiden/"
+        if not os.path.exists(self.path_to_plots):
+            os.makedirs(self.path_to_plots)
+
         self.num_total_slices = len(self.graphs.keys())
 
         if graph_type == "nx":
@@ -49,6 +52,7 @@ class Leiden(Graphs):
 
             partition = la.find_partition(G, la.ModularityVertexPartition)
             self.nx_make_partition_dict(G, partition)
+            print("done with ", i)
             # print(partition)
             # print(len(partition))
         # partition = la.find_partition(G, la.CPMVertexPartition, resolution_parameter = 0.05)
@@ -59,7 +63,7 @@ class Leiden(Graphs):
         # ig.plot(G, layout = layout)
         # plt.show()
 
-        with open(self.path_to_dict + "nx_partitions_leiden.json", "w") as fp:
+        with open(self.path_to_dict + "partitions_leiden.json", "w") as fp:
             json.dump(self.partition_dict, fp)
 
     def ig_leiden(self):

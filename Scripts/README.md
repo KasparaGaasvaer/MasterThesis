@@ -66,14 +66,13 @@ my_class.extract()
 ```
 
 # Graphs
-This script is intended to be used for reading two of the .json files from the `Slices` class, namely `all_slices.json` and `graph_all_slices.json`, and extracting information to produce graph representations. To initialize the class `Graphs` you must provide a path to where you can find the files containing the dictionaries as well as the graph type you wish to produce. Your choices are
+This script is intended to be used for reading two of the .json files from the `Slices` class, namely `all_slices.json` and `graph_all_slices.json`, and extracting information to produce graph representations. To initialize the class `Graphs` you must provide a path to where you can find the files containing the dictionaries as well as the graph type you wish to produce. You must also provide a `True`/`False` statement: `True` if your adjacency matrix is accompanied by a set of attributes to the nodes, `False` if not. Your choices are
 
 - 'nx' : NetworkX 
 - 'ig' : iGraph
-- 'skn' : Scikit Networks
 
 ```python
-my_class = Graphs(path, graph_type)
+my_class = Graphs(path, graph_type, attributes_bool)
 ```
 
 the constructor will then open and load the necessary dictionaries before calling the corresponding method for producing graphs of the type specified. These graph-objects are then stored in a dictionary `self.graphs` and can be accessed after slice number by `self.graphs[slice_num]['graph']`.

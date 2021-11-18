@@ -35,11 +35,11 @@ class ExtractSlices:
         self.extract()
 
     def open_dicts(self):
-        with open(self.outer_path + "all_slices.json", "r") as fp:
-            self.slices = json.load(fp)
+        #with open(self.outer_path + "all_slices.json", "r") as fp:
+            #self.slices = json.load(fp)
 
-        with open(self.outer_path + "attributes_to_all_slices.json", "r") as fp:
-            self.common_attributes = json.load(fp)
+        #with open(self.outer_path + "attributes_to_all_slices.json", "r") as fp:
+            #self.common_attributes = json.load(fp)
 
         with open(self.outer_path + "graph_all_slices.json", "r") as fp:
             self.graphs = json.load(fp)
@@ -47,16 +47,19 @@ class ExtractSlices:
         print("dicts are open")
 
     def extract(self):
-        for slice in self.slices.keys():
+        #for slice in self.slices.keys():
+        for slice in range(1,101):
+            slice = str(slice)
             self.slice_num = int(slice)
             # self.node_attributes = self.slices[slice]['node_attributes']
-            # self.make_graph()
-            # self.find_clustering_coef(self.nx_graphs[str(self.slice_num)])
-        # self.plot_nx_graph(self.nx_graphs['1'])#[str(self.slice_num)])
+            self.make_graph()
+            self.find_clustering_coef(self.nx_graphs[str(self.slice_num)])
+            print("finished slice ", slice)
+        self.plot_nx_graph(self.nx_graphs['1'])#[str(self.slice_num)])
         # self.produce_deltas()
-        self.load_delta_graphs()
-        print("Deltas graphs loaded")
-        self.test_delta_lenght()
+        #self.load_delta_graphs()
+        #print("Deltas graphs loaded")
+        #self.test_delta_lenght()
         # self.produce_delta_graph_dict_v2()
         # print("delta graphs produced")
         # self.find_num_nodes(self.delta_slices)
@@ -102,7 +105,7 @@ class ExtractSlices:
 
         G = nx.Graph()
         G.add_edges_from(list_of_edges)
-        nx.set_node_attributes(G, self.node_attributes)
+        #nx.set_node_attributes(G, self.node_attributes)
         self.nx_graphs[str(self.slice_num)] = {"graph": G}
 
     def plot_nx_graph(self, graph):
@@ -112,11 +115,12 @@ class ExtractSlices:
 
         graph_obj = graph["graph"]
         nodes = graph_obj.nodes()
-        for n in nodes:
-            nodes[n]["color"] = "m" if nodes[n]["followers_count"] > 10000 else "c"
-        node_colors = [nodes[n]["color"] for n in nodes]
-        nx.draw(graph_obj, node_color=node_colors)
-        plt.show()
+        #for n in nodes:
+            #nodes[n]["color"] = "m" if nodes[n]["followers_count"] > 10000 else "c"
+        #node_colors = [nodes[n]["color"] for n in nodes]
+        nx.draw(graph_obj)#, node_color=node_colors)
+        #plt.show()
+        plt.savefig("test_delta_plot.pdf")
 
     def find_clustering_coef(self, graph):
         CC = nx.average_clustering(graph["graph"])

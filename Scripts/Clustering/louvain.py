@@ -27,11 +27,14 @@ Method for Louvain cluster detection on igraph and networkx graphs.
 
 
 class Louvain(Graphs):
-    def __init__(self, path, graph_type):
-        super().__init__(path, graph_type)
+    def __init__(self, path, graph_type, attributes_bool):
+        super().__init__(path, graph_type, attributes_bool)
 
         self.path_to_dict = path
         self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Louvain/"
+        if not os.path.exists(self.path_to_plots):
+            os.makedirs(self.path_to_plots)
+
         self.num_total_slices = len(self.graphs.keys())
 
         if graph_type == "nx":
@@ -40,13 +43,9 @@ class Louvain(Graphs):
         if graph_type == "ig":
             self.ig_louvain()
 
-        if graph_type == "skn":
-            self.sknet_louvain()
-
     def nx_louvain(self):
         # Loading graph
         self.partition_dict = {}
-        counter = 0
         # ratios = []
         for i in range(1, self.num_total_slices + 1):
             self.slice_num = str(i)
@@ -55,8 +54,7 @@ class Louvain(Graphs):
             # compute the best partition
             partition = cluster_louvain.best_partition(G)
             self.nx_make_partition_dict(G, partition)
-            counter += 1
-            print("done with slice ", counter)
+            print("done with slice ", i)
 
             """
             vals = list(partition.values())
@@ -73,7 +71,7 @@ class Louvain(Graphs):
 
             # self.plot_louvain(G,partition)
 
-        with open(self.path_to_dict + "nx_partitions_louvain.json", "w") as fp:
+        with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
             json.dump(self.partition_dict, fp)
         # mean = np.mean(ratios)
         # std = np.std(ratios)
@@ -128,9 +126,6 @@ class Louvain(Graphs):
             self.path_to_plots + "NetworkX_induced_slice" + self.slice_num + ".pdf"
         )
         plt.close()
-
-    def sknet_louvain(self):
-        a = 1
 
     def ig_louvain(self):
 

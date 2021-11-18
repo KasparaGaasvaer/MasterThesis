@@ -16,7 +16,9 @@ sys.path.append(
 class PartitionWorker:
     def __init__(self, path, method):
         self.path_to_partitions = path
-        self.path_to_stats_results = "./experiment6/statistics/"
+        self.path_to_stats_results = "./experiment7/statistics/"
+        if not os.path.exists(self.path_to_stats_results):
+            os.makedirs(self.path_to_stats_results)
 
         if method == "louvain":
             self.filename_jumpers = "all_slices_partition_jumper_stats_louvain.txt"
@@ -40,8 +42,8 @@ class PartitionWorker:
 
         # self.compare_partitions()
         # self.count_jumpers()
-        # self.identify_largest_cluster()
-        # self.extract_number_of_clusters()
+        self.identify_largest_cluster()
+        self.extract_number_of_clusters()
         self.extract_cluster_size_dist()
 
     def compare_partitions(self):
