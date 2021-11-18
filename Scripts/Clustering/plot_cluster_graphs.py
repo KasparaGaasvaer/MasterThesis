@@ -14,8 +14,8 @@ import community as cluster_louvain
 
 
 class PlotClusterGraphs(Graphs):
-    def __init__(self, path, method, selection):
-        super().__init__(path, "nx")
+    def __init__(self, path, method, selection, attributes_bool):
+        super().__init__(path, "nx", attributes_bool)
         self.path_to_partitions = path
         self.num_total_slices = len(self.graphs.keys())
 
@@ -76,6 +76,7 @@ class PlotClusterGraphs(Graphs):
         for s in range(1, self.selection):
             G = self.graphs[str(s)]["graph"]
             p = self.partition_dict[str(s)]
+            print(p)
             # keys = len(p) + 1
             P = {}
 

@@ -27,7 +27,7 @@ path = "./experiment7/parsed_dictionaries/"
 #my_class = Louvain(path,"nx", attributes_bool = False)
 #my_class = Graphs(path,"nx")
 #my_class = PartitionWorker(path,"leiden")
-my_class = PlotClusterGraphs(path,"leiden","all")
+my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=False)
 
 #path = "./experiment6/statistics/"
 #path = "./experiment7/statistics/"
