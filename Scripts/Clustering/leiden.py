@@ -86,4 +86,4 @@ class Leiden(Graphs):
         for i in range(len(partition)):
             s[str(i)] = []
             for j in partition[i]:
-                s[str(i)].append(str(j))
+                s[str(i)].append(str(G.vs[j]["_nx_name"]))

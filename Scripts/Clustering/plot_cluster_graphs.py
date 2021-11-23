@@ -46,7 +46,7 @@ class PlotClusterGraphs(Graphs):
             self.plot_graphs_leiden()
 
     def plot_graphs_louvain(self):
-        for s in range(1, self.selection):
+        for s in range(60, 81):
             G = self.graphs[str(s)]["graph"]
             p = self.partition_dict[str(s)]
             # keys = len(p) + 1
@@ -73,11 +73,9 @@ class PlotClusterGraphs(Graphs):
             plt.close()
 
     def plot_graphs_leiden(self):
-        for s in range(1, self.selection):
+        for s in range(60, 81):
             G = self.graphs[str(s)]["graph"]
             p = self.partition_dict[str(s)]
-            print(p)
-            # keys = len(p) + 1
             P = {}
 
             for part in p.keys():
@@ -85,7 +83,7 @@ class PlotClusterGraphs(Graphs):
                     P[n] = int(part)
 
             pos = nx.spring_layout(G)
-            cmap = cm.get_cmap("viridis", max(P.values()) + 1)
+            cmap = cm.get_cmap("Spectral", max(P.values()) + 1)
             nx.draw_networkx_nodes(
                 G, pos, P.keys(), node_size=1, cmap=cmap, node_color=list(P.values())
             )
