@@ -3,8 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
-from parse_slices import *
-from extract_from_slice import *
+
+from Utils.parse_slices import *
+from Utils.extract_from_slice import *
+from Utils.plot_graph_stats import *
+
 from Clustering.louvain import *
 from Clustering.leiden import *
 from Clustering.partition_worker import *
@@ -16,19 +19,20 @@ from Clustering.plot_cluster_stats import *
 #my_class = Slices(path)
 
 
-#path = "./experiment6/parsed_dictionaries/"
-#path = "./experiment7/parsed_dictionaries/"
+#path = "./experiment6/"
+#path = "./experiment7/"
 #my_class = ExtractSlices(path)
 #my_class.extract()  for now called by constructor
 
-path = "./experiment7/parsed_dictionaries/"
+path = "./experiment7/"
 #path = "./experiment6/parsed_dictionaries/"
 #my_class = Leiden(path,"nx", attributes_bool = False)
 #my_class = Louvain(path,"nx", attributes_bool = False)
-#my_class = Graphs(path,"nx")
-#my_class = PartitionWorker(path,"leiden")
-my_class = PlotClusterGraphs(path,"leiden","all", attributes_bool=False)
+#my_class = Graphs(path,"nx", attributes_bool = True)
+#my_class = PartitionWorker(path,"louvain")
+#my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=False)
+#my_class = PlotClusterStats(path,"louvain")
+my_class = PlotGraph(path, ["num_edges"])
 
-#path = "./experiment6/statistics/"
-#path = "./experiment7/statistics/"
-#my_class = PlotClusterStats(path,"leiden")
+
+#59-76 large num edges? Critical area?

@@ -15,7 +15,7 @@ sys.path.append(
 )  # Adds higher directory to python modules path, looking for Graphs-class one level up
 
 import leidenalg as la
-from graphs import Graphs
+from Utils.graphs import Graphs
 
 # ==============================Leiden Cluster Detection==============================
 
@@ -29,8 +29,8 @@ class Leiden(Graphs):
     def __init__(self, path, graph_type, attributes_bool):
         super().__init__(path, graph_type, attributes_bool)
 
-        self.path_to_dict = path
-        self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Leiden/"
+        self.path_to_dict = path + "parsed_dictionaries/"
+        self.path_to_plots = path +  "plots/Clustering/Leiden/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
@@ -44,11 +44,10 @@ class Leiden(Graphs):
 
     def nx_leiden(self):
         self.partition_dict = {}
-        # leidenalg only works with igraph?
         for i in range(1, self.num_total_slices + 1):
             self.slice_num = str(i)
             g = self.graphs[str(i)]["graph"]
-            G = ig.Graph.from_networkx(g)
+            G = ig.Graph.from_networkx(g) # leidenalg only works with igraph, 
 
             partition = la.find_partition(G, la.ModularityVertexPartition)
             self.nx_make_partition_dict(G, partition)

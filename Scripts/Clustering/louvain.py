@@ -14,7 +14,7 @@ sys.path.append(
 )  # Adds higher directory to python modules path, looking for Graphs-class one level up
 
 import community as cluster_louvain
-from graphs import Graphs
+from Utils.graphs import Graphs
 
 # Colour by cluster
 # CHECK IF IT ONLY DOES FIRST PASS
@@ -30,8 +30,8 @@ class Louvain(Graphs):
     def __init__(self, path, graph_type, attributes_bool):
         super().__init__(path, graph_type, attributes_bool)
 
-        self.path_to_dict = path
-        self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Louvain/"
+        self.path_to_dict = path + "parsed_dictionaries/"
+        self.path_to_plots = path + "plots/Clustering/Louvain/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 

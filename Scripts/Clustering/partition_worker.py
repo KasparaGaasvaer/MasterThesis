@@ -12,31 +12,25 @@ sys.path.append(
     ".."
 )  # Adds higher directory to python modules path, looking for Graphs-class one level up
 
+from Utils.dict_opener import OpenDict
 
-class PartitionWorker:
+class PartitionWorker():
     def __init__(self, path, method):
-        self.path_to_partitions = path
-        self.path_to_stats_results = "./experiment7/statistics/"
+        OpenDicts = OpenDict(path)
+
+        self.path_to_partitions = path + "parsed_dictionaries/"
+        self.path_to_stats_results = path + "statistics/"
+
         if not os.path.exists(self.path_to_stats_results):
             os.makedirs(self.path_to_stats_results)
+        
+        self.method = method
+        self.filename_jumpers = "all_slices_partition_jumper_stats_" + self.method + ".txt"
+        self.filename_largest_partition = "largest_partitions_" + self.method + ".txt"
+        self.filename_num_partitions = "number_partitions_" + self.method +".txt"
+        self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
 
-        if method == "louvain":
-            self.filename_jumpers = "all_slices_partition_jumper_stats_louvain.txt"
-            self.filename_largest_partition = "largest_partitions_louvain.txt"
-            self.filename_num_partitions = "number_partitions_louvain.txt"
-            self.filename_cluster_size_dist = "cluster_size_distribution_louvain.json"
-
-            with open(self.path_to_partitions + "partitions_louvain.json", "r") as fp:
-                self.partition_dict = json.load(fp)
-
-        if method == "leiden":
-            self.filename_jumpers = "all_slices_partition_jumper_stats_leiden.txt"
-            self.filename_largest_partition = "largest_partitions_leiden.txt"
-            self.filename_num_partitions = "number_partitions_leiden.txt"
-            self.filename_cluster_size_dist = "cluster_size_distribution_leiden.json"
-
-            with open(self.path_to_partitions + "partitions_leiden.json", "r") as fp:
-                self.partition_dict = json.load(fp)
+        self.partition_dict = OpenDicts.open_dicts(["part_" + self.method])
 
         self.num_total_slices = len(self.partition_dict.keys())
 

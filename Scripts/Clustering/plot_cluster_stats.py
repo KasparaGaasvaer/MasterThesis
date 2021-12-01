@@ -11,25 +11,17 @@ sys.path.append(
 
 class PlotClusterStats:
     def __init__(self, path, method):
-        self.path_to_stats = path
+        self.path_to_stats = path + "statistics/"
+        self.method = method
+        self.path_to_plots = path + "plots/Clustering/" + self.method.title() + "/"
 
-        if method == "louvain":
-            self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Louvain/"
-            
-            if not os.path.exists(self.path_to_plots):
+        if not os.path.exists(self.path_to_plots):
                 os.makedirs(self.path_to_plots)
 
-            self.filename_nodes_in_largest_cluster = "largest_partitions_louvain.txt"
-            self.filename_number_of_clusters = "number_partitions_louvain.txt"
-            self.filename_cluster_size_dist = "cluster_size_distribution_louvain.json"
-
-        if method == "leiden":
-            self.path_to_plots = "./" + path.split("/")[1] + "/plots/Clustering/Leiden/"
-            if not os.path.exists(self.path_to_plots):
-                os.makedirs(self.path_to_plots)
-            self.filename_nodes_in_largest_cluster = "largest_partitions_leiden.txt"
-            self.filename_number_of_clusters = "number_partitions_leiden.txt"
-            self.filename_cluster_size_dist = "cluster_size_distribution_leiden.json"
+ 
+        self.filename_nodes_in_largest_cluster = "largest_partitions_" + self.method + ".txt"
+        self.filename_number_of_clusters = "number_partitions_" + self.method + ".txt"
+        self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
 
         self.nodes_in_largest_cluster()
         self.cluster_size_dist()
