@@ -44,18 +44,40 @@ def types_timedist(filename):
     #plt.figure(figsize=(20, 10))
     #ax = sub
     #ax = (quotes.loc[:,"date"].groupby([quotes.loc[:,"date"].dt.year,quotes.loc[:,"date"].dt.month]).count()).plot(kind="bar", color = "b")
-    retweets.loc[:,"date"].groupby([retweets.loc[:,"date"].dt.year,retweets.loc[:,"date"].dt.month]).count().plot(kind = "bar", color = "r", label = "Retweets")
-    quotes.loc[:,"date"].groupby([quotes.loc[:,"date"].dt.year,quotes.loc[:,"date"].dt.month]).count().plot(kind = "bar", color = "b", label = "Quotes")
-    comments.loc[:,"date"].groupby([comments.loc[:,"date"].dt.year,comments.loc[:,"date"].dt.month]).count().plot(kind = "bar", color = "c", label = "Comments")
+    R = retweets.loc[:,"date"].groupby([retweets.loc[:,"date"].dt.year,retweets.loc[:,"date"].dt.month]).count()#.plot(kind = "bar", color = "r", label = "Retweets")
+    Q = quotes.loc[:,"date"].groupby([quotes.loc[:,"date"].dt.year,quotes.loc[:,"date"].dt.month]).count()#.plot(kind = "bar", color = "b", label = "Quotes")
+    C = comments.loc[:,"date"].groupby([comments.loc[:,"date"].dt.year,comments.loc[:,"date"].dt.month]).count()#.plot(kind = "bar", color = "c", label = "Comments")
+
+    R.plot(kind = "bar", color = "b")
+    plt.yscale("log")
+    plt.title("Retweets")
+    plt.show()
+
+    Q.plot(kind = "bar", color = "r")
+    plt.yscale("log")
+    plt.title("Quotes")
+    plt.show()
+
+    C.plot(kind = "bar", color = "g")
+    plt.yscale("log")
+    plt.title("Comments")
+    plt.show()
+
+
+
+
+
+
     #ax.set_facecolor('#eeeeee')
     #ax.set_xlabel("day")
     #ax.set_ylabel("count")
     #ax.set_title("both?")
     #ax.set_yscale("log")
-    plt.legend()
-    plt.yscale("log")
-    plt.locator_params(axis="x", nbins=20)
-    plt.show()
+
+    #plt.legend()
+    #plt.yscale("log")
+    #plt.locator_params(axis="x", nbins=20)
+    #plt.show()
 
 
     #quotes = quotes.sort_values('date', ascending=True)
@@ -104,5 +126,5 @@ def contacts_per_edge(filename):
 
 
 #types_per_user(path + "all_k_per_user_distribution.csv")
-#types_timedist(path + "all_k_distribution.csv")
-contacts_per_edge(path + "all_k_per_user_pair_distribution.csv")
+types_timedist(path + "all_k_distribution.csv")
+#contacts_per_edge(path + "all_k_per_user_pair_distribution.csv")
