@@ -20,10 +20,11 @@ def types_per_user(filename):
             x = dict[type]
             #x = list(filter(lambda a: a!= 0, x))
             #print(x)
-            plt.hist(x, bins = np.linspace(np.min(x), np.max(x)+1, 100))
+            plt.hist(x, bins = np.linspace(np.min(x), np.max(x)+1, 1000))
             plt.yscale("log")
+            plt.xlim(0,2000)  #outliers after this 
             plt.ylabel("Log(frequency)")
-            plt.title(type + ", bins = 100")
+            plt.title(type + ", bins = 1000")
             plt.xlabel("Num Contacts")
             plt.savefig(path_plots + type + ".pdf")
             plt.clf()
@@ -125,6 +126,6 @@ def contacts_per_edge(filename):
 
 
 
-#types_per_user(path + "all_k_per_user_distribution.csv")
-types_timedist(path + "all_k_distribution.csv")
+types_per_user(path + "all_k_per_user_distribution.csv")
+#types_timedist(path + "all_k_distribution.csv")
 #contacts_per_edge(path + "all_k_per_user_pair_distribution.csv")
