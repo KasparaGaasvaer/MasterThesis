@@ -23,9 +23,11 @@ class PartitionWorker():
             method (string): [description]
         """
         OpenDicts = OpenDict(path)
+        self.path = path
 
         self.path_to_partitions = path + "parsed_dictionaries/"
         self.path_to_stats_results = path + "statistics/"
+        
 
         if not os.path.exists(self.path_to_stats_results):
             os.makedirs(self.path_to_stats_results)
@@ -42,9 +44,10 @@ class PartitionWorker():
 
         # self.compare_partitions()
         # self.count_jumpers()
-        self.identify_largest_cluster()
-        self.extract_number_of_clusters()
-        self.extract_cluster_size_dist()
+        #self.identify_largest_cluster()
+        #self.extract_number_of_clusters()
+        #self.extract_cluster_size_dist()
+        self.compare_clusters()
 
     def compare_partitions(self):
 
@@ -182,3 +185,14 @@ class PartitionWorker():
             self.path_to_stats_results + self.filename_cluster_size_dist, "w"
         ) as fp:
             json.dump(slices, fp)
+
+
+
+    def compare_clusters(self):
+        # 1. Open clusters
+        # 2. Identify 100 largest cluster in slice i
+        # 3. Re identify those in slice i-1
+
+        path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
+        num_slices = len(os.listdir(path_to_clusters))
+        print(range(2,num_slices))

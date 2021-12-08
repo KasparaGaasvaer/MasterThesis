@@ -103,3 +103,5 @@ class PlotClusterStats:
             plt.xscale("log")
             plt.savefig(path + "LOG_cluster_size_distribution_slice" + s + ".pdf")
             plt.clf()
+
+    

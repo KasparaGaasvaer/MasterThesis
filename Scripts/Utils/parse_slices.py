@@ -217,7 +217,7 @@ class Slices:
         c_dict = {}
         folder = self.path + "cluster/"
         num_clusters = len(os.listdir(folder))
-        for i in range(num_clusters + 1):
+        for i in range(num_clusters):
             c_dict[str(i)] = {}
             cluster_file = folder + str(i) + ".csv"
             df = pd.read_csv(cluster_file)
