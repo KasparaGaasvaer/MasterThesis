@@ -16,6 +16,12 @@ from Utils.dict_opener import OpenDict
 
 class PartitionWorker():
     def __init__(self, path, method):
+        """[summary]
+
+        Args:
+            path (string): [description]
+            method (string): [description]
+        """
         OpenDicts = OpenDict(path)
 
         self.path_to_partitions = path + "parsed_dictionaries/"

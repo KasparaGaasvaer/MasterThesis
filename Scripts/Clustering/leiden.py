@@ -26,6 +26,11 @@ Method for Leiden cluster detection on igraph and networkx graphs.
 
 
 class Leiden(Graphs):
+    """[summary]
+
+    Args:
+        Graphs (super class): [description]
+    """
     def __init__(self, path, graph_type, attributes_bool):
         super().__init__(path, graph_type, attributes_bool)
 
