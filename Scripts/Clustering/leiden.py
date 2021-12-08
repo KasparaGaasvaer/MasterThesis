@@ -19,20 +19,23 @@ from Utils.graphs import Graphs
 
 # ==============================Leiden Cluster Detection==============================
 
-"""
-Method for Leiden cluster detection on igraph and networkx graphs.
-- Uses self.graphs from super Graphs.
-"""
-
 
 class Leiden(Graphs):
-    """[summary]
+    """Class for Leiden cluster detection on igraph and networkx graphs.
 
     Args:
-        Graphs (super class): [description]
+        Graphs (super class): Produces NetworkX-graph objects to be utilised
     """
     def __init__(self, path, graph_type, attributes_bool):
+        """Constructor
+
+        Args:
+            path (string): Outer path to experiment
+            graph_type (string): NetworkX (nx) or iGraph (ig)
+            attributes_bool (bool): True if experiment comes with node-labels
+        """
         super().__init__(path, graph_type, attributes_bool)
+
 
         self.path_to_dict = path + "parsed_dictionaries/"
         self.path_to_plots = path +  "plots/Clustering/Leiden/"
@@ -48,6 +51,8 @@ class Leiden(Graphs):
             self.ig_leiden()
 
     def nx_leiden(self):
+        """Leiden algorithm for NetworkX-graphs
+        """
         self.partition_dict = {}
         for i in range(1, self.num_total_slices + 1):
             self.slice_num = str(i)
@@ -84,6 +89,12 @@ class Leiden(Graphs):
         plt.show()
 
     def nx_make_partition_dict(self, G, partition):
+        """Method for constructing dictionaries woth partitions from Leiden-alg
+
+        Args:
+            G (iGraph-object): iGraph graph
+            partition (list): List containing partitions from Leiden algorithm
+        """
         self.partition_dict[self.slice_num] = {}
         s = self.partition_dict[self.slice_num]
 
