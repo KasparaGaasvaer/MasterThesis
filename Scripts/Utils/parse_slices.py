@@ -47,7 +47,7 @@ class Slices:
 
         # Calls function for reading slices and extracting information
         self.ReadSlice()
-        self.SaveSlice()
+        #self.SaveSlice()
 
     def ReadSlice(self):
         # Loops over all slices in dir/experiment
@@ -56,11 +56,12 @@ class Slices:
             self.slice_num = int(slices.replace("slice_", ""))  # Extracts slice number
             print("Working on slice_", self.slice_num)
             self.path = self.path2dir + folder + "/"  # Sets path
+            self.cluster_dicts()
             #self.make_node_attributes()  # Calls function for producing dict with node attributes from corresponding labels.csv file
-            self.make_graph_dict()  # Calls function for producing networkx graph from corresponding graph.mat file
+            #self.make_graph_dict()  # Calls function for producing networkx graph from corresponding graph.mat file
             #self.find_timeline()  # Calls function for extracting first and last tweet in slice
             #self.find_num_nodes()  # Calls function for extracting number of nodes (tweets) in slice
-       # self.find_timeline_of_set()  # Calls function for extracting first and last tweet in the entire set of slices in dir
+        #self.find_timeline_of_set()  # Calls function for extracting first and last tweet in the entire set of slices in dir
 
     def SaveSlice(self):
 
@@ -76,12 +77,12 @@ class Slices:
             json.dump(self.graphs, fp)
 
         # Saves slices with attributes to .json file
-        #with open(dict_dir + "all_slices.json", "w") as fp:
-            #json.dump(self.slices, fp)
+        with open(dict_dir + "all_slices.json", "w") as fp:
+            json.dump(self.slices, fp)
 
         # Saves common attributes of all slices to .json file
-        #with open(dict_dir + "attributes_to_all_slices.json", "w") as fp:
-            #json.dump(self.attributes_to_slice_set, fp)
+        with open(dict_dir + "attributes_to_all_slices.json", "w") as fp:
+            json.dump(self.attributes_to_slice_set, fp)
 
     def make_node_attributes(self):
         #
@@ -103,10 +104,16 @@ class Slices:
         # self.node_at = self.node_at.fillna(value=False)
         self.node_at = self.node_at.to_dict(orient="list")
         self.node_attributes = {}
-        nodes = len(self.node_at["index"])
+        try:
+            id = "index"
+            nodes = len(self.node_at[id])
+        except KeyError:
+            id = "id"
+            nodes = len(self.node_at[id])
+
         keyss = len(self.node_at.keys())
         key_list = list(self.node_at)
-        for idx, i in enumerate(self.node_at["index"]):
+        for idx, i in enumerate(self.node_at[id]):
             self.node_attributes[i] = {}
             for key in self.node_at.keys():
                 self.node_attributes[i][key] = self.node_at[key][idx]
@@ -198,3 +205,32 @@ class Slices:
         self.slices[str(self.slice_num)]["num_nodes"] = len(
             self.slices[str(self.slice_num)]["node_attributes"].keys()
         )
+
+    def cluster_dicts(self):
+        path2save = self.path2dir.split("/")[1]
+        path2save = "./" + path2save + "/"
+
+        cluster_dir = path2save + "parsed_dictionaries/Clusters/"
+        if not os.path.exists(cluster_dir):
+            os.makedirs(cluster_dir)
+
+        c_dict = {}
+        folder = self.path + "cluster/"
+        num_clusters = len(os.listdir(folder))
+        for i in range(num_clusters + 1):
+            c_dict[str(i)] = {}
+            cluster_file = folder + str(i) + ".csv"
+            df = pd.read_csv(cluster_file)
+            headers = list(df)
+            for j in range(len(headers)):
+                c_dict[str(i)][headers[j]] = df[headers[j]].tolist()
+            
+
+        
+
+        with open(cluster_dir + "c_"+ str(self.slice_num)+".json", "w") as fp:
+            json.dump(c_dict, fp)
+
+        
+
+
