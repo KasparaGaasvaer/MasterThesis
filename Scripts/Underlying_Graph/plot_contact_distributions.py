@@ -22,7 +22,7 @@ def types_per_user(filename):
             #print(x)
             plt.hist(x, bins = np.linspace(np.min(x), np.max(x)+1, 1000))
             plt.yscale("log")
-            plt.xlim(0,2000)  #outliers after this 
+            plt.xlim(0,2000)  #outliers after this
             plt.ylabel("Log(frequency)")
             plt.title(type + ", bins = 1000")
             plt.xlabel("Num Contacts")
