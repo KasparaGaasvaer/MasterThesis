@@ -13,6 +13,7 @@ from Clustering.leiden import *
 from Clustering.partition_worker import *
 from Clustering.plot_cluster_graphs import *
 from Clustering.plot_cluster_stats import *
+from Clustering.cluster_tracker import *
 
 #path = "./experiment7/experiment_7/"
 #path = "./experiment6/experiment_6/"
@@ -29,10 +30,11 @@ path = "./experiment100/"
 #my_class = Leiden(path,"nx", attributes_bool = False)
 #my_class = Louvain(path,"nx", attributes_bool = False)
 #my_class = Graphs(path,"nx", attributes_bool = True)
-my_class = PartitionWorker(path,"louvain")
+#my_class = PartitionWorker(path,"louvain")
 #my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=False)
 #my_class = PlotClusterStats(path,"louvain")
 #my_class = PlotGraph(path, ["num_edges"])
+my_class = ClusterTracker(path)
 
 
 #59-76 large num edges? Critical area?
