@@ -12,8 +12,8 @@ def compare_clusters(N_largest, path_to_clusters, expnum):
     with open(path_to_clusters + "c_1.json", "r") as inf:
         sim1 =  json.load(inf)
 
-    sim1_csize = 0
-    sim1_idx = "1"
+    sim1_csize = []
+    sim1_idx = []
     for k in range(len(sim1.keys())): 
             sim1_idx.append(k)
             num_nodes = len(sim1[str(k)]["uid"])
@@ -136,11 +136,11 @@ def does_any_id_change(filename):
             for i in range(0,len(ll),2):
                 a = int(ll[i])
                 b = int(ll[i+1])
-                if a != b:
+                #if a != b:
                     #print(f"cluster {a} became cluster {b} from slice {counter} to {counter+1}")
-                    changed_ID +=1 
-                else:
-                    same_ID +=1
+                    #same_ID +=1 
+                #else:
+                    #changed_ID += 1
             counter +=1
 
             #ll = ll.strip("[[")

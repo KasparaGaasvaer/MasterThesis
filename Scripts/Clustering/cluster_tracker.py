@@ -42,7 +42,7 @@ class ClusterTracker:
         intersects = []
         L_sizes.append(L_size)
         L_idxs.append(L_idx)
-        for s in range(2,10):#num_slices +1):
+        for s in range(2,num_slices +1):
             print(s)
 
             with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
