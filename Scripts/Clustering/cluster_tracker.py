@@ -1,13 +1,15 @@
 import json
 import os
 import time
+import matplotlib.pyplot as plt
 
 class ClusterTracker:
     def __init__(self, path):
         self.path_to_clusters = path + "parsed_dictionaries/Clusters/"
         self.path_to_save_stats = path + "statistics/cluster_stats/"
         
-        self.track_largest()
+        #self.track_largest()
+        self.plot_track_largest()
     
     def track_largest(self):
         open_time_start = time.perf_counter()
@@ -19,7 +21,7 @@ class ClusterTracker:
         # 4. Identify largest value from dict, store ID as LC2 ,divide by size(LC1)
         # 5. Do the same for LC2 and so on
         
-        num_slices = len(os.listdir(self.path_to_clusters))
+        self.num_slices = len(os.listdir(self.path_to_clusters))
 
         with open(self.path_to_clusters + "c_1.json", "r") as inf:
             sim1 =  json.load(inf)
@@ -40,9 +42,11 @@ class ClusterTracker:
         L_sizes = []
         L_idxs = []
         intersects = []
+        inters_3_ids = []
+        inters_3 = []
         L_sizes.append(L_size)
         L_idxs.append(L_idx)
-        for s in range(2,num_slices +1):
+        for s in range(2,self.num_slices +1):
             print(s)
 
             with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
@@ -61,8 +65,19 @@ class ClusterTracker:
                         si_hit_dict[ci] +=1
 
             max_intersect = max(si_hit_dict, key=si_hit_dict.get)
+            max_3_intersects = sorted(si_hit_dict, key=si_hit_dict.get, reverse=True)[:3]
+            inters_3_ids.append(max_3_intersects)
+            
+            inters = []
+            for m3 in max_3_intersects:
+                inter =  si_hit_dict[m3]/L_size
+                inters.append(inter)
+
+            inters_3.append(inters)
+
             intersect = si_hit_dict[max_intersect]/L_size
             intersects.append(intersect)
+
 
             L_idx = max_intersect
             L_size = len(si[L_idx]["uid"])
@@ -70,13 +85,52 @@ class ClusterTracker:
             L_sizes.append(L_size)
             L_idxs.append(L_idx)
 
+
         open_time_end = time.perf_counter()
         print(f"Time spent tracking largest cluster: {open_time_end-open_time_start:0.4f} s")
-        with open(self.path_to_save_stats + "tracking_largest_cluster.txt","w") as ouf:
-            ouf.write("Slice i -> i+1      Cluster ID i,i+1      Cluster size i,i+1      Intersect\n")
+        with open(self.path_to_save_stats + "tracking_largest_cluster_test.txt","w") as ouf:
+            ouf.write("Slice i -> i+1      Cluster ID i,i+1      Cluster size i,i+1                             Intersects                           Intersect ids\n")
             for l in range(len(L_idxs)-1):
-                ouf.write(f"{l+1}->{l+2}                     {L_idxs[l]},{L_idxs[l+1]}               {L_sizes[l]},{L_sizes[l+1]}       {intersects[l]}\n")
+                int_3 = inters_3[l]
+                int_3_idx = inters_3_ids[l]
+                ouf.write(f"{l+1}->{l+2}                     {L_idxs[l]},{L_idxs[l+1]}               {L_sizes[l]},{L_sizes[l+1]}            {int_3[0]},{int_3[1]},{int_3[2]}            {int_3_idx[0]},{int_3_idx[1]},{int_3_idx[2]}\n")     #{intersects[l]}\n")
             
             
 
+    def plot_track_largest(self):
+        
+        
+        sizes = []
+        intersects = []
+        with open(self.path_to_save_stats + "tracking_largest_cluster.txt","r") as innf:
+            innf.readline()
+            lines = innf.readlines()
+            for line in lines:
+                line = line.split()
+                size = line[-2].split(",")[0]
+                sizes.append(int(size))
+                intersects.append(float(line[-1]))
+            
+            last = lines[-1]
+            last = last.split()
+            size = line[-2].split(",")[-1]
+            sizes.append(int(size))
+
+        
+        slices = [i for i in range(1,len(sizes)+1)]
+        
+        plt.plot(slices,sizes, "*")
+        plt.xlabel("Slice num")
+        plt.ylabel("Num vertices in cluster")
+        plt.title("Size of cluster when tracking largest from slice 1")
+        plt.savefig(self.path_to_save_stats + "size_largest.pdf")
+        plt.clf()
+
+        plt.plot(slices[1:],intersects, "*")
+        plt.xlabel("Slice num i")
+        plt.ylabel("Intersect from slice i-1 -> i")
+        plt.title("Intersect of largest cluster i-1 -> i")
+        plt.savefig(self.path_to_save_stats + "intersect_largest.pdf")
+
+        
 
