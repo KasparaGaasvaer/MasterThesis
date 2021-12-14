@@ -2,14 +2,18 @@ import json
 import os
 import time
 import matplotlib.pyplot as plt
+import pandas as pd
 
 class ClusterTracker:
     def __init__(self, path):
         self.path_to_clusters = path + "parsed_dictionaries/Clusters/"
         self.path_to_save_stats = path + "statistics/cluster_stats/"
+
+        self.num_slices = len(os.listdir(self.path_to_clusters))
         
         #self.track_largest()
-        self.plot_track_largest()
+        #self.plot_track_largest()
+        self.table_biggest_cluster_size()
     
     def track_largest(self):
         open_time_start = time.perf_counter()
@@ -21,8 +25,6 @@ class ClusterTracker:
         # 4. Identify largest value from dict, store ID as LC2 ,divide by size(LC1)
         # 5. Do the same for LC2 and so on
         
-        self.num_slices = len(os.listdir(self.path_to_clusters))
-
         with open(self.path_to_clusters + "c_1.json", "r") as inf:
             sim1 =  json.load(inf)
 
@@ -133,4 +135,35 @@ class ClusterTracker:
         plt.savefig(self.path_to_save_stats + "intersect_largest.pdf")
 
         
+    def table_biggest_cluster_size(self):
 
+        slice_num = []
+        c_size = []
+        c_idx = []
+
+        for s in range(1,self.num_slices):
+            print(s)
+            slice_num.append(s)
+            with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
+                c_s = json.load(innf)
+
+            L_size = 0
+            L_idx = "a"
+            for k in range(len(c_s.keys())): 
+                num_nodes = len(c_s[str(k)]["uid"])
+                if num_nodes > L_size:
+                    L_size = num_nodes
+                    L_idx = str(k)
+
+                elif num_nodes == L_size:
+                    print("oopsi, same size")
+
+            c_size.append(L_size)
+            c_idx.append(L_idx)
+
+
+        c_dict = {'Slice num': slice_num, 'Cluster idx' : c_idx, 'Cluster size' : c_size}
+        c_df = pd.DataFrame(c_dict)
+        c_df.to_csv(self.path_to_save_stats + "largest_clusters.csv",index=False)
+
+        print(c_df)
