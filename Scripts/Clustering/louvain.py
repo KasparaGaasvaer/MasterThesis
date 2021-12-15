@@ -8,6 +8,8 @@ import copy
 import json
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import time
+from copy import deepcopy
 
 sys.path.append(
     ".."
@@ -48,28 +50,38 @@ class Louvain(Graphs):
         self.partition_dict = {}
         # ratios = []
         for i in range(1, self.num_total_slices + 1):
-            self.slice_num = str(i)
-            G = self.graphs[str(i)]["graph"]
-            # print(f"Number of nodes = {G.number_of_nodes()}")
-            # compute the best partition
-            partition = cluster_louvain.best_partition(G)
-            self.nx_make_partition_dict(G, partition)
-            print("done with slice ", i)
+            if i <= 10:
+                self.slice_num = str(i)
+                print("Starting with with slice ", i)
+                G = self.graphs[str(i)]["graph"]
+                # print(f"Number of nodes = {G.number_of_nodes()}")
+                # compute the best partition
 
-            """
-            vals = list(partition.values())
-            for i in range(len(vals)):
-                vals[i] = int(vals[i])
-            print(f"number of clusters = {max(vals)}")
-            modularity = cluster_louvain.modularity(partition, G)
-            print(f"Modularity = {modularity:0.5f}")
-            ratio = G.number_of_nodes()/max(vals)
-            print(f"Ratio nodes/parts = {ratio:0.5f}")
-            ratios.append(ratio)
-            print(" ")
-            """
+                part_s = time.perf_counter()
+                partition = cluster_louvain.best_partition(G)
+                part_e = time.perf_counter()
+                print(f"Time spent making partitions is {part_e-part_s:0.4f} s")
 
-            # self.plot_louvain(G,partition)
+                dict_s = time.perf_counter()
+                self.nx_make_partition_dict(G, partition)
+                dict_e = time.perf_counter()
+                print(f"Time spent making dict is {dict_e-dict_s:0.4f} s")
+                
+
+                """
+                vals = list(partition.values())
+                for i in range(len(vals)):
+                    vals[i] = int(vals[i])
+                print(f"number of clusters = {max(vals)}")
+                modularity = cluster_louvain.modularity(partition, G)
+                print(f"Modularity = {modularity:0.5f}")
+                ratio = G.number_of_nodes()/max(vals)
+                print(f"Ratio nodes/parts = {ratio:0.5f}")
+                ratios.append(ratio)
+                print(" ")
+                """
+
+                # self.plot_louvain(G,partition)
 
         with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
             json.dump(self.partition_dict, fp)
@@ -84,18 +96,15 @@ class Louvain(Graphs):
         s = self.partition_dict[self.slice_num]
 
         vals = list(partition.values())
-        partition_num = []
-        for v in vals:
-            if v not in partition_num:
-                partition_num.append(v)
+        partition_num = set(vals)
+    
 
         keys = list(partition.keys())
-
         for p in partition_num:
-            s[p] = []
-            for key in keys:
-                if partition[key] == p:
-                    s[p].append(key)
+            s[p] = [k for k,v in partition.items() if v == p]
+            for del_key in s[p]:
+                partition.pop(del_key)
+        
 
     def plot_louvain(self, G, partition):
         # draw the graph

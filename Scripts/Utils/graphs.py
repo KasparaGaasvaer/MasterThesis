@@ -18,12 +18,14 @@ class Graphs(OpenDict):
 
         self.slice_att = attributes_bool
         open_time_start = time.perf_counter()
-        #self.slices, self.graphs_from_file = self.open_dicts(["slices", "graphs"])
-        self.graphs_from_file = self.open_dicts(["graphs"])
+
+        if self.slice_att:
+            self.slices, self.graphs_from_file = self.open_dicts(["slices", "graphs"])
+        else:
+            self.graphs_from_file = self.open_dicts(["graphs"])
+
         open_time_end = time.perf_counter()
-        print(
-            f"Time spent opening dictionaries is {open_time_end-open_time_start:0.4f} s"
-        )
+        print(f"Time spent opening dictionaries is {open_time_end-open_time_start:0.4f} s")
 
         self.graphs = {}
         if graph_type == "nx":
@@ -35,29 +37,30 @@ class Graphs(OpenDict):
     def make_nx_graphs(self):
         import networkx as nx
 
-        T_netx_s = time.perf_counter()
+        total_s = time.perf_counter()
         for slice in self.graphs_from_file.keys():
-            # if int(slice) <= 10 :
-            graph = self.graphs_from_file[slice]
-            sources = graph["source"]
-            targets = graph["target"]
-            weights = graph["weight"]
-            list_of_edges = []
-            for i in range(len(sources)):
-                list_of_edges.append(
-                    (str(sources[i]), str(targets[i]), {"weight": weights[i]})
-                )
+            if int(slice) <= 10:
+                T_netx_s = time.perf_counter()
+                print("Making nx graph for slice: ", slice)
+                graph = self.graphs_from_file[slice]
+                sources, targets, weights = graph["source"], graph["target"], graph["weight"]
+                list_of_edges = []
+                for i in range(len(sources)):
+                    list_of_edges.append((str(sources[i]), str(targets[i]), {"weight": weights[i]}))
 
-            G = nx.Graph()
-            G.add_edges_from(list_of_edges)
-            if self.slice_att:
-                self.node_attributes = self.slices[slice]["node_attributes"]
-                nx.set_node_attributes(G, self.node_attributes)
+                G = nx.Graph()
+                G.add_edges_from(list_of_edges)
 
-            self.graphs[slice] = {"graph": G}
+                if self.slice_att:
+                    self.node_attributes = self.slices[slice]["node_attributes"]
+                    nx.set_node_attributes(G, self.node_attributes)
 
-        T_netx_e = time.perf_counter()
-        print(f"NetworkX graph maker took {T_netx_e-T_netx_s:0.4f} s")
+                self.graphs[slice] = {"graph": G}
+                T_netx_e = time.perf_counter()
+                print(f"NetworkX graph maker took {T_netx_e-T_netx_s:0.4f} s")
+
+        total_e = time.perf_counter()
+        print(f"TOTAL NetworkX graph maker took {total_e-total_s:0.4f} s")
 
     def make_ig_graphs(self):
         import igraph as ig

@@ -8,6 +8,8 @@ import copy
 import json
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import time
+import numba as nb
 
 # from cdlib import algorithms
 sys.path.append(
@@ -55,13 +57,26 @@ class Leiden(Graphs):
         """
         self.partition_dict = {}
         for i in range(1, self.num_total_slices + 1):
+            print("Starting with with slice ", i)
             self.slice_num = str(i)
             g = self.graphs[str(i)]["graph"]
-            G = ig.Graph.from_networkx(g) # leidenalg only works with igraph, 
 
+            trans_s = time.perf_counter()
+            G = ig.Graph.from_networkx(g) # leidenalg only works with igraph, 
+            trans_e = time.perf_counter()
+            print(f"Time spent nx -> ig is {trans_e-trans_s:0.4f} s")
+            
+
+            part_s = time.perf_counter()
             partition = la.find_partition(G, la.ModularityVertexPartition)
+            part_e = time.perf_counter()
+            print(f"Time spent making partitions is {part_e-part_s:0.4f} s")
+
+            dict_s = time.perf_counter()
             self.nx_make_partition_dict(G, partition)
-            print("done with ", i)
+            dict_e = time.perf_counter()
+            print(f"Time spent making dict is {dict_e-dict_s:0.4f} s")
+        
             # print(partition)
             # print(len(partition))
         # partition = la.find_partition(G, la.CPMVertexPartition, resolution_parameter = 0.05)
@@ -88,6 +103,7 @@ class Leiden(Graphs):
         # ig.plot(G, layout = layout)
         plt.show()
 
+    
     def nx_make_partition_dict(self, G, partition):
         """Method for constructing dictionaries woth partitions from Leiden-alg
 
@@ -95,10 +111,16 @@ class Leiden(Graphs):
             G (iGraph-object): iGraph graph
             partition (list): List containing partitions from Leiden algorithm
         """
+        
         self.partition_dict[self.slice_num] = {}
         s = self.partition_dict[self.slice_num]
 
+  
         for i in range(len(partition)):
             s[str(i)] = []
-            for j in partition[i]:
+            p_i = partition[i]
+            for j in p_i:
                 s[str(i)].append(str(G.vs[j]["_nx_name"]))
+  
+
+            
