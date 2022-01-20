@@ -5,11 +5,17 @@ import json
 
 # ==============================Access and Open Dictionaries==============================
 #
-# Class for opening dictionaries 
+# Class for opening dictionaries
 #
 
 class OpenDict:
     def __init__(self,path):
+        """Method for constructing dictionary of filenames from json files
+
+        Args:
+            path (string): path to experiment data
+        """
+
         self.path = path + "parsed_dictionaries/"
 
         self.dictionary_filenames = {
@@ -20,13 +26,13 @@ class OpenDict:
             "part_leiden" : "partitions_leiden.json"
         }
 
-    
+
     def open_dicts(self, dicts):
-        #
-        # Open Dictionaries:
-        # - Exp : Experiment ID
-        # - Dicts : A list of dictionaries to open 
-        #
+        """Method for opening dictionaries
+
+        Args:
+            dicts (list): list of strings indicating which dictionaries to open
+        """
         d_out = []
         for key in dicts:
             with open(self.path + self.dictionary_filenames[key],"r") as d:
