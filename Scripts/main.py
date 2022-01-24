@@ -28,13 +28,13 @@ path = "./experiment100/"
 #my_class.extract()  for now called by constructor
 
 #my_class = Leiden(path,"nx", attributes_bool = False)    #these take a lot longer with attributes?
-my_class = Louvain(path,"nx", attributes_bool = False)
+#my_class = Louvain(path,"nx", attributes_bool = False)
 #my_class = Graphs(path,"nx", attributes_bool = True)
 #my_class = PartitionWorker(path,"louvain")
 #my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=False)
 #my_class = PlotClusterStats(path,"louvain")
 #my_class = PlotGraph(path, ["num_edges"])
-#my_class = ClusterTracker(path)
+my_class = ClusterTracker(path)
 
 
 #59-76 large num edges? Critical area?
