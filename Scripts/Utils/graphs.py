@@ -14,6 +14,14 @@ from Utils.dict_opener import OpenDict
 
 class Graphs(OpenDict):
     def __init__(self, path, graph_type, attributes_bool):
+        """XXXXX
+
+        Args:
+            path (string): path to experiment data
+            graph_type (string): nx for NetworkX, ig for Igraph
+            attributes_bool (boolean): True for data where nodes have attributes, False if not
+        """
+
         OpenDict.__init__(self,path)
 
         self.slice_att = attributes_bool
@@ -35,6 +43,8 @@ class Graphs(OpenDict):
             self.make_ig_graphs()
 
     def make_nx_graphs(self):
+        """Method for producing NetworkX graph objects"""
+
         import networkx as nx
 
         total_s = time.perf_counter()
@@ -62,6 +72,8 @@ class Graphs(OpenDict):
         print(f"TOTAL NetworkX graph maker took {total_e-total_s:0.4f} s")
 
     def make_ig_graphs(self):
+        """Method for producing Igraph graph objects"""
+
         import igraph as ig
 
         for slice in self.graphs_from_file.keys():
@@ -89,6 +101,7 @@ class Graphs(OpenDict):
             self.graphs[slice] = {"graph": G}
 
     def find_relation_nodes_edges(self):
+        """Method for finding number of edges per node in slices"""
         num_slices = len(self.graphs_from_file.keys())
         rels = np.zeros(num_slices + 1)
         for i in range(1, num_slices + 1):

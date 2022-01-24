@@ -16,11 +16,8 @@ sys.path.append(
 from Utils.dict_opener import OpenDict
 
 # ==============================Extracting from slices dictionaries==============================
-
-
-class ExtractSlices():
     #
-    # Test class for extracting simple information from slices dictionaries (from Slices class)
+    # Class for extracting simple information from slices dictionaries (from Slices class)
     # - Produce NetworkX graphs
     # - Visualize NetworkX graphs
     # - Find clustering coefficient from NetworkX graphs
@@ -29,7 +26,15 @@ class ExtractSlices():
     # - Plot distribution of tweets (3 month intervals for now)
     # - Plot distribution of tweets before 2020
 
+
+class ExtractSlices():
+
     def __init__(self, path):
+        """Contructor
+
+        Args:
+            path (string): path to experiment data
+        """
 
         self.outer_path = path + "parsed_dictionaries/"
         OpenDicts = OpenDict(path)
@@ -41,8 +46,10 @@ class ExtractSlices():
         self.extract()
 
     def extract(self):
-        #for slice in self.slices.keys(): #This is safe for all slices
-        for slice in range(1,101):  #Specific for exp7
+        """Call-method for looping over all slices in experiment data"""
+
+        for slice in self.slices.keys(): #This is safe for all slices
+        #for slice in range(1,101):  #Specific for exp7
             slice = str(slice)
             self.slice_num = int(slice)
             # self.node_attributes = self.slices[slice]['node_attributes']
@@ -82,10 +89,10 @@ class ExtractSlices():
             )
 
     def make_graph(self):
-        #
-        # Function for producing NetworkX graph.
-        # Adds node attributes from slices dict and edges/nodes from graph dict.
-        #
+        """Method for producing NetworkX graph.
+
+           - Adds node attributes from slices dict and edges/nodes from graph dict.
+          """
 
         graph = self.graphs[str(self.slice_num)]
         sources = graph["source"]
@@ -103,9 +110,11 @@ class ExtractSlices():
         self.nx_graphs[str(self.slice_num)] = {"graph": G}
 
     def plot_nx_graph(self, graph):
-        #
-        # Function for plotting NetworkX graph.
-        #
+        """Method for plotting NetworkX graph.
+
+        Args:
+            graph (NetworkX graph object): Graph to be plotted
+        """
 
         graph_obj = graph["graph"]
         nodes = graph_obj.nodes()
@@ -123,153 +132,16 @@ class ExtractSlices():
     def find_num_components(self):
         a = 1
 
-    # Should this be in parse_slices instead? Difficult since parse slices is optimized for parsing self.slices, not functions who takes dicts or files
-    def produce_deltas(self):
-        #
-        # Function for producing delta slices.
-        # Each delta slice is slice i+1 - slice i for all slices in experiment.
-        #
-
-        self.delta_slices = copy.deepcopy(self.slices)
-        for i in range(1, len(self.slices.keys())):
-            id_in_1 = []
-            j = i + 1
-            slice1 = self.slices[str(i)]
-            slice2 = self.slices[str(j)]
-            for user in slice1["node_attributes"]:
-                id_in_1.append(slice1["node_attributes"][user]["id"])
-
-            for user in slice2["node_attributes"]:
-                if slice2["node_attributes"][user]["id"] in id_in_1:
-                    self.delta_slices[str(j)]["node_attributes"].pop(user)
-
-            print(
-                "OG slice ",
-                j,
-                " len = ",
-                len(self.slices[str(j)]["node_attributes"].keys()),
-            )
-            print(
-                "Delta slice ",
-                j,
-                " len =",
-                len(self.delta_slices[str(j)]["node_attributes"].keys()),
-            )
-
-        self.find_num_nodes(self.delta_slices)
-        self.find_timeline(self.delta_slices)
-        with open(self.outer_path + "delta_slices.json", "w") as fp:
-            json.dump(self.delta_slices, fp)
-
-    def produce_delta_graph_dict_v2(self):
-        self.delta_graphs = copy.deepcopy(self.graphs)
-        slices = list(self.slices.keys())
-        slices = [int(s) for s in slices]
-        slices.pop(0)
-        for s in slices:
-            idx = []
-            g1 = self.graphs[str(s - 1)]
-            g2 = self.graphs[str(s)]
-            dg = self.delta_graphs[str(s)]
-            delta_source = dg["source"]
-            delta_target = dg["target"]
-            delta_weight = dg["weight"]
-            source1 = g1["source"]
-            source2 = g2["source"]
-            target1 = g1["target"]
-            target2 = g2["target"]
-            weight1 = g1["weight"]
-            weight2 = g2["weight"]
-            for i in range(len(source2)):
-                for j in range(len(source1)):
-                    if (source1[j] == source2[i]) and (target1[j] == target2[i]):
-                        if weight1[j] != weight2[i]:
-                            weight2[i] -= weight1[j]
-
-                        else:
-                            idx.append(i)
-
-            # print(sorted(idx))
-            for i in sorted(idx, reverse=True):
-                delta_source.pop(i)
-                delta_target.pop(i)
-                delta_weight.pop(i)
-            print("Done with slice ", s)
-
-        self.test_dict_conservation(self.delta_graphs)
-
-        # n1 =self.slices["1"]["num_nodes"]
-        # n2 = self.slices["2"]["num_nodes"]
-        # print(f"num_nodes s1 {n1}")
-        # print(f"num_nodes s2 {n2}")
-
-        # print("len all graphs 2 = ", len(self.graphs["2"]["source"]))
-        # print("len delta graphs 2 = ", len(self.delta_graphs["2"]["source"]))
-
-        with open(self.outer_path + "delta_graphs_v2.json", "w") as fp:
-            json.dump(self.delta_graphs, fp)
-
-    def produce_delta_graph_dict(self):
-        # Insanely slow, but all other methods I've tried have failed.
-        self.delta_graphs = {}
-        for s in self.slices.keys():
-            self.delta_graphs[s] = {"source": [], "target": [], "weight": []}
-        for k in ["source", "target", "weight"]:
-            self.delta_graphs["1"][k] = copy.deepcopy(self.graphs["1"][k])
-
-        slices = list(self.slices.keys())
-        slices = [int(s) for s in slices]
-        slices.pop(0)
-        for s in slices:
-            g1 = self.graphs[str(s - 1)]
-            g2 = self.graphs[str(s)]
-            source1 = g1["source"]
-            source2 = g2["source"]
-            target1 = g1["target"]
-            target2 = g2["target"]
-            diff_s = np.setdiff1d(source2, source1, assume_unique=False)
-            diff_t = np.setdiff1d(target2, target1, assume_unique=False)
-            for v in range(len(source2)):
-                for d in diff_s:
-                    if source2[v] == d:
-                        for k in ["source", "target", "weight"]:
-                            self.delta_graphs[str(s)][k].append(g2[k][v])
-                for t in diff_t:
-                    if target2[v] == t:
-                        for k in ["source", "target", "weight"]:
-                            self.delta_graphs[str(s)][k].append(g2[k][v])
-
-            print("Done with slice ", s)
-
-        self.test_dict_conservation(self.delta_graphs)
-
-        with open(self.outer_path + "delta_graphs.json", "w") as fp:
-            json.dump(self.delta_graphs, fp)
-
-    def test_dict_conservation(self, graph_dict):
-        for s in graph_dict.keys():
-            slice = graph_dict[s]
-            assert len(slice["source"]) == len(slice["target"])
-            assert len(slice["source"]) == len(slice["weight"])
-
-    def test_delta_lenght(self):
-        for s in self.slices.keys():
-            d = self.delta_graphs[s]
-            a = self.graphs[s]
-            assert len(d["source"]) == len(d["target"])
-            assert len(d["source"]) == len(d["weight"])
-            ds = d["source"]
-            ass = a["source"]
-            print("slice ", s)
-            print(f"delta len source {len(ds)}")
-            print(f"original len source {len(ass)}\n")
-
     def plot_dates_dist(self, slices_dict, plot_folder):
-        #
-        # Function for plotting time distribution of tweets.
-        # Produces N-plots (N = number of slices in experiment) with time period on the x-axis
-        # number of tweets in time period on y-axis.
-        #
+        """Method for plotting time distribution of tweets.
+
+        - Produces N-plots (N = number of slices in experiment) with time period on the x-axis
+          number of tweets in time period on y-axis.
+
+        Args:
+            slices_dict (dictionary): Dictionary of slices
+            plot_folder (string): Name of folder to save plots
+        """
 
         days_delta = 90  # Bin size in days
         for slice in slices_dict:
@@ -299,11 +171,16 @@ class ExtractSlices():
             plt.clf()
 
     def plot_tweets_before_2020(self, slices_dict, plot_folder):
-        #
-        # Function for plotting tweets before 2020.
-        # Produces one plot with slices on x-axis and normalized or not normalized
-        # number of tweets before 2020 in that slice.
-        #
+        """Method for plotting tweets before 2020.
+
+        - Produces one plot with slices on x-axis and normalized or not normalized
+          number of tweets before 2020 in that slice.
+
+        Args:
+            slices_dict (dictionary): Dictionary of slices
+            plot_folder (string): Name of folder to save plots
+        """
+
 
         tweets = []
         slice_arange = []
@@ -340,10 +217,14 @@ class ExtractSlices():
         # plt.show()
 
     def find_timeline(self, slices_dict):
-        #
-        # Function for finding the first and last tweet posted in slice.
-        # Adds findings as attribute to dict self.slices.
-        #
+        """Method for finding the first and last tweet posted in slice.
+
+        - Adds findings as attribute to dict self.slices.
+
+        Args:
+            slices_dict (dictionary): Dictionary of slices
+        """
+
 
         for slice in slices_dict.keys():
             atts = slices_dict[slice]["node_attributes"]
@@ -372,9 +253,12 @@ class ExtractSlices():
             slices_dict[slice]["end_date_node_index"] = last_node
 
     def find_num_deleted_users(self, slices_dict):
-        #
-        # Functions for locating missing users in slice_x, x!= 1, based on users in slice_1.
-        #
+        """Method for locating missing users in slice_x, x!= 1, based on users in slice_1.
+
+        Args:
+            slices_dict (dictionary): Dictionary of slices
+        """
+
 
         ids_first_slice = []
         users = slices_dict["1"]["node_attributes"]
@@ -404,4 +288,150 @@ class ExtractSlices():
             count_deleted_users[idx] += 1
 
         print(count_deleted_users)
+        """
+
+
+
+
+    """
+        # Should this be in parse_slices instead? Difficult since parse slices is optimized for parsing self.slices, not functions who takes dicts or files
+        def produce_deltas(self):
+            #
+            # Function for producing delta slices.
+            # Each delta slice is slice i+1 - slice i for all slices in experiment.
+            #
+
+            self.delta_slices = copy.deepcopy(self.slices)
+            for i in range(1, len(self.slices.keys())):
+                id_in_1 = []
+                j = i + 1
+                slice1 = self.slices[str(i)]
+                slice2 = self.slices[str(j)]
+                for user in slice1["node_attributes"]:
+                    id_in_1.append(slice1["node_attributes"][user]["id"])
+
+                for user in slice2["node_attributes"]:
+                    if slice2["node_attributes"][user]["id"] in id_in_1:
+                        self.delta_slices[str(j)]["node_attributes"].pop(user)
+
+                print(
+                    "OG slice ",
+                    j,
+                    " len = ",
+                    len(self.slices[str(j)]["node_attributes"].keys()),
+                )
+                print(
+                    "Delta slice ",
+                    j,
+                    " len =",
+                    len(self.delta_slices[str(j)]["node_attributes"].keys()),
+                )
+
+            self.find_num_nodes(self.delta_slices)
+            self.find_timeline(self.delta_slices)
+            with open(self.outer_path + "delta_slices.json", "w") as fp:
+                json.dump(self.delta_slices, fp)
+
+        def produce_delta_graph_dict_v2(self):
+            self.delta_graphs = copy.deepcopy(self.graphs)
+            slices = list(self.slices.keys())
+            slices = [int(s) for s in slices]
+            slices.pop(0)
+            for s in slices:
+                idx = []
+                g1 = self.graphs[str(s - 1)]
+                g2 = self.graphs[str(s)]
+                dg = self.delta_graphs[str(s)]
+                delta_source = dg["source"]
+                delta_target = dg["target"]
+                delta_weight = dg["weight"]
+                source1 = g1["source"]
+                source2 = g2["source"]
+                target1 = g1["target"]
+                target2 = g2["target"]
+                weight1 = g1["weight"]
+                weight2 = g2["weight"]
+                for i in range(len(source2)):
+                    for j in range(len(source1)):
+                        if (source1[j] == source2[i]) and (target1[j] == target2[i]):
+                            if weight1[j] != weight2[i]:
+                                weight2[i] -= weight1[j]
+
+                            else:
+                                idx.append(i)
+
+                # print(sorted(idx))
+                for i in sorted(idx, reverse=True):
+                    delta_source.pop(i)
+                    delta_target.pop(i)
+                    delta_weight.pop(i)
+                print("Done with slice ", s)
+
+            self.test_dict_conservation(self.delta_graphs)
+
+            # n1 =self.slices["1"]["num_nodes"]
+            # n2 = self.slices["2"]["num_nodes"]
+            # print(f"num_nodes s1 {n1}")
+            # print(f"num_nodes s2 {n2}")
+
+            # print("len all graphs 2 = ", len(self.graphs["2"]["source"]))
+            # print("len delta graphs 2 = ", len(self.delta_graphs["2"]["source"]))
+
+            with open(self.outer_path + "delta_graphs_v2.json", "w") as fp:
+                json.dump(self.delta_graphs, fp)
+
+        def produce_delta_graph_dict(self):
+            # Insanely slow, but all other methods I've tried have failed.
+            self.delta_graphs = {}
+            for s in self.slices.keys():
+                self.delta_graphs[s] = {"source": [], "target": [], "weight": []}
+            for k in ["source", "target", "weight"]:
+                self.delta_graphs["1"][k] = copy.deepcopy(self.graphs["1"][k])
+
+            slices = list(self.slices.keys())
+            slices = [int(s) for s in slices]
+            slices.pop(0)
+            for s in slices:
+                g1 = self.graphs[str(s - 1)]
+                g2 = self.graphs[str(s)]
+                source1 = g1["source"]
+                source2 = g2["source"]
+                target1 = g1["target"]
+                target2 = g2["target"]
+                diff_s = np.setdiff1d(source2, source1, assume_unique=False)
+                diff_t = np.setdiff1d(target2, target1, assume_unique=False)
+                for v in range(len(source2)):
+                    for d in diff_s:
+                        if source2[v] == d:
+                            for k in ["source", "target", "weight"]:
+                                self.delta_graphs[str(s)][k].append(g2[k][v])
+                    for t in diff_t:
+                        if target2[v] == t:
+                            for k in ["source", "target", "weight"]:
+                                self.delta_graphs[str(s)][k].append(g2[k][v])
+
+                print("Done with slice ", s)
+
+            self.test_dict_conservation(self.delta_graphs)
+
+            with open(self.outer_path + "delta_graphs.json", "w") as fp:
+                json.dump(self.delta_graphs, fp)
+
+        def test_dict_conservation(self, graph_dict):
+            for s in graph_dict.keys():
+                slice = graph_dict[s]
+                assert len(slice["source"]) == len(slice["target"])
+                assert len(slice["source"]) == len(slice["weight"])
+
+        def test_delta_lenght(self):
+            for s in self.slices.keys():
+                d = self.delta_graphs[s]
+                a = self.graphs[s]
+                assert len(d["source"]) == len(d["target"])
+                assert len(d["source"]) == len(d["weight"])
+                ds = d["source"]
+                ass = a["source"]
+                print("slice ", s)
+                print(f"delta len source {len(ds)}")
+                print(f"original len source {len(ass)}\n")
         """
