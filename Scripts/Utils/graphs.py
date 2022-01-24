@@ -39,25 +39,24 @@ class Graphs(OpenDict):
 
         total_s = time.perf_counter()
         for slice in self.graphs_from_file.keys():
-            if int(slice) <= 10:
-                T_netx_s = time.perf_counter()
-                print("Making nx graph for slice: ", slice)
-                graph = self.graphs_from_file[slice]
-                sources, targets, weights = graph["source"], graph["target"], graph["weight"]
-                list_of_edges = []
-                for i in range(len(sources)):
-                    list_of_edges.append((str(sources[i]), str(targets[i]), {"weight": weights[i]}))
+            T_netx_s = time.perf_counter()
+            print("Making nx graph for slice: ", slice)
+            graph = self.graphs_from_file[slice]
+            sources, targets, weights = graph["source"], graph["target"], graph["weight"]
+            list_of_edges = []
+            for i in range(len(sources)):
+                list_of_edges.append((str(sources[i]), str(targets[i]), {"weight": weights[i]}))
 
-                G = nx.Graph()
-                G.add_edges_from(list_of_edges)
+            G = nx.Graph()
+            G.add_edges_from(list_of_edges)
 
-                if self.slice_att:
-                    self.node_attributes = self.slices[slice]["node_attributes"]
-                    nx.set_node_attributes(G, self.node_attributes)
+            if self.slice_att:
+                self.node_attributes = self.slices[slice]["node_attributes"]
+                nx.set_node_attributes(G, self.node_attributes)
 
-                self.graphs[slice] = {"graph": G}
-                T_netx_e = time.perf_counter()
-                print(f"NetworkX graph maker took {T_netx_e-T_netx_s:0.4f} s")
+            self.graphs[slice] = {"graph": G}
+            T_netx_e = time.perf_counter()
+            print(f"NetworkX graph maker took {T_netx_e-T_netx_s:0.4f} s")
 
         total_e = time.perf_counter()
         print(f"TOTAL NetworkX graph maker took {total_e-total_s:0.4f} s")
