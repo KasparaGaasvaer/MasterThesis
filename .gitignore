@@ -3,3 +3,4 @@ __pycache__/
 *.json
 **/experiment_100/
 **/experiment100/parsed_dictionaries/Clusters/
+**/experiment_12/
