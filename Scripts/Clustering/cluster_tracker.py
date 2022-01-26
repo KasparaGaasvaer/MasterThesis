@@ -6,15 +6,22 @@ import numpy as np
 
 class ClusterTracker:
     def __init__(self, path):
-        self.path_to_clusters = path + "parsed_dictionaries/Clusters/"
-        self.path_to_save_stats = path + "statistics/cluster_stats/"
 
+        self.path = path
+        self.path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
+        if not os.path.exists(self.path_to_clusters):
+            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no")
+            if int(k_value):
+                self.path = path + "k_" + str(k_value) + "/"
+                self.path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
+
+        self.path_to_save_stats = self.path + "statistics/cluster_stats/"
         self.num_slices = len(os.listdir(self.path_to_clusters))
         
         #self.track_largest()
         #self.plot_track_largest()
         #self.table_biggest_cluster_size()
-        expnum = path.split("/")[1]
+        expnum = self.path.split("/")[1]
         expnum = int(expnum.split("t")[1])    
         self.compare_clusters(100, expnum)
         #self.does_any_id_change(filename = self.path_to_save_stats + "100_cluster_IDs_experiment100.txt")

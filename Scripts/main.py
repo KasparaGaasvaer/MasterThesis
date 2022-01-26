@@ -21,7 +21,6 @@ from Clustering.cluster_tracker import *
 path = "./experiment12/experiment_12/"
 my_class = Slices(path)
 
-
 #path = "./experiment6/"
 #path = "./experiment7/"
 #path = "./experiment100/"

@@ -30,6 +30,17 @@ class Slices:
     def __init__(self, path_to_directory):
         self.path2dir = path_to_directory
         all_files = os.listdir(self.path2dir)  # List all files in dir = self.path2dir
+        if len(all_files) <= 10:  #No experiments have less than 11 slices (think this can be like 50, but thats a later problem)
+            k_value = input("Is this a k-value experiment? Please input k-value \n If this is NOT a k-value experiment, the experiment has to few slices")
+            if int(k_value):
+                self.path2dir = path_to_directory + "k_" + str(k_value) + "/"
+                all_files = os.listdir(self.path2dir)
+            else:
+                print("Try another path to experiment")
+                sys.exit()
+            
+        
+
         self.all_slices = []  # Container for all filenames to be used
         self.graphs = {}  # Container for graphs made from all slices in dir
         self.slices = {}  # Container for all information about all slices in dir

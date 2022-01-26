@@ -36,11 +36,21 @@ class Leiden(Graphs):
             graph_type (string): NetworkX (nx) or iGraph (ig)
             attributes_bool (bool): True if experiment comes with node-labels
         """
-        super().__init__(path, graph_type, attributes_bool)
 
+        self.path = path
+        self.path_to_dict = self.path + "parsed_dictionaries/"
+        if not os.path.exists(self.path_to_dict):
+            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no")
+            if int(k_value):
+                self.path = path + "k_" + str(k_value) + "/"
+                self.path_to_dict= self.path + "parsed_dictionaries/"
+            if k_value == "no":
+                print("This experiment has no parsed dictionaries yet")
+                sys.exit()
 
-        self.path_to_dict = path + "parsed_dictionaries/"
-        self.path_to_plots = path +  "plots/Clustering/Leiden/"
+        super().__init__(self.path, graph_type, attributes_bool)
+
+        self.path_to_plots = self.path +  "plots/Clustering/Leiden/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 

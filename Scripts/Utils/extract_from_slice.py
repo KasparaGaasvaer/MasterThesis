@@ -35,9 +35,15 @@ class ExtractSlices():
         Args:
             path (string): path to experiment data
         """
+        self.path = path
+        self.outer_path = self.path + "parsed_dictionaries/"
+        if not os.path.exists(self.outer_path):
+            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment pleae input no")
+            if int(k_value):
+                self.path = self.path + "k_" + str(k_value) + "/"
+                self.outer_path = self.path + "parsed_dictionaries/"
 
-        self.outer_path = path + "parsed_dictionaries/"
-        OpenDicts = OpenDict(path)
+        OpenDicts = OpenDict(self.path)
         #self.slices, self.common_attributes, self.graphs = OpenDicts.open_dicts(["slices", "attributes","graphs"])
         self.graphs = OpenDicts.open_dicts(["graphs"])
 

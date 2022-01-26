@@ -11,12 +11,24 @@ sys.path.append(
 
 class PlotClusterStats:
     def __init__(self, path, method):
+        
+        self.path = path
         self.path_to_stats = path + "statistics/"
+        if not os.path.exists(self.path_to_stats):
+            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no")
+            if int(k_value):
+                self.path = path + "k_" + str(k_value) + "/"
+                self.path_to_stats = self.path + "statistics/"
+            if k_value == "no":
+                print("This experiment has no statistics yet")
+                sys.exit()
+
+
         self.method = method
-        self.path_to_plots = path + "plots/Clustering/" + self.method.title() + "/"
+        self.path_to_plots = self.path + "plots/Clustering/" + self.method.title() + "/"
 
         if not os.path.exists(self.path_to_plots):
-                os.makedirs(self.path_to_plots)
+            os.makedirs(self.path_to_plots)
 
  
         self.filename_nodes_in_largest_cluster = "largest_partitions_" + self.method + ".txt"

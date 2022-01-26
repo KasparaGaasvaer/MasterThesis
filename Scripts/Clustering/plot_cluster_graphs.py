@@ -16,10 +16,21 @@ import community as cluster_louvain
 
 class PlotClusterGraphs(Graphs):
     def __init__(self, path, method, selection, attributes_bool):
-        super().__init__(path, "nx", attributes_bool)
 
-        OpenDicts = OpenDict(path)
+        self.path = path
         self.path_to_partitions = path + "parsed_dictionaries/"
+        if not os.path.exists(self.path_to_partitions):
+            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no")
+            if int(k_value):
+                self.path = path + "k_" + str(k_value) + "/"
+                self.path_to_partitions= self.path + "parsed_dictionaries/"
+            if k_value == "no":
+                print("This experiment has no parsed dictionaries yet")
+                sys.exit()
+
+        super().__init__(self.path, "nx", attributes_bool)
+
+        OpenDicts = OpenDict(self.path)
         self.num_total_slices = len(self.graphs.keys())
         
 
@@ -27,7 +38,7 @@ class PlotClusterGraphs(Graphs):
 
         self.method = method
         self.partition_dict = OpenDicts.open_dicts(["part_"+self.method])
-        self.path_to_plots = path + "plots/Clustering/"+self.method.title()+"/Graphs/"
+        self.path_to_plots = self.path + "plots/Clustering/"+self.method.title()+"/Graphs/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
