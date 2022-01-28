@@ -25,7 +25,7 @@ class PartitionWorker():
         self.path = path
         self.path_to_partitions = path + "parsed_dictionaries/"
         if not os.path.exists(self.path_to_partitions):
-            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no")
+            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
             if int(k_value):
                 self.path = path + "k_" + str(k_value) + "/"
                 self.path_to_partitions= self.path + "parsed_dictionaries/"
@@ -34,11 +34,10 @@ class PartitionWorker():
                 sys.exit()
 
         OpenDicts = OpenDict(self.path)
-
         self.path_to_stats_results = self.path + "statistics/"
         if not os.path.exists(self.path_to_stats_results):
             os.makedirs(self.path_to_stats_results)
-        
+      
         self.method = method
         self.filename_jumpers = "all_slices_partition_jumper_stats_" + self.method + ".txt"
         self.filename_largest_partition = "largest_partitions_" + self.method + ".txt"
@@ -51,13 +50,12 @@ class PartitionWorker():
 
         # self.compare_partitions()
         # self.count_jumpers()
-        #self.identify_largest_cluster()
-        #self.extract_number_of_clusters()
-        #self.extract_cluster_size_dist()
-        self.compare_clusters()
+        self.identify_largest_cluster()
+        self.extract_number_of_clusters()
+        self.extract_cluster_size_dist()
+        #self.compare_clusters()
 
     def compare_partitions(self):
-
         slice_num1 = "1"
         slice_num2 = "2"
         s_1 = self.partition_dict[slice_num1]
@@ -179,6 +177,7 @@ class PartitionWorker():
                 outfile.write(f"    {s:20}{c}\n")
 
     def extract_cluster_size_dist(self):
+        """ Produces dict with key = slice number, value = list where index is size and value is cluster ID """
         slices = {}
         for slice in self.partition_dict.keys():
             s = self.partition_dict[slice]

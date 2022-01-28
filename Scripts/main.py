@@ -19,21 +19,21 @@ from Clustering.cluster_tracker import *
 #path = "./experiment6/experiment_6/"
 #path = "./experiment100/experiment_100/"
 path = "./experiment12/experiment_12/"
-my_class = Slices(path)
+#my_class = Slices(path)
 
 #path = "./experiment6/"
 #path = "./experiment7/"
 #path = "./experiment100/"
-#path = "./experiment12/"
+#path = "./experiment12/experiment_12/"
 #my_class = ExtractSlices(path)
-#my_class.extract()  for now called by constructor
+#my_class.extract()  for now called by constructor, aka not necessary
 
-#my_class = Leiden(path,"nx", attributes_bool = False)    #these take a lot longer with attributes?
+#my_class = Leiden(path,"nx", attributes_bool = True)    #these take a lot longer with attributes?
 #my_class = Louvain(path,"nx", attributes_bool = False)
 #my_class = Graphs(path,"nx", attributes_bool = True)
-#my_class = PartitionWorker(path,"louvain")
+my_class = PartitionWorker(path,"leiden")
 #my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=False)
-#my_class = PlotClusterStats(path,"louvain")
+#my_class = PlotClusterStats(path,"leiden")
 #my_class = PlotGraph(path, ["num_edges"])
 #my_class = ClusterTracker(path)
 

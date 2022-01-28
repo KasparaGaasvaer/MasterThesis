@@ -18,7 +18,7 @@ class OpenDict:
 
         self.path = path + "parsed_dictionaries/"
         if not os.path.exists(self.path):
-            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment pleae input no")
+            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
             if int(k_value):
                 self.path = path + "k_" + str(k_value) + "/parsed_dictionaries/"
 

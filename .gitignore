@@ -3,5 +3,13 @@ __pycache__/
 *.json
 **/experiment_100/
 **/experiment100/parsed_dictionaries/Clusters/
-**/experiment_12/
+**/experiment12/experiment_12/k_200/k200/
+**/experiment12/experiment_12/k_400/k400/
+**/experiment12/experiment_12/k_600/k600/
+**/experiment12/experiment_12/k_800/k800/
+**/experiment12/experiment_12/k_200/k200/parsed_dictionaries/
+**/experiment12/experiment_12/k_400/k400/parsed_dictionaries/
+**/experiment12/experiment_12/k_600/k600/parsed_dictionaries/
+**/experiment12/experiment_12/k_800/k800/parsed_dictionaries/
 **/experiment12/experiment_12.zip
+#**/experiment12/

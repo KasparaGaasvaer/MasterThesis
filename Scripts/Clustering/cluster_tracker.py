@@ -9,22 +9,38 @@ class ClusterTracker:
 
         self.path = path
         self.path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
+
+        expnum = self.path.split("/")[1]
+        expnum = int(expnum.split("t")[1])   
+
+    
+
         if not os.path.exists(self.path_to_clusters):
-            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no")
+            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
             if int(k_value):
                 self.path = path + "k_" + str(k_value) + "/"
                 self.path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
+                expnum = str(expnum) + "_k" + str(k_value)
+                self.num_slices = len(os.listdir(self.path_to_clusters)) - 1 #last slice has no cluster for k = 800
+        else:
+            self.num_slices = len(os.listdir(self.path_to_clusters))
 
         self.path_to_save_stats = self.path + "statistics/cluster_stats/"
-        self.num_slices = len(os.listdir(self.path_to_clusters))
+        if not os.path.exists(self.path_to_save_stats):
+            os.makedirs(self.path_to_save_stats)
+
+
+        self.path_to_plots = self.path + "plots/Clustering/Java/"
+        if not os.path.exists(self.path_to_plots):
+            os.makedirs(self.path_to_plots)
+
         
         #self.track_largest()
+        NL = 100 #num largest clusters
         #self.plot_track_largest()
-        #self.table_biggest_cluster_size()
-        expnum = self.path.split("/")[1]
-        expnum = int(expnum.split("t")[1])    
-        self.compare_clusters(100, expnum)
-        #self.does_any_id_change(filename = self.path_to_save_stats + "100_cluster_IDs_experiment100.txt")
+        #self.table_biggest_cluster_size() 
+        #self.compare_clusters(NL, expnum)
+        #self.does_any_id_change(filename = self.path_to_save_stats + str(NL) + "_cluster_IDs_experiment" + str(expnum) + ".txt")
     
     def track_largest(self):
         open_time_start = time.perf_counter()
@@ -101,7 +117,7 @@ class ClusterTracker:
 
         open_time_end = time.perf_counter()
         print(f"Time spent tracking largest cluster: {open_time_end-open_time_start:0.4f} s")
-        with open(self.path_to_save_stats + "tracking_largest_cluster_test.txt","w") as ouf:
+        with open(self.path_to_save_stats + "tracking_largest_cluster.txt","w") as ouf:
             ouf.write("Slice i -> i+1      Cluster ID i,i+1      Cluster size i,i+1                             Intersects                           Intersect ids\n")
             for l in range(len(L_idxs)-1):
                 int_3 = inters_3[l]
@@ -110,21 +126,21 @@ class ClusterTracker:
             
 
     def plot_track_largest(self):
-        
         sizes = []
         intersects = []
         with open(self.path_to_save_stats + "tracking_largest_cluster.txt","r") as innf:
             innf.readline()
             lines = innf.readlines()
             for line in lines:
+                print(f"line nr {o}")
                 line = line.split()
-                size = line[-2].split(",")[0]
+                size = line[-3].split(",")[0]
                 sizes.append(int(size))
-                intersects.append(float(line[-1]))
+                intersects.append(float(line[-2].split(",")[0]))
             
             last = lines[-1]
             last = last.split()
-            size = line[-2].split(",")[-1]
+            size = line[-3].split(",")[-1]
             sizes.append(int(size))
 
         
@@ -134,14 +150,15 @@ class ClusterTracker:
         plt.xlabel("Slice num")
         plt.ylabel("Num vertices in cluster")
         plt.title("Size of cluster when tracking largest from slice 1")
-        plt.savefig(self.path_to_save_stats + "size_largest.pdf")
+        plt.savefig(self.path_to_plots + "size_largest.pdf")
         plt.clf()
 
         plt.plot(slices[1:],intersects, "*")
         plt.xlabel("Slice num i")
         plt.ylabel("Intersect from slice i-1 -> i")
         plt.title("Intersect of largest cluster i-1 -> i")
-        plt.savefig(self.path_to_save_stats + "intersect_largest.pdf")
+        plt.savefig(self.path_to_plots + "intersect_largest.pdf")
+        plt.clf()
 
         
     def table_biggest_cluster_size(self):
@@ -197,6 +214,7 @@ class ClusterTracker:
         N_idx_sim1 = sim1_idx[-N_largest:]
         im1_list_of_sets = {}
 
+        
         for indx in range(N_largest):
             N = str(N_idx_sim1[indx])
             verts = sim1[N]["uid"]
