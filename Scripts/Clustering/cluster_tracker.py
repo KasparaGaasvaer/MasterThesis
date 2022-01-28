@@ -156,7 +156,7 @@ class ClusterTracker:
         plt.plot(slices[1:],intersects, ".k")
         plt.xlabel(r"Slice $S_i$")
         plt.ylabel(r"Intersect from slice $S_{i-1} \rightarrow S_i$")
-        plt.title(r"Intersect of largest cluster $C_{i-1} -> C_i$")
+        plt.title(r"Intersect of largest cluster $C_{i-1} \rightarrow C_i$")
         plt.savefig(self.path_to_plots + "intersect_largest.pdf")
         plt.clf()
 
