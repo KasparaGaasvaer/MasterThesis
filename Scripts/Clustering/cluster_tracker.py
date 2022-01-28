@@ -4,6 +4,7 @@ import pandas as pd
 from copy import deepcopy
 import numpy as np 
 
+
 class ClusterTracker:
     def __init__(self, path):
 
@@ -37,7 +38,7 @@ class ClusterTracker:
         
         #self.track_largest()
         NL = 100 #num largest clusters
-        #self.plot_track_largest()
+        self.plot_track_largest()
         #self.table_biggest_cluster_size() 
         #self.compare_clusters(NL, expnum)
         #self.does_any_id_change(filename = self.path_to_save_stats + str(NL) + "_cluster_IDs_experiment" + str(expnum) + ".txt")
@@ -94,7 +95,7 @@ class ClusterTracker:
                         si_hit_dict[ci] +=1
 
             max_intersect = max(si_hit_dict, key=si_hit_dict.get)
-            max_3_intersects = sorted(si_hit_dict, key=si_hit_dict.get, reverse=True)[:3]
+            max_3_intersects = sorted(si_hit_dict, key=si_hit_dict.get, reverse=True)[:3] #three clusters in i whom contain moste of the nodes from largest cluster in im1
             inters_3_ids.append(max_3_intersects)
             
             inters = []
@@ -132,7 +133,6 @@ class ClusterTracker:
             innf.readline()
             lines = innf.readlines()
             for line in lines:
-                print(f"line nr {o}")
                 line = line.split()
                 size = line[-3].split(",")[0]
                 sizes.append(int(size))
@@ -146,17 +146,17 @@ class ClusterTracker:
         
         slices = [i for i in range(1,len(sizes)+1)]
         
-        plt.plot(slices,sizes, "*")
-        plt.xlabel("Slice num")
+        plt.plot(slices,sizes, ".k")
+        plt.xlabel(r"Slice $S_i$")
         plt.ylabel("Num vertices in cluster")
         plt.title("Size of cluster when tracking largest from slice 1")
         plt.savefig(self.path_to_plots + "size_largest.pdf")
         plt.clf()
 
-        plt.plot(slices[1:],intersects, "*")
-        plt.xlabel("Slice num i")
-        plt.ylabel("Intersect from slice i-1 -> i")
-        plt.title("Intersect of largest cluster i-1 -> i")
+        plt.plot(slices[1:],intersects, ".k")
+        plt.xlabel(r"Slice $S_i$")
+        plt.ylabel(r"Intersect from slice $S_{i-1} \rightarrow S_i$")
+        plt.title(r"Intersect of largest cluster $C_{i-1} -> C_i$")
         plt.savefig(self.path_to_plots + "intersect_largest.pdf")
         plt.clf()
 
