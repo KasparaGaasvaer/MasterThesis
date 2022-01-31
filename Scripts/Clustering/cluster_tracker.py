@@ -36,10 +36,10 @@ class ClusterTracker:
             os.makedirs(self.path_to_plots)
 
         
-        #self.track_largest()
+        self.track_largest()
         NL = 100 #num largest clusters
         self.plot_track_largest()
-        #self.table_biggest_cluster_size() 
+        self.table_biggest_cluster_size() 
         #self.compare_clusters(NL, expnum)
         #self.does_any_id_change(filename = self.path_to_save_stats + str(NL) + "_cluster_IDs_experiment" + str(expnum) + ".txt")
     

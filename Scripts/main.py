@@ -14,6 +14,7 @@ from Clustering.partition_worker import *
 from Clustering.plot_cluster_graphs import *
 from Clustering.plot_cluster_stats import *
 from Clustering.cluster_tracker import *
+from Clustering.cluster_tracker_SharedDict import *
 
 #path = "./experiment7/experiment_7/"
 #path = "./experiment6/experiment_6/"
@@ -35,7 +36,8 @@ path = "./experiment12/experiment_12/"
 #my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=False)
 #my_class = PlotClusterStats(path,"leiden")
 #my_class = PlotGraph(path, ["num_edges"])
-my_class = ClusterTracker(path)
+#my_class = ClusterTracker(path)
+my_class = ClusterTracker_SD(path,"leiden")
 
 
 #59-76 large num edges? Critical area?
