@@ -36,7 +36,7 @@ class ClusterTracker:
             os.makedirs(self.path_to_plots)
 
         
-        self.track_largest()
+        #self.track_largest()
         NL = 100 #num largest clusters
         self.plot_track_largest()
         self.table_biggest_cluster_size() 

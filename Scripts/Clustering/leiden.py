@@ -17,6 +17,7 @@ sys.path.append(
 )  # Adds higher directory to python modules path, looking for Graphs-class one level up
 
 import leidenalg as la
+# check out leidenalg.find_partition_temporal
 from Utils.graphs import Graphs
 
 # ==============================Leiden Cluster Detection==============================
@@ -62,6 +63,8 @@ class Leiden(Graphs):
         if graph_type == "ig":
             self.ig_leiden()
 
+        self.num_total_slices = 1
+
     def nx_leiden(self):
         """Leiden algorithm for NetworkX-graphs
         """
@@ -81,6 +84,7 @@ class Leiden(Graphs):
             partition = la.find_partition(G, la.ModularityVertexPartition)
             part_e = time.perf_counter()
             print(f"Time spent making partitions is {part_e-part_s:0.4f} s")
+            print(partition)
 
             dict_s = time.perf_counter()
             self.nx_make_partition_dict(G, partition)
@@ -115,7 +119,7 @@ class Leiden(Graphs):
 
     
     def nx_make_partition_dict(self, G, partition):
-        """Method for constructing dictionaries woth partitions from Leiden-alg
+        """Method for constructing dictionaries with partitions from Leiden-alg
 
         Args:
             G (iGraph-object): iGraph graph

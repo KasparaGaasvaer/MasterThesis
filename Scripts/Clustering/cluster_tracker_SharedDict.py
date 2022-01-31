@@ -55,6 +55,7 @@ class ClusterTracker_SD:
             clusters = json.load(inf)
 
         self.num_slices = len(clusters.keys())
+        print(self.num_slices)
 
         L_size = 0
         L_idx = "a"
