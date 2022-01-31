@@ -84,8 +84,7 @@ class Leiden(Graphs):
             partition = la.find_partition(G, la.ModularityVertexPartition)
             part_e = time.perf_counter()
             print(f"Time spent making partitions is {part_e-part_s:0.4f} s")
-            print(partition)
-
+    
             dict_s = time.perf_counter()
             self.nx_make_partition_dict(G, partition)
             dict_e = time.perf_counter()
