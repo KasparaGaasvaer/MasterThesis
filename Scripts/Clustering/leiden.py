@@ -9,7 +9,6 @@ import json
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import time
-import numba as nb
 
 # from cdlib import algorithms
 sys.path.append(
