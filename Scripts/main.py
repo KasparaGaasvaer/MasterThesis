@@ -19,12 +19,12 @@ from Clustering.cluster_tracker_SharedDict import *
 #path = "./experiment7/experiment_7/"
 #path = "./experiment6/experiment_6/"
 #path = "./experiment100/experiment_100/"
-path = "./experiment12/experiment_12/"
+#path = "./experiment12/experiment_12/"
 #my_class = Slices(path)
 
 #path = "./experiment6/"
 #path = "./experiment7/"
-#path = "./experiment100/"
+path = "./experiment100/"
 #path = "./experiment12/experiment_12/"
 #my_class = ExtractSlices(path)
 #my_class.extract()  for now called by constructor, aka not necessary
@@ -36,8 +36,8 @@ path = "./experiment12/experiment_12/"
 #my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=False)
 #my_class = PlotClusterStats(path,"leiden")
 #my_class = PlotGraph(path, ["num_edges"])
-my_class = ClusterTracker(path)
-#my_class = ClusterTracker_SD(path,"leiden")
+#my_class = ClusterTracker(path)
+my_class = ClusterTracker_SD(path,"leiden")
 
 
 #59-76 large num edges? Critical area?

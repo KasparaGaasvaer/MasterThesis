@@ -36,10 +36,10 @@ class ClusterTracker_SD:
 
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
-        self.track_largest()
-        NL = 100
-        self.plot_track_largest()
-
+        #self.track_largest()
+        NL = 10
+        #self.plot_track_largest()
+        self.compare_N_largest_across_slices(NL)
 
     def track_largest(self):
         open_time_start = time.perf_counter()
@@ -123,6 +123,92 @@ class ClusterTracker_SD:
                 int_3_idx = inters_3_ids[l]
                 ouf.write(f"{l+1}->{l+2}                     {L_idxs[l]},{L_idxs[l+1]}               {L_sizes[l]},{L_sizes[l+1]}            {int_3[0]},{int_3[1]},{int_3[2]}            {int_3_idx[0]},{int_3_idx[1]},{int_3_idx[2]}\n")     #{intersects[l]}\n")
     
+    def compare_N_largest_across_slices(self,N):
+        # - Identify N largest clusters in si
+        # - Identify N largest clusters in sip1
+        # - Compare the N and calculate intersect
+        #    - That is, for every cluster we will have N-1 intersects,
+        #      the 3 largest are stored as well as which clusters that was,
+        #      also their size 0-N
+        #  Slice number - Cluster id for i - Cluster id for im1 - Intersect - Sizes for i - Sizes for im1 - Ranked size i - Ranked size im1
+        # - Makes file with Sim1->Si [Cid_im10,Cid_im11,Cid_im12] [Cid_i0,Cid_i1,Cid_i2]  [IS_0, IS_1, IS_2] [Sz_im10,Sz_im11,Sz_im12] [Sz_i0,Sz_i1,Sz_i2] [RankSz_im10,RankSz_im11,RankSz_im12] [RankSz_i0,RankSz_i1,RankSz_i2] 
+
+        with open(self.clusters, "r") as inf:
+            clusters = json.load(inf)
+            
+        maxN = 3
+        self.num_slices = len(clusters.keys())
+        print(self.num_slices)
+
+        with open(self.path_to_save_stats + f"finding_{maxN}_largest_intersects_from_{N}_largest_clusters_SD.txt","w") as ouf:
+            ouf.write("[Sim1->Si] [Cid_im10,Cid_im11,Cid_im12] [Cid_i0,Cid_i1,Cid_i2] [IS_0, IS_1, IS_2] [Sz_im10,Sz_im11,Sz_im12] [Sz_i0,Sz_i1,Sz_i2] [RankSz_im10,RankSz_im11,RankSz_im12] [RankSz_i0,RankSz_i1,RankSz_i2]\n")
+            
+            sim1 = clusters["1"]
+
+            L_sizes = []
+            L_idxs = []
+            for k in range(len(sim1.keys())): 
+                num_nodes = len(sim1[str(k)])
+                L_sizes.append(num_nodes)
+                L_idxs.append(str(k))
+
+            L_sizes, L_idxs = zip(*sorted(zip(L_sizes, L_idxs),reverse = True))
+            L_sizes = L_sizes[:N]  #Num nodes in N-largest clusters
+            L_idxs = L_idxs[:N]    #IDs of N-largest clusters
+
+            for s in range(2,self.num_slices +1):
+                intersect_mat = np.zeros([N,N])
+                print(s)
+                si = clusters[str(s)]
+
+                Li_sizes = []
+                Li_idxs = []
+                for k in range(len(si.keys())): 
+                    num_nodes = len(si[str(k)])
+                    Li_sizes.append(num_nodes)
+                    Li_idxs.append(str(k))
+
+                Li_sizes, Li_idxs = zip(*sorted(zip(Li_sizes, Li_idxs),reverse = True))
+                Li_sizes = Li_sizes[:N]  #Num nodes in N-largest clusters
+                Li_idxs = Li_idxs[:N]    #IDs of N-largest clusters
+                
+                t_s = time.perf_counter()
+                for im1 in range(N):
+                    im1_idx = L_idxs[im1]
+                    vim1 = set(sim1[im1_idx])
+                    for i in range(N):
+                        i_idx = Li_idxs[i]
+                        vi = set(si[i_idx])
+
+                        inters_n = vim1.intersection(vi)
+                        inters_per = len(inters_n)/L_sizes[im1]
+                        intersect_mat[im1,i] = inters_per
+            
+
+                t_e = time.perf_counter()
+                print(f"Time spent comparing is {t_e-t_s:0.4f} s")
+
+                maxN_idx = np.argpartition(intersect_mat, intersect_mat.size - maxN, axis=None)[-maxN:]
+                result = np.column_stack(np.unravel_index(maxN_idx, intersect_mat.shape))
+                
+                lim11,lim12,lim13 = L_idxs[result[0][0]], L_idxs[result[1][0]], L_idxs[result[2][0]]
+                li1,li2,li3 = Li_idxs[result[0][1]], Li_idxs[result[1][1]], Li_idxs[result[2][1]]
+
+                lsim11,lsim12,lsim13 = L_sizes[result[0][0]], L_sizes[result[1][0]], L_sizes[result[2][0]]
+                lsi1,lsi2,lsi3 = Li_sizes[result[0][1]], Li_sizes[result[1][1]], Li_sizes[result[2][1]]
+
+
+                final_intersects = [intersect_mat[result[0][0],result[0][1]],intersect_mat[result[1][0],result[1][1]],intersect_mat[result[2][0],result[2][1]]]
+
+                rankim11, rankim12,rankim13 = result[0][0],result[1][0],result[2][0]
+                ranki1, ranki2,ranki3 = result[0][1],result[1][1],result[2][1]
+
+                ouf.write(f"{s-1}->{s} {lim11},{lim12},{lim13} {li1},{li2},{li3} {final_intersects[0]},{final_intersects[1]},{final_intersects[2]} {rankim11},{rankim12},{rankim13} {ranki1},{ranki2},{ranki3}\n")  
+                
+                sim1 = clusters[str(s)]
+                L_sizes = Li_sizes
+                L_idxs = Li_idxs
+
 
     def plot_track_largest(self):
         sizes = []

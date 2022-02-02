@@ -41,6 +41,7 @@ for i in range(6,67):
 with open("test_graph.json","w") as ouf:
     json.dump(g, ouf)
 """
+"""
 file = "test_graph.json"
 with open(file, "r") as inf:
     g = json.load(inf)
@@ -82,3 +83,26 @@ for slice in g.keys():
         
 with open("test_parts.json","w") as ouf:
     json.dump(partition_dict, ouf)
+"""
+
+with open("../experiment100/parsed_dictionaries/partitions_leiden.json", "r") as inf:
+    si =  json.load(inf)
+
+s1 = si["1"]
+s2 = si["2"]
+
+for k in s1.keys():
+    v1 = set(s1[k])
+    c = 0
+    for kk in s2.keys():
+        v2 = set(s2[kk])
+
+        inters_n = v1.intersection(v2)
+        inters_p = len(inters_n)/len(v1)
+        if inters_p > 0.9:
+            c+=1
+            print(f"cluster {k} in s1 has {inters_p} intersect with cluster {kk} in s2")
+            print(len(inters_n)," / ", len(v1))
+            
+        if c == 2:
+            print("broken")

@@ -36,10 +36,10 @@ class ClusterTracker:
             os.makedirs(self.path_to_plots)
 
         
-        #self.track_largest()
+        self.track_largest()
         NL = 100 #num largest clusters
-        #self.plot_track_largest()
-        #self.table_biggest_cluster_size() 
+        self.plot_track_largest()
+        self.table_biggest_cluster_size() 
         #self.compare_clusters(NL, expnum)
         #self.does_any_id_change(filename = self.path_to_save_stats + str(NL) + "_cluster_IDs_experiment" + str(expnum) + ".txt")
         self.compare_N_largest_across_slices(NL)
@@ -128,12 +128,12 @@ class ClusterTracker:
 
 
     def compare_N_largest_across_slices(self,N):
-        # - Identify 1N largest clusters in si
-        # - Identify 1N largest clusters in sip1
+        # - Identify N largest clusters in si
+        # - Identify N largest clusters in sip1
         # - Compare the N and calculate intersect
         #    - That is, for every cluster we will have N-1 intersects,
         #      the 3 largest are stored as well as which clusters that was,
-        #      also their size 1-100
+        #      also their size 0-N
         #  Slice number - Cluster id for i - Cluster id for im1 - Intersect - Sizes for i - Sizes for im1 - Ranked size i - Ranked size im1
         # - Makes file with Sim1->Si [Cid_im10,Cid_im11,Cid_im12] [Cid_i0,Cid_i1,Cid_i2]  [IS_0, IS_1, IS_2] [Sz_im10,Sz_im11,Sz_im12] [Sz_i0,Sz_i1,Sz_i2] [RankSz_im10,RankSz_im11,RankSz_im12] [RankSz_i0,RankSz_i1,RankSz_i2] 
 
@@ -209,9 +209,6 @@ class ClusterTracker:
                 sim1 = si
                 L_sizes = Li_sizes
                 L_idxs = Li_idxs
-
-
-
 
 
     def plot_track_largest(self):
