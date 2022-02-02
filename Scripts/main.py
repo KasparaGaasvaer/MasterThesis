@@ -23,13 +23,13 @@ from Clustering.cluster_tracker_SharedDict import *
 #my_class = Slices(path)
 
 #path = "./experiment6/"
-#path = "./experiment7/"
-path = "./experiment100/"
+path = "./experiment7/"
+#path = "./experiment100/"
 #path = "./experiment12/experiment_12/"
 #my_class = ExtractSlices(path)
 #my_class.extract()  for now called by constructor, aka not necessary
 
-#my_class = Leiden(path,"nx", attributes_bool = True)    #these take a lot longer with attributes?
+#my_class = Leiden(path,"nx", attributes_bool = False)    #these take a lot longer with attributes?
 #my_class = Louvain(path,"nx", attributes_bool = False)
 #my_class = Graphs(path,"nx", attributes_bool = True)
 #my_class = PartitionWorker(path,"leiden")
