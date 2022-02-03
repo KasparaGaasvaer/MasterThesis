@@ -6,8 +6,8 @@ import os
 
 
 def plot_size_largest_cluster_leiden():
-    paths = ["../experiment100/parsed_dictionaries/partitions_leiden.json","../experiment12/experiment_12/k_400/parsed_dictionaries/partitions_leiden.json","../experiment12/experiment_12/k_600/parsed_dictionaries/partitions_leiden.json", "../experiment12/experiment_12/k_800/parsed_dictionaries/partitions_leiden.json", "../experiment7/parsed_dictionaries/partitions_leiden.json"]
-    #paths = ["../experiment7/parsed_dictionaries/partitions_leiden.json"]
+    #paths = ["../experiment100/parsed_dictionaries/partitions_leiden.json","../experiment12/experiment_12/k_400/parsed_dictionaries/partitions_leiden.json","../experiment12/experiment_12/k_600/parsed_dictionaries/partitions_leiden.json", "../experiment12/experiment_12/k_800/parsed_dictionaries/partitions_leiden.json", "../experiment7/parsed_dictionaries/partitions_leiden.json"]
+    paths = ["../experiment6/parsed_dictionaries/partitions_leiden.json"]
 
     for p in paths:
         with open(p, "r") as inf:

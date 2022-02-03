@@ -36,9 +36,9 @@ class ClusterTracker_SD:
 
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
-        self.track_largest()
+        #self.track_largest()
         NL = 10
-        self.plot_track_largest()
+        #self.plot_track_largest()
         self.compare_N_largest_across_slices(NL)
 
     def track_largest(self):

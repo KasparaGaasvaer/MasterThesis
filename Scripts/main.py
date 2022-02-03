@@ -22,8 +22,8 @@ from Clustering.cluster_tracker_SharedDict import *
 #path = "./experiment12/experiment_12/"
 #my_class = Slices(path)
 
-#path = "./experiment6/"
-path = "./experiment7/"
+path = "./experiment6/"
+#path = "./experiment7/"
 #path = "./experiment100/"
 #path = "./experiment12/experiment_12/"
 #my_class = ExtractSlices(path)
