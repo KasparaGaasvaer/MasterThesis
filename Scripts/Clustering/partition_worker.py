@@ -49,7 +49,7 @@ class PartitionWorker():
         self.num_total_slices = len(self.partition_dict.keys())
 
         # self.compare_partitions()
-        # self.count_jumpers()
+        self.count_jumpers()
         self.identify_largest_cluster()
         self.extract_number_of_clusters()
         self.extract_cluster_size_dist()

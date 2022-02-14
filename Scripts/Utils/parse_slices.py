@@ -72,9 +72,10 @@ class Slices:
             self.slice_num = int(slices.replace("slice_", ""))  # Extracts slice number
             print("Working on slice_", self.slice_num)
             self.path = self.path2dir + folder + "/"  # Sets path
-            self.cluster_dicts()
+            #self.cluster_dicts()
             self.make_node_attributes()  # Calls function for producing dict with node attributes from corresponding labels.csv file
-            self.make_graph_dict()  # Calls function for producing graph dict from corresponding graph.mat file
+            #self.make_graph_dict()  # Calls function for producing graph dict from corresponding graph.mat file
+            self.make_graph_dict_csv()  # Calls function for producing graph dict from corresponding graph.csv file
             self.find_timeline()  # Calls function for extracting first and last tweet in slice
             self.find_num_nodes()  # Calls function for extracting number of nodes (tweets) in slice
         self.find_timeline_of_set()  # Calls function for extracting first and last tweet in the entire set of slices in dir
@@ -145,6 +146,20 @@ class Slices:
         dataframe = pd.read_csv(filename, names=types, delim_whitespace=True)
         dataframe = dataframe.to_dict(orient="list")
         self.graphs[str(self.slice_num)] = dataframe
+
+    def make_graph_dict_csv(self):
+        #
+        # Function for reading .csv file containg edges between nodes.
+        # Utilizes networkx package to create graph objects.
+        # Stores graph objects in self.graphs.
+        #
+
+        filename = self.path + "graph_" + str(self.slice_num) + ".csv"
+        types = ["source", "target", "weight"]
+        dataframe = pd.read_csv(filename, names=types)
+        dataframe = dataframe.to_dict(orient="list")
+        self.graphs[str(self.slice_num)] = dataframe
+
 
     def find_timeline_of_set(self):
         #

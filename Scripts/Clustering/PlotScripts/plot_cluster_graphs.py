@@ -6,9 +6,10 @@ import json
 import os
 
 sys.path.append(
-    ".."
+    ".."   #../.. ?
 )  # Adds higher directory to python modules path, looking for Graphs-class one level up
 
+#os.chdir('../..')
 from Utils.graphs import Graphs
 from Utils.dict_opener import OpenDict
 import community as cluster_louvain

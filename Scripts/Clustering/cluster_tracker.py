@@ -41,7 +41,6 @@ class ClusterTracker:
         self.plot_track_largest()
         self.table_biggest_cluster_size() 
         #self.compare_clusters(NL, expnum)
-        #self.does_any_id_change(filename = self.path_to_save_stats + str(NL) + "_cluster_IDs_experiment" + str(expnum) + ".txt")
         self.compare_N_largest_across_slices(NL)
 
     def track_largest(self):
@@ -386,32 +385,7 @@ class ClusterTracker:
                 ouf.write(f"{p+1} -> {p+2}             {reqz_id[p]}\n")
 
 
-    def does_any_id_change(self,filename):
-        with open(filename,"r") as innf:
-            innf.readline()
-            lines = innf.readlines()
-            counter = 1
-            for line in lines:
-                same_ID = 0
-                changed_ID = 0
-                ll = line.split("  ")[-1]
-                ll = ll.replace("]","")
-                ll = ll.replace("[","")
-                ll = ll.split(",")
-                for i in range(0,len(ll),2):
-                    a = int(ll[i])
-                    b = int(ll[i+1])
-                    #if a != b:
-                        #print(f"cluster {a} became cluster {b} from slice {counter} to {counter+1}")
-                        #same_ID +=1 
-                    #else:
-                        #changed_ID += 1
-                counter +=1
-
-                #ll = ll.strip("[[")
-                #ll = ll.split("], [")
-                #ll = ll.split("]]")[0]
-            # print(ll)
+  
 
 
 

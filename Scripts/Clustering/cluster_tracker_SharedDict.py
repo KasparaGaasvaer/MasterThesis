@@ -1,4 +1,5 @@
 import json, os, time
+from xml.dom.expatbuilder import InternalSubsetExtractor  #Cant remember adding this? Never heard of it?
 import matplotlib.pyplot as plt
 import pandas as pd
 from copy import deepcopy
@@ -37,10 +38,90 @@ class ClusterTracker_SD:
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
         #self.track_largest()
-        NL = 10
+        #NL = 10
         #self.plot_track_largest()
-        self.compare_N_largest_across_slices(NL)
+        #self.compare_N_largest_across_slices(NL)
+        self.track_reid_largest_from_im12i()
 
+
+    def track_reid_largest_from_im12i(self):
+        # planen her er å finne den største i s1, reidentifisere den i slice 2, se på intersect
+        # så skal jeg finne den største i slice 2, om dette ikke er den samme så skal punktet sikifte farge,
+        # også skal jeg reidentifisere den største slik som før (aka det må ikke være den samme som i slice 1)
+        with open(self.clusters, "r") as inf:
+            clusters = json.load(inf)
+
+        self.num_slices = len(clusters.keys())
+        print(self.num_slices)
+
+        all_intersects = []
+        all_ids = []
+        colours = ["r","b","k","c","g","y","m"]
+        color_id = 0
+        match_counter = []
+
+        L_size = 0
+        L_idx = "a"
+
+        sim1 = clusters["1"]
+        for k in range(len(sim1.keys())):
+            num_nodes = len(sim1[str(k)])
+            if num_nodes > L_size:
+                L_size = num_nodes 
+                L_idx = str(k)
+
+        L_vertices = set(sim1[L_idx])
+        L_size = len(L_vertices)
+
+
+        for s in range(2,self.num_slices +1):
+            print(s)
+            si = clusters[str(s)]
+            match_idx = "a"
+            Li_size = 0
+            Li_idx = "a"
+            max_intersect = 0
+
+            for k_i in si.keys():
+                ci = set(si[k_i])
+                c_sz = len(ci)
+                intersect_n = L_vertices.intersection(ci)
+                intersect_per = len(intersect_n)/L_size 
+                #if intersect_per == max_intersect and intersect_per != 0:   #Checked that we dont have copies of clusters
+                    #print("hmm cluster have more than one match??")
+                if intersect_per > max_intersect:
+                    max_intersect = intersect_per
+                    match_idx = k_i
+                if c_sz > Li_size:
+                    Li_size = c_sz
+                    Li_idx = k_i
+
+            
+            all_intersects.append(max_intersect)
+            all_ids.append(match_idx)
+            if match_idx != Li_idx:                 # If the one with most intersect is not the largest, then the plot will change color.
+                color_id+=1                         # This means that from the next iteration we will be comparing it to another cluster.
+                print("Another cluster became the largest")
+                if color_id == 7:
+                    color_id = 0
+
+            match_counter.append(color_id)
+
+            sim1 = si 
+            L_vertices = set(sim1[Li_idx])
+            L_idx = Li_idx 
+            L_size = len(L_vertices)
+
+
+        slices_nums = [i for i in range(2,self.num_slices+1)]
+        for i in range(len(slices_nums)):
+            plt.scatter(slices_nums[i],all_intersects[i],color = colours[match_counter[i]])
+        plt.xlabel("Slice N")
+        plt.ylabel("Intersect")
+        plt.savefig(self.path_to_plots + "Largest_intersect_when_comparing_largest_cluster_in_slice_N_with_any_cluster_in_slice_Nm1.pdf")
+            
+
+        
     def track_largest(self):
         open_time_start = time.perf_counter()
         # 1. Open C-1, identify the one largest cluster, save ID and Size
@@ -93,7 +174,7 @@ class ClusterTracker_SD:
                         si_hit_dict[ci] +=1
 
             max_intersect = max(si_hit_dict, key=si_hit_dict.get)
-            max_3_intersects = sorted(si_hit_dict, key=si_hit_dict.get, reverse=True)[:3] #three clusters in i whom contain moste of the nodes from largest cluster in im1
+            max_3_intersects = sorted(si_hit_dict, key=si_hit_dict.get, reverse=True)[:3] #three clusters in i whom contain most of the nodes from largest cluster in im1
             inters_3_ids.append(max_3_intersects)
             
             inters = []
@@ -140,8 +221,8 @@ class ClusterTracker_SD:
         self.num_slices = len(clusters.keys())
         print(self.num_slices)
 
-        with open(self.path_to_save_stats + f"finding_{maxN}_largest_intersects_from_{N}_largest_clusters_SD.txt","w") as ouf:
-            ouf.write("[Sim1->Si] [Cid_im10,Cid_im11,Cid_im12] [Cid_i0,Cid_i1,Cid_i2] [IS_0, IS_1, IS_2] [Sz_im10,Sz_im11,Sz_im12] [Sz_i0,Sz_i1,Sz_i2] [RankSz_im10,RankSz_im11,RankSz_im12] [RankSz_i0,RankSz_i1,RankSz_i2]\n")
+        with open(self.path_to_save_stats + f"compare_to_all_finding_{maxN}_largest_intersects_from_{N}_largest_clusters_SD.txt","w") as ouf:
+            ouf.write("[Sim1->Si] [Cid_im10,Cid_im11,Cid_im12] [Cid_i0,Cid_i1,Cid_i2] [IS_0, IS_1, IS_2] [Sz_im10,Sz_im11,Sz_im12] [Sz_i0,Sz_i1,Sz_i2] \n")
             
             sim1 = clusters["1"]
 
@@ -157,9 +238,11 @@ class ClusterTracker_SD:
             L_idxs = L_idxs[:N]    #IDs of N-largest clusters
 
             for s in range(2,self.num_slices +1):
-                intersect_mat = np.zeros([N,N])
+                #intersect_mat = np.zeros([N,N])
+                
                 print(s)
                 si = clusters[str(s)]
+                intersect_mat = np.zeros([N,len(si.keys())])
 
                 Li_sizes = []
                 Li_idxs = []
@@ -176,38 +259,46 @@ class ClusterTracker_SD:
                 for im1 in range(N):
                     im1_idx = L_idxs[im1]
                     vim1 = set(sim1[im1_idx])
-                    for i in range(N):
-                        i_idx = Li_idxs[i]
-                        vi = set(si[i_idx])
+                    #for i in range(N):
+                       # i_idx = Li_idxs[i]
+                        #vi = set(si[i_idx])
+                    for i in si.keys():
+                        vi = set(si[i])
 
                         inters_n = vim1.intersection(vi)
                         inters_per = len(inters_n)/L_sizes[im1]
-                        intersect_mat[im1,i] = inters_per
+                        intersect_mat[int(im1_idx),int(i)] = inters_per
             
-
                 t_e = time.perf_counter()
                 print(f"Time spent comparing is {t_e-t_s:0.4f} s")
 
-                maxN_idx = np.argpartition(intersect_mat, intersect_mat.size - maxN, axis=None)[-maxN:]
-                result = np.column_stack(np.unravel_index(maxN_idx, intersect_mat.shape))
-                
-                lim11,lim12,lim13 = L_idxs[result[0][0]], L_idxs[result[1][0]], L_idxs[result[2][0]]
-                li1,li2,li3 = Li_idxs[result[0][1]], Li_idxs[result[1][1]], Li_idxs[result[2][1]]
+                intersect_mat_idx = np.argsort(intersect_mat.ravel())[::-1]  #flatten and sorted after arguments
+                result = [(int(k//intersect_mat.shape[1]), int(k%intersect_mat.shape[1])) for k in intersect_mat_idx][:maxN] #unravel indexes, pick out 3 largest
+             
+                lim1 = " "
+                li = " "
+                sz_im1 = " "
+                sz_i = " "
+                final_intersect = " "
+                for f in range(maxN):
+                    lim1 += str(L_idxs[result[f][0]]) +","
+                    li += str(result[f][0]) + ","
+                    sz_im1 += str(L_sizes[result[f][0]]) + ","
+                    sz_i += str(len(si[str(result[f][0])])) + ","
+                    final_intersect += str(intersect_mat[result[f][0],result[f][1]]) + ","
 
-                lsim11,lsim12,lsim13 = L_sizes[result[0][0]], L_sizes[result[1][0]], L_sizes[result[2][0]]
-                lsi1,lsi2,lsi3 = Li_sizes[result[0][1]], Li_sizes[result[1][1]], Li_sizes[result[2][1]]
-
-
-                final_intersects = [intersect_mat[result[0][0],result[0][1]],intersect_mat[result[1][0],result[1][1]],intersect_mat[result[2][0],result[2][1]]]
-
-                rankim11, rankim12,rankim13 = result[0][0],result[1][0],result[2][0]
-                ranki1, ranki2,ranki3 = result[0][1],result[1][1],result[2][1]
-
-                ouf.write(f"{s-1}->{s} {lim11},{lim12},{lim13} {li1},{li2},{li3} {final_intersects[0]},{final_intersects[1]},{final_intersects[2]} {rankim11},{rankim12},{rankim13} {ranki1},{ranki2},{ranki3}\n")  
+                lim1 = lim1[:-1]
+                li = li[:-1]
+                sz_im1 = sz_im1[:-1]
+                sz_i = sz_i[:-1]
+                final_intersect = final_intersect[:-1]
+        
+                ouf.write(f"{s-1}->{s}{lim1}{li}{final_intersect}{sz_im1}{sz_i}\n")
                 
                 sim1 = clusters[str(s)]
                 L_sizes = Li_sizes
                 L_idxs = Li_idxs
+            
 
 
     def plot_track_largest(self):
