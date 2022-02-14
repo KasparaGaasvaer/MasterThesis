@@ -248,9 +248,22 @@ class MassVelocity:
             rel_g_vals_sep = rel_g_vals[i].split(",")
             num_vals = len(rel_g_vals_sep)
             for j in range(num_vals):
-                plt.plot(slices[i],float(rel_g_vals_sep[j])) #, color = colours[j])
+                plt.plot(slices[i],float(rel_g_vals_sep[j]),".", color = colours[j])
             
+        plt.xlabel("Slice Number")
+        plt.ylabel("(Size C_si - Size C_sim1)/Size C_sim1")
         plt.savefig(self.path_to_plots + f"{N}_largest_relative_growth_in_each_slice.pdf")
+        
+        for i in range(n):
+            num_g_vals = num_new_vals[i].split(",")
+            num_vals = len(num_g_vals)
+            for j in range(num_vals):
+                int_val = int(num_g_vals[j].split(".")[0])
+                plt.plot(slices[i],int_val,".", color = colours[j])
+
+        plt.xlabel("Slice Number")
+        plt.ylabel("Size C_si - Size C_sim1")
+        plt.savefig(self.path_to_plots + f"{N}_largest_absolute_growth_in_each_slice.pdf" )
                 
 
 
