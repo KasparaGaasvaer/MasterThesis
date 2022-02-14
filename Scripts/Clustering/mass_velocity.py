@@ -18,7 +18,7 @@ class MassVelocity:
 
 
         N_largest = 3
-        #self.track_growth_modularity(N_largest)
+        self.track_growth_modularity(N_largest)
         self.plot_growth_track(N_largest)
 
 
