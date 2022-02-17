@@ -54,7 +54,7 @@ class Labels2GraphNodeId:
 
     def labels_2_graph_node_id_k_value(self):
         path2experiment = "./experiment" + str(self.exp_num) + "/experiment_" + str(self.exp_num) + "/"
-        k_values = ["400","600","800"]
+        k_values = ["800"]# ["400","600","800"]
         for k in k_values:
             path2k = path2experiment + "k_" + k + "/k" + k + "/"
             slices_files = os.listdir(path2k)
@@ -64,6 +64,7 @@ class Labels2GraphNodeId:
             slices_files = sorted(slices_files)
 
             for i in slices_files:
+                print("Slice ", i)
                 path2graph = path2k + "slice_" + str(i) + "/graph_" + str(i) + ".mat" 
                 path2labels = path2k + "slice_" + str(i) + "/labels_" + str(i) + ".csv" 
                 path2save = path2k + "slice_" + str(i) +"/graph_" + str(i) + ".csv"
@@ -74,10 +75,10 @@ class Labels2GraphNodeId:
                 N_contacts = len(graph_mat[:,0])
                 
                 #Reading only the two first colums from labels files
-                labels_df = pd.read_csv(path2labels, header = 0, usecols=[0])#, warn_bad_lines=True)
-                N_users = len(labels_df)
-                data = [i for i in range(N_users)]
-                labels_df.insert(0,'G-id',data)
+                labels_df = pd.read_csv(path2labels, header = 0, usecols=[0,1])#, warn_bad_lines=True)
+                #N_users = len(labels_df)
+                #data = [i for i in range(N_users)]
+                #labels_df.insert(0,'G-id',data)
                 labels_mat = labels_df.to_numpy()
 
                 id_dict = {}
@@ -89,12 +90,12 @@ class Labels2GraphNodeId:
 
                 for z in range(2):
                     for q in range(N_contacts):
-                        print(graph_mat[q][z])
+                       # print(graph_mat[q][z])
                         graph_mat[q][z] = id_dict[graph_mat[q][z]]
 
 
                 np.savetxt(path2save, graph_mat, delimiter=',',fmt='%i')
-                break
+       
             
     
         

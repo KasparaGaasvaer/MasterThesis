@@ -19,8 +19,9 @@ from Clustering.cluster_tracker_SharedDict import *
 from Clustering.mass_velocity import *
 
 #exp6 = ["accumulative", 6]
-#exp12 = ["k_value", 12]
-#fix_graph_class = Labels2GraphNodeId(exp12[0],exp12[1])
+#exp7 = ["accumulative",7]
+exp12 = ["k_value", 12]
+fix_graph_class = Labels2GraphNodeId(exp12[0],exp12[1])
 
 
 
@@ -34,7 +35,7 @@ from Clustering.mass_velocity import *
 #path = "./experiment6/"
 #path = "./experiment7/"
 #path = "./experiment100/"
-path = "./experiment12/experiment_12/"
+#path = "./experiment12/experiment_12/"
 #my_class = ExtractSlices(path)
 #my_class.extract()  for now called by constructor, aka not necessary
 
@@ -46,7 +47,7 @@ path = "./experiment12/experiment_12/"
 #my_class = PlotClusterStats(path,"leiden")
 #my_class = PlotGraph(path, ["num_edges"])
 #my_class = ClusterTracker(path)
-my_class = ClusterTracker_SD(path,"leiden")
+#my_class = ClusterTracker_SD(path,"leiden")
 #my_class = MassVelocity(path,"leiden")
 
 #59-76 large num edges? Critical area?
