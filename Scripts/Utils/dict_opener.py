@@ -1,6 +1,4 @@
-import os
-import sys
-import json
+import os, sys, json
 
 
 # ==============================Access and Open Dictionaries==============================
@@ -16,11 +14,15 @@ class OpenDict:
             path (string): path to experiment data
         """
 
-        self.path = path + "parsed_dictionaries/"
-        if not os.path.exists(self.path):
+        self.path_to_dicts = path + "parsed_dictionaries/"
+        if not os.path.exists(self.path_to_dicts):
             k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
-            if int(k_value):
-                self.path = path + "k_" + str(k_value) + "/parsed_dictionaries/"
+            try:
+                k_value = int(k_value)
+                self.path_to_dicts = path + "k_" + str(k_value) + "/parsed_dictionaries/"
+            except ValueError:
+                print("No parsed dicts")
+                sys.exit()
 
         self.dictionary_filenames = {
             "slices" : "all_slices.json",
@@ -39,7 +41,7 @@ class OpenDict:
         """
         d_out = []
         for key in dicts:
-            with open(self.path + self.dictionary_filenames[key],"r") as d:
+            with open(self.path_to_dicts + self.dictionary_filenames[key],"r") as d:
                 d_out.append(json.load(d))
 
         if len(d_out) == 1:

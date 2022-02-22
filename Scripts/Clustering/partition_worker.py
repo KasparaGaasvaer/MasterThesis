@@ -39,7 +39,6 @@ class PartitionWorker():
             os.makedirs(self.path_to_stats_results)
       
         self.method = method
-        self.filename_jumpers = "all_slices_partition_jumper_stats_" + self.method + ".txt"
         self.filename_largest_partition = "largest_partitions_" + self.method + ".txt"
         self.filename_num_partitions = "number_partitions_" + self.method +".txt"
         self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
@@ -49,7 +48,6 @@ class PartitionWorker():
         self.num_total_slices = len(self.partition_dict.keys())
 
         # self.compare_partitions()
-        self.count_jumpers()
         self.identify_largest_cluster()
         self.extract_number_of_clusters()
         self.extract_cluster_size_dist()
@@ -87,45 +85,6 @@ class PartitionWorker():
                     f"Some of the nodes from slice {slice_num1} have moved to another clusters in slice {slice_num2}! This is the case for partition {k1}"
                 )
                 print(f"Static nodes in partiton are {static_nodes}\n")
-
-    def count_jumpers(self):
-
-        num_jumpers = np.zeros(self.num_total_slices)
-        ratio_jumpers_nodes = np.zeros(self.num_total_slices)
-        ratio_jumpers_partitions = np.zeros(self.num_total_slices)
-
-        for i in range(1, self.num_total_slices):
-            slice_i = str(i)
-            slice_ip1 = str(i + 1)
-            s_i = self.partition_dict[slice_i]
-            s_ip1 = self.partition_dict[slice_ip1]
-
-            keys_i = len(s_i.keys())
-            keys_ip1 = len(s_ip1.keys())
-
-            for k_i in range(keys_i):
-                list_i = s_i[str(k_i)]
-                list_ip1 = s_ip1[str(k_i)]
-                result = all(n in list_ip1 for n in list_i)
-                if not result:
-                    for n in list_i:
-                        if not n in list_ip1:
-                            num_jumpers[i] += 1
-
-            num_nodes_ip1 = sum(len(v) for v in s_ip1.values())
-            # print('NODES',num_nodes_ip1)
-            ratio_jumpers_partitions[i] = num_jumpers[i] / keys_ip1
-            # print('KEYS',keys_ip1)
-            ratio_jumpers_nodes[i] = num_jumpers[i] / num_nodes_ip1
-
-        with open(self.path_to_stats_results + self.filename_jumpers, "w") as outfile:
-            outfile.write(
-                f"Slice_i to Slice_ip1| Total number of jumpers |  Ratio jumpers/total number of nodes in slice_ip1 | Ratio jumpers/total number of partitions in slice_ip1\n"
-            )
-            for i in range(1, self.num_total_slices):
-                outfile.write(
-                    f"       {i}-{i+1:<20} {num_jumpers[i]:<40} {ratio_jumpers_nodes[i]:.6f} {ratio_jumpers_partitions[i]:45.6f}\n"
-                )
 
     def identify_largest_cluster(self):
         largest_partitions = []

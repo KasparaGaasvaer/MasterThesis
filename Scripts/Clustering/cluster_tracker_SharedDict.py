@@ -38,9 +38,9 @@ class ClusterTracker_SD:
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
         #self.track_largest()
-        #NL = 10
+        NL = 100
         #self.plot_track_largest()
-        #self.compare_N_largest_across_slices(NL)
+        self.compare_N_largest_across_slices(NL)
         self.track_reid_largest_from_im12i()
 
 
@@ -242,7 +242,7 @@ class ClusterTracker_SD:
                 
                 print(s)
                 si = clusters[str(s)]
-                intersect_mat = np.zeros([N,len(si.keys())])
+                intersect_mat = np.zeros([len(sim1.keys()),len(si.keys())])
 
                 Li_sizes = []
                 Li_idxs = []
@@ -274,6 +274,8 @@ class ClusterTracker_SD:
 
                 intersect_mat_idx = np.argsort(intersect_mat.ravel())[::-1]  #flatten and sorted after arguments
                 result = [(int(k//intersect_mat.shape[1]), int(k%intersect_mat.shape[1])) for k in intersect_mat_idx][:maxN] #unravel indexes, pick out 3 largest
+                for r in result:
+                    print(intersect_mat[r])
              
                 lim1 = " "
                 li = " "

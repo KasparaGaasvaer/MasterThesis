@@ -22,23 +22,23 @@ class PlotClusterGraphs(Graphs):
         self.path_to_partitions = path + "parsed_dictionaries/"
         if not os.path.exists(self.path_to_partitions):
             k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no")
-            if int(k_value):
+            try:
+                k_value = int(k_value)
                 self.path = path + "k_" + str(k_value) + "/"
                 self.path_to_partitions= self.path + "parsed_dictionaries/"
-            if k_value == "no":
+            except ValueError:
                 print("This experiment has no parsed dictionaries yet")
                 sys.exit()
 
         super().__init__(self.path, "nx", attributes_bool)
 
-        OpenDicts = OpenDict(self.path)
         self.num_total_slices = len(self.graphs.keys())
-        
-
         self.pick_selection(selection)
-
         self.method = method
+
+        OpenDicts = OpenDict(self.path)
         self.partition_dict = OpenDicts.open_dicts(["part_"+self.method])
+        
         self.path_to_plots = self.path + "plots/Clustering/"+self.method.title()+"/Graphs/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
@@ -47,6 +47,7 @@ class PlotClusterGraphs(Graphs):
 
     def plot_graphs(self):
         for s in range(1,self.selection):
+            print("Slice ", s)
             G = self.graphs[str(s)]["graph"]
             p = self.partition_dict[str(s)]
             # keys = len(p) + 1

@@ -20,11 +20,10 @@ from Clustering.mass_velocity import *
 
 #exp6 = ["accumulative", 6]
 #fix_graph_class = Labels2GraphNodeId(exp6[0],exp6[1])
-exp7 = ["accumulative",7]
-fix_graph_class = Labels2GraphNodeId(exp7[0],exp7[1])
+#exp7 = ["accumulative",7]
+#fix_graph_class = Labels2GraphNodeId(exp7[0],exp7[1])
 #exp12 = ["k_value", 12]
 #fix_graph_class = Labels2GraphNodeId(exp12[0],exp12[1])
-
 
 
 
@@ -36,21 +35,21 @@ fix_graph_class = Labels2GraphNodeId(exp7[0],exp7[1])
 #my_class = Slices(path)
 
 #path = "./experiment6/"
-#path = "./experiment7/"
+path = "./experiment7/"
 #path = "./experiment100/"
 #path = "./experiment12/experiment_12/"
-#my_class = ExtractSlices(path)
-#my_class.extract()  for now called by constructor, aka not necessary
+##my_class = ExtractSlices(path)
+##my_class.extract()  #for now called by constructor, aka not necessary
 
 #my_class = Leiden(path,"nx", attributes_bool = True)    #these take a lot longer with attributes?
 #my_class = Louvain(path,"nx", attributes_bool = True)
-#my_class = Graphs(path,"nx", attributes_bool = True)
+##my_class = Graphs(path,"nx", attributes_bool = True)
 #my_class = PartitionWorker(path,"leiden")
-#my_class = PlotClusterGraphs(path,"leiden","all", attributes_bool=True)
-#my_class = PlotClusterStats(path,"leiden")
-#my_class = PlotGraph(path, ["num_edges"])
+##my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=True)
+#my_class = PlotClusterStats(path,"louvain")
+##my_class = PlotGraph(path, ["num_edges"])
 #my_class = ClusterTracker(path)
-#my_class = ClusterTracker_SD(path,"leiden")
+my_class = ClusterTracker_SD(path,"louvain")
 #my_class = MassVelocity(path,"leiden")
 
 #59-76 large num edges? Critical area?
