@@ -21,9 +21,13 @@ class Labels2GraphNodeId:
             slices_files[i] = int(slices_files[i].split("_")[-1])
 
         slices_files = sorted(slices_files)
-        
+
+        with open("./experiment" + str(self.exp_num) + "/bad_ids.txt", "w") as ouf:
+            ouf.write("SliceNum           Bad Ids\n")
+
         for i in slices_files:
-            print(i)
+            print("Slice ", i)
+            badids = []
             path2graph = path2experiment + "slice_" + str(i) + "/graph_" + str(i) + ".mat" 
             path2labels = path2experiment + "slice_" + str(i) + "/labels_" + str(i) + ".csv" 
             path2save = path2experiment + "slice_" + str(i) +"/graph_" + str(i) + ".csv"
@@ -44,7 +48,6 @@ class Labels2GraphNodeId:
             for g,l in zip(graph_ids,labels_ids):
                 id_dict[g] = l
 
-            badids = []
             for z in range(2):
                 for q in range(N_contacts):
                     try:
@@ -54,13 +57,14 @@ class Labels2GraphNodeId:
                         continue
                         
             np.savetxt(path2save, graph_mat, delimiter=',',fmt='%i')
-            print(badids)
+            with open("./experiment" + str(self.exp_num) + "/bad_ids.txt", "a") as ouf:
+                ouf.write(f"{i}                    {badids}\n")
             
 
 
     def labels_2_graph_node_id_k_value(self):
         path2experiment = "./experiment" + str(self.exp_num) + "/experiment_" + str(self.exp_num) + "/"
-        k_values = ["800"]# ["400","600","800"]
+        k_values = ["600"]# ["400","600","800"]
         for k in k_values:
             path2k = path2experiment + "k_" + k + "/k" + k + "/"
             slices_files = os.listdir(path2k)
@@ -69,8 +73,12 @@ class Labels2GraphNodeId:
 
             slices_files = sorted(slices_files)
 
+            with open(path2experiment + "k_" + k + "/bad_ids.txt", "w") as ouf:
+                ouf.write("SliceNum           Bad Ids\n")
+
             for i in slices_files:
                 print("Slice ", i)
+                badids = []
                 path2graph = path2k + "slice_" + str(i) + "/graph_" + str(i) + ".mat" 
                 path2labels = path2k + "slice_" + str(i) + "/labels_" + str(i) + ".csv" 
                 path2save = path2k + "slice_" + str(i) +"/graph_" + str(i) + ".csv"
@@ -96,13 +104,17 @@ class Labels2GraphNodeId:
 
                 for z in range(2):
                     for q in range(N_contacts):
-                        if graph_mat[q][z] == 281998 or graph_mat[q][z] == 241247:
-                            print("ups")
-                        else:
+                        try:
                             graph_mat[q][z] = id_dict[graph_mat[q][z]]
+                        except KeyError:
+                            badids.append(graph_mat[q][z])
+                            continue
 
 
                 np.savetxt(path2save, graph_mat, delimiter=',',fmt='%i')
+
+                with open(path2experiment + "k_" + k + "/bad_ids.txt", "a") as ouf:
+                    ouf.write(f"{i}                    {badids}\n")
        
             
     
