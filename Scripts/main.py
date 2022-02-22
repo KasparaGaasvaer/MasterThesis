@@ -19,9 +19,9 @@ from Clustering.cluster_tracker_SharedDict import *
 from Clustering.mass_velocity import *
 
 #exp6 = ["accumulative", 6]
-#exp7 = ["accumulative",7]
-exp12 = ["k_value", 12]
-fix_graph_class = Labels2GraphNodeId(exp12[0],exp12[1])
+exp7 = ["accumulative",7]
+#exp12 = ["k_value", 12]
+fix_graph_class = Labels2GraphNodeId(exp7[0],exp7[1])
 
 
 

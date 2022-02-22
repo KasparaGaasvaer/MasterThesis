@@ -23,6 +23,7 @@ class Labels2GraphNodeId:
         slices_files = sorted(slices_files)
         
         for i in slices_files:
+            print(i)
             path2graph = path2experiment + "slice_" + str(i) + "/graph_" + str(i) + ".mat" 
             path2labels = path2experiment + "slice_" + str(i) + "/labels_" + str(i) + ".csv" 
             path2save = path2experiment + "slice_" + str(i) +"/graph_" + str(i) + ".csv"
@@ -43,12 +44,17 @@ class Labels2GraphNodeId:
             for g,l in zip(graph_ids,labels_ids):
                 id_dict[g] = l
 
+            badids = []
             for z in range(2):
                 for q in range(N_contacts):
-                    graph_mat[q][z] = id_dict[graph_mat[q][z]]
-
-
+                    try:
+                        graph_mat[q][z] = id_dict[graph_mat[q][z]]
+                    except KeyError:
+                        badids.append(graph_mat[q][z])
+                        continue
+                        
             np.savetxt(path2save, graph_mat, delimiter=',',fmt='%i')
+            print(badids)
             
 
 
@@ -90,8 +96,10 @@ class Labels2GraphNodeId:
 
                 for z in range(2):
                     for q in range(N_contacts):
-                       # print(graph_mat[q][z])
-                        graph_mat[q][z] = id_dict[graph_mat[q][z]]
+                        if graph_mat[q][z] == 281998 or graph_mat[q][z] == 241247:
+                            print("ups")
+                        else:
+                            graph_mat[q][z] = id_dict[graph_mat[q][z]]
 
 
                 np.savetxt(path2save, graph_mat, delimiter=',',fmt='%i')
