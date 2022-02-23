@@ -34,7 +34,7 @@ class PartitionWorker():
                 sys.exit()
 
         OpenDicts = OpenDict(self.path)
-        self.path_to_stats_results = self.path + "statistics/"
+        self.path_to_stats_results = self.path + "statistics/partition_worker/"
         if not os.path.exists(self.path_to_stats_results):
             os.makedirs(self.path_to_stats_results)
       
@@ -47,11 +47,10 @@ class PartitionWorker():
 
         self.num_total_slices = len(self.partition_dict.keys())
 
-        # self.compare_partitions()
+        #self.compare_partitions()
         self.identify_largest_cluster()
         self.extract_number_of_clusters()
         self.extract_cluster_size_dist()
-        #self.compare_clusters()
 
     def compare_partitions(self):
         slice_num1 = "1"
@@ -103,20 +102,14 @@ class PartitionWorker():
             total_num_nodes.append(all_nodes)
 
         sttr = " "
-        with open(
-            self.path_to_stats_results + self.filename_largest_partition, "w"
-        ) as outfile:
-            outfile.write(
-                "Slice        Partition num         Num nodes         Num nodes/Total num nodes         Num nodes/(Total num nodes - Num nodes)\n"
-            )
+        with open(self.path_to_stats_results + self.filename_largest_partition, "w") as outfile:
+            outfile.write("Slice        Partition num         Num nodes         Num nodes/Total num nodes         Num nodes/(Total num nodes - Num nodes)\n")
             s = 1
             for i in range(len(largest_partitions)):
                 p = largest_partitions[i]
                 n = number_of_nodes[i]
                 t = total_num_nodes[i]
-                outfile.write(
-                    f"{s:>2}{p:>18}{n:>21}{sttr:<20s}{n/t:.6f}{sttr:<20s}{n/(t-n):.6f}\n"
-                )
+                outfile.write(f"{s:>2}{p:>18}{n:>21}{sttr:<20s}{n/t:.6f}{sttr:<20s}{n/(t-n):.6f}\n")
                 s += 1
 
     def extract_number_of_clusters(self):
@@ -128,15 +121,13 @@ class PartitionWorker():
             slices.append(slice)
             num_clusters.append(n_clusters)
 
-        with open(
-            self.path_to_stats_results + self.filename_num_partitions, "w"
-        ) as outfile:
+        with open(self.path_to_stats_results + self.filename_num_partitions, "w") as outfile:
             outfile.write("Slice num         Num partitions\n")
             for s, c in zip(slices, num_clusters):
                 outfile.write(f"    {s:20}{c}\n")
 
     def extract_cluster_size_dist(self):
-        """ Produces dict with key = slice number, value = list where index is size and value is cluster ID """
+        """ Produces dict with key = slice number, value = list where index is size and value is number of clusters with that size """
         slices = {}
         for slice in self.partition_dict.keys():
             s = self.partition_dict[slice]
@@ -146,18 +137,8 @@ class PartitionWorker():
                 n = len(s[k])
                 slices[slice][n] += 1
 
-        with open(
-            self.path_to_stats_results + self.filename_cluster_size_dist, "w"
-        ) as fp:
+        with open(self.path_to_stats_results + self.filename_cluster_size_dist, "w") as fp:
             json.dump(slices, fp)
 
 
 
-    def compare_clusters(self):
-        # 1. Open clusters
-        # 2. Identify 100 largest cluster in slice i
-        # 3. Re identify those in slice i-1
-
-        path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
-        num_slices = len(os.listdir(path_to_clusters))
-        print(range(2,num_slices))

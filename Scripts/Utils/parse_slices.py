@@ -119,11 +119,12 @@ class Slices:
         self.node_at = self.node_at.to_dict(orient="list")
         self.node_attributes = {}
         try:
-            id = "index"
-            nodes = len(self.node_at[id])
-        except KeyError:
             id = "id"
             nodes = len(self.node_at[id])
+        except KeyError:
+            print("no id")
+            #id = "id"
+            #nodes = len(self.node_at[id])
 
         keyss = len(self.node_at.keys())
         key_list = list(self.node_at)

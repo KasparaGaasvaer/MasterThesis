@@ -37,12 +37,12 @@ class MassVelocity:
               
         
 
-        self.path_to_save_stats = self.path + "statistics/" + self.method.title() + "/MassVelocity/"
+        self.path_to_save_stats = self.path + "statistics/Mass_velocity/" + self.method.title() + "/"
         if not os.path.exists(self.path_to_save_stats):
             os.makedirs(self.path_to_save_stats)
 
 
-        self.path_to_plots = self.path + "plots/Clustering/"+ self.method.title() + "/MassVelocity/"
+        self.path_to_plots = self.path + "plots/Clustering/Mass_velocity/"+ self.method.title() + "/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
@@ -66,12 +66,12 @@ class MassVelocity:
         else:
             self.num_slices = len(os.listdir(self.path_to_clusters))
 
-        self.path_to_save_stats = self.path + "statistics/cluster_stats/MassVelocity"
+        self.path_to_save_stats = self.path + "statistics/Mass_velocity/Java/"
         if not os.path.exists(self.path_to_save_stats):
             os.makedirs(self.path_to_save_stats)
 
 
-        self.path_to_plots = self.path + "plots/Clustering/Java/MassVelocity"
+        self.path_to_plots = self.path + "plots/Clustering/Mass_velocity/Java/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
@@ -230,6 +230,7 @@ class MassVelocity:
         with open(self.path_to_save_stats + infile_name,"r") as inf:
             inf.readline()
             lines = inf.readlines()
+            slices = []
             for line in lines:
                 if not "NODATA" in line:
                     items = line.split("] [")
@@ -244,12 +245,18 @@ class MassVelocity:
                     rel_g_ids.append(items[5])
                     g_vals = items[-1].strip("]\n")
                     rel_g_vals.append(g_vals)
-
+                    slices.append(1)
+                else:
+                    slices.append(0)
         
+        slices = np.array(slices)
+        slices = (np.array(np.where(slices==1))+2)[0]
+
         n = len(intersect_ids)
-        slices = [i for i in range(2,n+2)]
+        "slices = [i for i in range(2,n+2)]"
         colours = ["r","b","g"]
 
+        
         #Plot value of N largest rel growth in each slice
         for i in range(n):
             rel_g_vals_sep = rel_g_vals[i].split(",")
@@ -271,7 +278,7 @@ class MassVelocity:
         plt.xlabel("Slice Number")
         plt.ylabel("Size C_si - Size C_sim1")
         plt.savefig(self.path_to_plots + f"{N}_largest_absolute_growth_in_each_slice.pdf" )
-                
+        
 
 
 

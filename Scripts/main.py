@@ -26,7 +26,7 @@ from Clustering.mass_velocity import *
 #exp12 = ["k_value", 12]
 #fix_graph_class = Labels2GraphNodeId(exp12[0],exp12[1])
 
-#fix_k_order = ReOrderKexperiment(12) Do not run this unless 10000% certain that it has not been run before!!
+#fix_k_order = ReOrderKexperiment(12) DO NOT!! run this unless 10000% certain that it has not been run before!!
 
 
 #path = "./experiment7/experiment_7/"
@@ -45,12 +45,12 @@ path = "./experiment7/"
 #my_class = Leiden(path,"nx", attributes_bool = True)    #these take a lot longer with attributes?
 #my_class = Louvain(path,"nx", attributes_bool = True)
 ##my_class = Graphs(path,"nx", attributes_bool = True)
-#my_class = PartitionWorker(path,"leiden")
+#my_class = PartitionWorker(path,"louvain")
 ##my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=True)
-#my_class = PlotClusterStats(path,"louvain")
+#my_class = PlotClusterStats(path,"leiden")
 ##my_class = PlotGraph(path, ["num_edges"])
 #my_class = ClusterTracker(path)
-#my_class = ClusterTracker_SD(path,"leiden")
-#my_class = MassVelocity(path,"leiden")
+#my_class = ClusterTracker_SD(path,"louvain")
+my_class = MassVelocity(path,"louvain")
 
 #59-76 large num edges? Critical area?
