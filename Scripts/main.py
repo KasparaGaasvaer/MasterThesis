@@ -8,6 +8,7 @@ from Utils.parse_slices import *
 from Utils.extract_from_slice import *
 from Utils.plot_graph_stats import *
 from Utils.restore_graph_node_id import *
+from Utils.re_ordering_k_experiments import *
 
 from Clustering.louvain import *
 from Clustering.leiden import *
@@ -25,7 +26,7 @@ from Clustering.mass_velocity import *
 #exp12 = ["k_value", 12]
 #fix_graph_class = Labels2GraphNodeId(exp12[0],exp12[1])
 
-
+#fix_k_order = ReOrderKexperiment(12) Do not run this unless 10000% certain that it has not been run before!!
 
 
 #path = "./experiment7/experiment_7/"
@@ -49,7 +50,7 @@ path = "./experiment7/"
 #my_class = PlotClusterStats(path,"louvain")
 ##my_class = PlotGraph(path, ["num_edges"])
 #my_class = ClusterTracker(path)
-my_class = ClusterTracker_SD(path,"louvain")
+#my_class = ClusterTracker_SD(path,"leiden")
 #my_class = MassVelocity(path,"leiden")
 
 #59-76 large num edges? Critical area?

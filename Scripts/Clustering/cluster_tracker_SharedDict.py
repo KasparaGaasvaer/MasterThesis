@@ -38,7 +38,7 @@ class ClusterTracker_SD:
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
         #self.track_largest()
-        NL = 100
+        NL = 10
         #self.plot_track_largest()
         self.compare_N_largest_across_slices(NL)
         self.track_reid_largest_from_im12i()
@@ -206,11 +206,9 @@ class ClusterTracker_SD:
     
     def compare_N_largest_across_slices(self,N):
         # - Identify N largest clusters in si
-        # - Identify N largest clusters in sip1
-        # - Compare the N and calculate intersect
-        #    - That is, for every cluster we will have N-1 intersects,
-        #      the 3 largest are stored as well as which clusters that was,
-        #      also their size 0-N
+        # - Compare the N to all clusters in sip1 and calculate intersect
+        #   the 3 largest are stored as well as which clusters that was,
+        #   also their size 0-N
         #  Slice number - Cluster id for i - Cluster id for im1 - Intersect - Sizes for i - Sizes for im1 - Ranked size i - Ranked size im1
         # - Makes file with Sim1->Si [Cid_im10,Cid_im11,Cid_im12] [Cid_i0,Cid_i1,Cid_i2]  [IS_0, IS_1, IS_2] [Sz_im10,Sz_im11,Sz_im12] [Sz_i0,Sz_i1,Sz_i2] [RankSz_im10,RankSz_im11,RankSz_im12] [RankSz_i0,RankSz_i1,RankSz_i2] 
 
@@ -267,15 +265,13 @@ class ClusterTracker_SD:
 
                         inters_n = vim1.intersection(vi)
                         inters_per = len(inters_n)/L_sizes[im1]
-                        intersect_mat[int(im1_idx),int(i)] = inters_per
+                        intersect_mat[int(im1_idx),int(i)] = inters_per      #im1 maps to L_idx
             
                 t_e = time.perf_counter()
                 print(f"Time spent comparing is {t_e-t_s:0.4f} s")
 
                 intersect_mat_idx = np.argsort(intersect_mat.ravel())[::-1]  #flatten and sorted after arguments
                 result = [(int(k//intersect_mat.shape[1]), int(k%intersect_mat.shape[1])) for k in intersect_mat_idx][:maxN] #unravel indexes, pick out 3 largest
-                for r in result:
-                    print(intersect_mat[r])
              
                 lim1 = " "
                 li = " "
@@ -283,10 +279,10 @@ class ClusterTracker_SD:
                 sz_i = " "
                 final_intersect = " "
                 for f in range(maxN):
-                    lim1 += str(L_idxs[result[f][0]]) +","
-                    li += str(result[f][0]) + ","
-                    sz_im1 += str(L_sizes[result[f][0]]) + ","
-                    sz_i += str(len(si[str(result[f][0])])) + ","
+                    lim1 += str(result[f][0]) +","
+                    li += str(result[f][1]) + ","
+                    sz_im1 += str(len(si[str(result[f][0])])) + ","
+                    sz_i += str(len(si[str(result[f][1])])) + ","
                     final_intersect += str(intersect_mat[result[f][0],result[f][1]]) + ","
 
                 lim1 = lim1[:-1]

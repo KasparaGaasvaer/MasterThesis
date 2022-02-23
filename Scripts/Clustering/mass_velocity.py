@@ -162,6 +162,13 @@ class MassVelocity:
                 #print(num_intersect_l_min)
                 # Sjekk alle exp for små clusters i starten
 
+                intersects_2_file = []
+                #intersect_id_to_file = []
+                max_new_to_file = []
+                #max_new_id_= []
+                max_rel_g_to_file = []
+                #max_rel_g_id = []
+
 
                 if num_intersect_l_min == 0:
                     print(f"None of the {im1_l_min} clusters from slice {s-1} that had a minimum size of {Min_size_cluster_im1} were found in slice {s}")
@@ -172,18 +179,25 @@ class MassVelocity:
                     print("N updated to ", num_intersect_l_min)
 
                     intersect_idx_tmp = np.argsort(si_intersect.ravel())[::-1]  #flatten and sorted after arguments
-                    intersect_idx = [(int(k//si_intersect.shape[1]), int(k%si_intersect.shape[1])) for k in intersect_idx_tmp][:N] #unravel indexes, pick out 3 largest
+                    intersect_idx = [(int(k//si_intersect.shape[1]), int(k%si_intersect.shape[1])) for k in intersect_idx_tmp][:N] #unravel indexes, pick out N largest
 
                     max_new_nodes_tmp = np.argsort(si_num_new.ravel())[::-1]  #flatten and sorted after arguments
                     max_new_nodes = [(int(k//si_num_new.shape[1]), int(k%si_num_new.shape[1])) for k in max_new_nodes_tmp][:N] #unravel indexes, pick out num_new
 
                     max_rel_growth_tmp = np.argsort(si_rel_growth.ravel())[::-1]  #flatten and sorted after arguments
-                    max_new_nodes = [(int(k//si_rel_growth.shape[1]), int(k%si_rel_growth.shape[1])) for k in max_rel_growth_tmp][:N] 
+                    max_rel_growth = [(int(k//si_rel_growth.shape[1]), int(k%si_rel_growth.shape[1])) for k in max_rel_growth_tmp][:N] 
+
+                    for itm in range(N):
+                        intersects_2_file.append(si_intersect[intersect_idx[itm]])
+                        max_new_to_file.append(si_num_new[max_new_nodes[itm]])
+                        max_rel_g_to_file.append(si_rel_growth[max_rel_growth[itm]])
+
+                    ouf.write(f"[{s-1},{s}] {intersect_idx} {intersects_2_file} {max_new_nodes} {max_new_to_file} {max_rel_growth} {max_rel_g_to_file}\n")
 
 
                 if num_intersect_l_min == N or num_intersect_l_min > N: 
                     intersect_idx_tmp = np.argsort(si_intersect.ravel())[::-1]  #flatten and sorted after arguments
-                    intersect_idx = [(int(k//si_intersect.shape[1]), int(k%si_intersect.shape[1])) for k in intersect_idx_tmp][:N] #unravel indexes, pick out 3 largest
+                    intersect_idx = [(int(k//si_intersect.shape[1]), int(k%si_intersect.shape[1])) for k in intersect_idx_tmp][:N] #unravel indexes, pick out N largest
                    
                     max_new_nodes_tmp = np.argsort(si_num_new.ravel())[::-1]  #flatten and sorted after arguments
                     max_new_nodes = [(int(k//si_num_new.shape[1]), int(k%si_num_new.shape[1])) for k in max_new_nodes_tmp][:N] 
@@ -191,20 +205,12 @@ class MassVelocity:
                     max_rel_growth_tmp = np.argsort(si_rel_growth.ravel())[::-1]  #flatten and sorted after arguments
                     max_rel_growth = [(int(k//si_rel_growth.shape[1]), int(k%si_rel_growth.shape[1])) for k in max_rel_growth_tmp][:N] 
 
-               
-                intersects_2_file = []
-                #intersect_id_to_file = []
-                max_new_to_file = []
-                #max_new_id_= []
-                max_rel_g_to_file = []
-                #max_rel_g_id = []
+                    for itm in range(N):
+                        intersects_2_file.append(si_intersect[intersect_idx[itm]])
+                        max_new_to_file.append(si_num_new[max_new_nodes[itm]])
+                        max_rel_g_to_file.append(si_rel_growth[max_rel_growth[itm]])
 
-                for itm in range(N):
-                    intersects_2_file.append(si_intersect[intersect_idx[itm]])
-                    max_new_to_file.append(si_num_new[max_new_nodes[itm]])
-                    max_rel_g_to_file.append(si_rel_growth[max_rel_growth[itm]])
-
-                ouf.write(f"[{s-1},{s}] {intersect_idx} {intersects_2_file} {max_new_nodes} {max_new_to_file} {max_rel_growth} {max_rel_g_to_file}\n")
+                    ouf.write(f"[{s-1},{s}] {intersect_idx} {intersects_2_file} {max_new_nodes} {max_new_to_file} {max_rel_growth} {max_rel_g_to_file}\n")
 
                 sim1 = si
 
@@ -225,18 +231,19 @@ class MassVelocity:
             inf.readline()
             lines = inf.readlines()
             for line in lines:
-                items = line.split("] [")
-                #slices = items[0].strip("[")
-                #print(slices)
-                intersect_ids.append(items[1])
-                intersect_vals.append(items[2])
+                if not "NODATA" in line:
+                    items = line.split("] [")
+                    #slices = items[0].strip("[")
+                    #print(slices)
+                    intersect_ids.append(items[1])
+                    intersect_vals.append(items[2])
 
-                num_new_ids.append(items[3])
-                num_new_vals.append(items[4])
+                    num_new_ids.append(items[3])
+                    num_new_vals.append(items[4])
 
-                rel_g_ids.append(items[5])
-                g_vals = items[-1].strip("]\n")
-                rel_g_vals.append(g_vals)
+                    rel_g_ids.append(items[5])
+                    g_vals = items[-1].strip("]\n")
+                    rel_g_vals.append(g_vals)
 
         
         n = len(intersect_ids)
