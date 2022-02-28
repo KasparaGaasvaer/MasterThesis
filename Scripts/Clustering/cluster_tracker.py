@@ -22,16 +22,16 @@ class ClusterTracker:
                 self.path = path + "k_" + str(k_value) + "/"
                 self.path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
                 expnum = str(expnum) + "_k" + str(k_value)
-                self.num_slices = len(os.listdir(self.path_to_clusters)) - 1 #last slice has no cluster for k = 800
+                self.num_slices = len(os.listdir(self.path_to_clusters)) 
         else:
             self.num_slices = len(os.listdir(self.path_to_clusters))
 
-        self.path_to_save_stats = self.path + "statistics/cluster_stats/"
+        self.path_to_save_stats = self.path + "statistics/Cluster_tracker/Java/"
         if not os.path.exists(self.path_to_save_stats):
             os.makedirs(self.path_to_save_stats)
 
 
-        self.path_to_plots = self.path + "plots/Clustering/Java/"
+        self.path_to_plots = self.path + "plots/Clustering/Cluster_tracker/Java/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
@@ -42,20 +42,19 @@ class ClusterTracker:
         #self.table_biggest_cluster_size() 
         #self.compare_clusters(NL, expnum)
         self.compare_N_largest_across_slices(NL)
+        #self.track_reid_largest_from_im12i()
 
     def track_largest(self):
+        print("\ntrack Largest\n")
         open_time_start = time.perf_counter()
-        # 1. Open C-1, identify the one largest cluster, save ID and Size
-        # 2. Loop trough all vertices in LC1, identify them in clusters in C-2
-        #     -- Either go through all clusters, see how many of the Vs are there, remove them from list, when list is empty stop checking
-        #     -- Or for every node check every cluster, then remove nodes from list and stop when list is empty 
-        # 3. Store IDs of clusters as keys in dict, value +=1 for every "hit"
-        # 4. Identify largest value from dict, store ID as LC2 ,divide by size(LC1)
-        # 5. Do the same for LC2 and so on
+        # Finds largest cluster in Sim1 and compare to all other clusters in Si
+        # Find largest intersects
+        # The one with most intersect becomes the next one to be compared in the next round
         
-        with open(self.path_to_clusters + "c_1.json", "r") as inf:
+        with open(self.path_to_clusters + "c_2.json", "r") as inf:
             sim1 =  json.load(inf)
 
+        
         L_size = 0
         L_idx = "a"
         for k in range(len(sim1.keys())): 
@@ -76,40 +75,59 @@ class ClusterTracker:
         inters_3 = []
         L_sizes.append(L_size)
         L_idxs.append(L_idx)
-        for s in range(2,self.num_slices +1):
+        for s in range(3,self.num_slices +1):
             print(s)
 
             with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
                 si = json.load(innf)
-
-            si_cids = list(si.keys())
-            si_hit_dict = {}
-            for d in range(len(si_cids)):
-                si_hit_dict[si_cids[d]] = 0
             
+            intersects_arr = np.zeros(len(si.keys()))
+
+            #si_cids = list(si.keys())
+            #si_hit_dict = {}
+            #for d in range(len(si_cids)):
+                #si_hit_dict[si_cids[d]] = 0
+            
+
+            #for ci in si.keys():
+                #vi = set(si[ci]["uid"])
+                #for v in L_vertices:
+                    #if v in vi:
+                        #si_hit_dict[ci] +=1
 
             for ci in si.keys():
                 vi = set(si[ci]["uid"])
-                for v in L_vertices:
-                    if v in vi:
-                        si_hit_dict[ci] +=1
+                inters = L_vertices.intersection(vi)
+                intersects_arr[int(ci)] = len(inters)/L_size
 
-            max_intersect = max(si_hit_dict, key=si_hit_dict.get)
-            max_3_intersects = sorted(si_hit_dict, key=si_hit_dict.get, reverse=True)[:3] #three clusters in i whom contain moste of the nodes from largest cluster in im1
-            inters_3_ids.append(max_3_intersects)
+            max_intersect = np.max(intersects_arr)
+            max_intersect_id = np.argmax(intersects_arr)
+            max_3_intersects = sorted(intersects_arr, reverse = True)[:3]
+            max_3_intersect_ids = []
+            for i3 in max_3_intersects:
+                id3 = np.where(intersects_arr == i3)[0][0]
+                max_3_intersect_ids.append(id3)
+
+            inters_3_ids.append(max_3_intersect_ids)
+            inters_3.append(max_3_intersects)
+            intersects.append(max_intersect)
             
-            inters = []
-            for m3 in max_3_intersects:
-                inter =  si_hit_dict[m3]/L_size
-                inters.append(inter)
+     
+            L_idx = str(max_intersect_id)
+        
+            #max_3_intersects = sorted(si_hit_dict, key=si_hit_dict.get, reverse=True)[:3] #three clusters in i whom contain moste of the nodes from largest cluster in im1
+            #inters_3_ids.append(max_3_intersects)
+            
+            #inters = []
+            #for m3 in max_3_intersects:
+                ##inter =  si_hit_dict[m3]/L_size
+                #inters.append(inter)
 
-            inters_3.append(inters)
+            #inters_3.append(inters)
 
-            intersect = si_hit_dict[max_intersect]/L_size
-            intersects.append(intersect)
+            #intersect = si_hit_dict[max_intersect]/L_size
+            #intersects.append(intersect)
 
-
-            L_idx = max_intersect
             L_size = len(si[L_idx]["uid"])
             L_vertices = set(si[L_idx]["uid"])
             L_sizes.append(L_size)
@@ -123,10 +141,11 @@ class ClusterTracker:
             for l in range(len(L_idxs)-1):
                 int_3 = inters_3[l]
                 int_3_idx = inters_3_ids[l]
-                ouf.write(f"{l+1}->{l+2}                     {L_idxs[l]},{L_idxs[l+1]}               {L_sizes[l]},{L_sizes[l+1]}            {int_3[0]},{int_3[1]},{int_3[2]}            {int_3_idx[0]},{int_3_idx[1]},{int_3_idx[2]}\n")     #{intersects[l]}\n")
+                ouf.write(f"{l+2}->{l+3}                     {L_idxs[l]},{L_idxs[l+1]}               {L_sizes[l]},{L_sizes[l+1]}            {int_3[0]},{int_3[1]},{int_3[2]}            {int_3_idx[0]},{int_3_idx[1]},{int_3_idx[2]}\n")     #{intersects[l]}\n")
 
 
     def compare_N_largest_across_slices(self,N):
+        print("\nCompare N largest across slices\n")
         # - Identify N largest clusters in si
         # - Identify N largest clusters in sip1
         # - Compare the N and calculate intersect
@@ -140,7 +159,7 @@ class ClusterTracker:
         with open(self.path_to_save_stats + f"finding_{maxN}_largest_intersects_from_{N}_largest_clusters.txt","w") as ouf:
             ouf.write("[Sim1->Si] [Cid_im10,Cid_im11,Cid_im12] [Cid_i0,Cid_i1,Cid_i2] [IS_0, IS_1, IS_2] [Sz_im10,Sz_im11,Sz_im12] [Sz_i0,Sz_i1,Sz_i2]]\n")
             
-            with open(self.path_to_clusters + "c_1.json", "r") as inf:
+            with open(self.path_to_clusters + "c_2.json", "r") as inf:
                 sim1 =  json.load(inf)
 
             L_sizes = []
@@ -154,7 +173,7 @@ class ClusterTracker:
             L_sizes = L_sizes[:N]  #Num nodes in N-largest clusters
             L_idxs = L_idxs[:N]    #IDs of N-largest clusters
 
-            for s in range(2,self.num_slices +1):
+            for s in range(3,self.num_slices +1):
                 
                 print(s)
                 with open(self.path_to_clusters + "c_" + str(s) + ".json", "r") as inf:
@@ -185,25 +204,39 @@ class ClusterTracker:
             
 
                 t_e = time.perf_counter()
-                print(f"Time spent comparing is {t_e-t_s:0.4f} s")
+                print(f"Time spent comparing {t_e-t_s:0.4f} s")
 
-                maxN_idx = np.argpartition(intersect_mat, intersect_mat.size - maxN, axis=None)[-maxN:]
-                result = np.column_stack(np.unravel_index(maxN_idx, intersect_mat.shape))
+                t_s = time.perf_counter()
+                intersect_mat_idx = np.argsort(intersect_mat.ravel())[::-1]  #flatten and sorted after arguments
 
-                ids_0, ids_1 = [], []
-                size_0, size_1 = [], []
-                intersects_to_file = []
+                #result = [(int(k//intersect_mat.shape[1]), int(k%intersect_mat.shape[1])) for k in intersect_mat_idx][:maxN] #unravel indexes, pick out 3 largest
 
-                for itm in range(maxN):
-                    s0,s1 = result[itm][0], result[itm][1]
-                    ids_0.append(s0)
-                    ids_1.append(s1)
-                    size_0.append(len(sim1[str(s0)]["uid"]))
-                    size_1.append(len(sim1[str(s0)]["uid"]))
-                    intersects_to_file.append(intersect_mat[s0,s1])
-                    
-                 
-                ouf.write(f"{s-1}->{s} {ids_0} {ids_1} {intersects_to_file} {size_0} {size_1}\n")  
+                all_result = np.unravel_index(intersect_mat_idx, intersect_mat.shape)
+                result = []
+                for i in range(3):
+                    result.append((all_result[0][i],all_result[1][i]))
+                t_e = time.perf_counter()
+                print(f"Time spent sorting and extracting max ids :  {t_e-t_s:0.4f} s")
+
+                lim1 = " "
+                li = " "
+                sz_im1 = " "
+                sz_i = " "
+                final_intersect = " "
+                for f in range(maxN):
+                    lim1 += str(result[f][0]) +","
+                    li += str(result[f][1]) + ","
+                    sz_im1 += str(len(sim1[str(result[f][0])])) + ","
+                    sz_i += str(len(si[str(result[f][1])])) + ","
+                    final_intersect += str(intersect_mat[result[f][0],result[f][1]]) + ","
+
+                lim1 = lim1[:-1]
+                li = li[:-1]
+                sz_im1 = sz_im1[:-1]
+                sz_i = sz_i[:-1]
+                final_intersect = final_intersect[:-1]
+        
+                ouf.write(f"{s-1}->{s}{lim1}{li}{final_intersect}{sz_im1}{sz_i}\n")  
                 
                 sim1 = si
                 L_sizes = Li_sizes
@@ -211,6 +244,8 @@ class ClusterTracker:
 
 
     def plot_track_largest(self):
+        print("\nplot track largest\n")
+        # plot showing result from track_largest
         sizes = []
         intersects = []
         with open(self.path_to_save_stats + "tracking_largest_cluster.txt","r") as innf:
@@ -246,12 +281,12 @@ class ClusterTracker:
 
         
     def table_biggest_cluster_size(self):
-
+        print("\nTable biggest cluster size\n")
         slice_num = []
         c_size = []
         c_idx = []
 
-        for s in range(1,self.num_slices):
+        for s in range(2,self.num_slices+1):
             print(s)
             slice_num.append(s)
             with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
@@ -279,11 +314,12 @@ class ClusterTracker:
         print(c_df)
 
     def compare_clusters(self, N_largest, expnum):
+        print("\nCompare clusters\n")
         # 1. Open clusters
         # 2. Identify 100 largest cluster in slice i
         # 3. Re identify those in slice i-1
 
-        with open(self.path_to_clusters + "c_1.json", "r") as inf:
+        with open(self.path_to_clusters + "c_2.json", "r") as inf:
             sim1 =  json.load(inf)
 
         sim1_csize = []
@@ -307,7 +343,7 @@ class ClusterTracker:
 
         reqz = []
         reqz_id = []
-        for i in range(2,self.num_slices+1):
+        for i in range(3,self.num_slices+1):
             print(i)
             with open(self.path_to_clusters + "c_" + str(i) +".json","r") as inf:
                 si = json.load(inf)
@@ -341,11 +377,11 @@ class ClusterTracker:
             re_identified_id = []
             for c_id_im1 in N_idx_sim1:
                 cim1 = im1_list_of_sets[str(c_id_im1)]
-                pers90 = int((len(cim1)/100)*9)
+                pers90 = int((len(cim1)/100)*10)
                 counter = 0
                 for c_id_i in N_idx_si:
                     ci = i_list_of_sets[str(c_id_i)]
-                    r = cim1 - ci
+                    r = cim1 - ci  #All nodes in cim1 NOT in ci
                     if not len(r) > pers90:
                         counter +=1
                         recogs +=1
@@ -368,22 +404,93 @@ class ClusterTracker:
             #print(recogs)
 
         
-
-
     # print(f"We re-identified {recogs} of the 100 largest clusters from slice_{i-1} in slice_{i}")
         with open(self.path_to_save_stats+f"{N_largest}_largestCluster_reID_experiment{expnum}.txt","w") as ouf:
-            ouf.write(f"N/{N_largest}    Si    Sim1\n")
+            ouf.write(f"N/{N_largest}    Si    Sim1    [ID_im1, ID_i]\n")
             for p in range(len(reqz)):
-                ouf.write(f"{reqz[p]}        {p+1}      {p+2}\n")
+                ouf.write(f"{reqz[p]}        {p+2}      {p+3}             {reqz_id[p]}\n")
                 #ouf.write(f"We re-identified {reqz[p]} of the 100 largest clusters from slice_{p+1} in slice_{p+2}\n")
                 #diffs.append(recog/num_nodes_cim1)
                 #print(recog/num_nodes_cim1)
 
-        with open(self.path_to_save_stats+f"{N_largest}_cluster_IDs_experiment{expnum}.txt", "w") as ouf:
-            ouf.write("s_im1 -> s_i             [ID_im1, ID_i]\n")
-            for p in range(len(reqz)):
-                ouf.write(f"{p+1} -> {p+2}             {reqz_id[p]}\n")
+        #with open(self.path_to_save_stats+f"{N_largest}_cluster_IDs_experiment{expnum}.txt", "w") as ouf:
+            #ouf.write("s_im1 -> s_i             [ID_im1, ID_i]\n")
+            #for p in range(len(reqz)):
+                #ouf.write(f"{p+1} -> {p+2}             {reqz_id[p]}\n")
 
+    def track_reid_largest_from_im12i(self):
+        print("\nTrack reID largest from im1 to i\n")
+        # planen her er å finne den største i s1, reidentifisere den i slice 2, se på intersect
+        # så skal jeg finne den største i slice 2, om dette ikke er den samme så skal punktet sikifte farge,
+        # også skal jeg reidentifisere den største slik som før (aka det må ikke være den samme som i slice 1)
+        with open(self.path_to_clusters + "c_2.json", "r") as inf:
+            sim1 =  json.load(inf)
+
+        all_intersects = []
+        all_ids = []
+        colours = ["r","b","k","c","g","y","m"]
+        color_id = 0
+        match_counter = []
+
+        L_size = 0
+        L_idx = "a"
+        for k in range(len(sim1.keys())):
+            num_nodes = len(sim1[str(k)]["uid"])
+            if num_nodes > L_size:
+                L_size = num_nodes 
+                L_idx = str(k)
+
+        L_vertices = set(sim1[L_idx]["uid"])
+        L_size = len(L_vertices)
+
+
+        for s in range(3,self.num_slices +1):
+            print(s)
+            with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
+                si = json.load(innf)
+            match_idx = "a"
+            Li_size = 0
+            Li_idx = "a"
+            max_intersect = 0
+
+            for k_i in si.keys():
+                ci = set(si[k_i]["uid"])
+                c_sz = len(ci)
+                intersect_n = L_vertices.intersection(ci)
+                intersect_per = len(intersect_n)/L_size 
+                #if intersect_per == max_intersect and intersect_per != 0:   #Checked that we dont have copies of clusters
+                    #print("hmm cluster have more than one match??")
+                if intersect_per > max_intersect:
+                    max_intersect = intersect_per
+                    match_idx = k_i
+                if c_sz > Li_size:
+                    Li_size = c_sz
+                    Li_idx = k_i
+
+            
+            all_intersects.append(max_intersect)
+            all_ids.append(match_idx)
+            if match_idx != Li_idx:                 # If the one with most intersect is not the largest, then the plot will change color.
+                color_id+=1                         # This means that from the next iteration we will be comparing it to another cluster.
+                print("Another cluster became the largest")
+                if color_id == 7:
+                    color_id = 0
+
+            match_counter.append(color_id)
+
+            sim1 = si 
+            L_vertices = set(sim1[Li_idx]["uid"])
+            L_idx = Li_idx 
+            L_size = len(L_vertices)
+
+
+        slices_nums = [i for i in range(3,self.num_slices+1)]
+        for i in range(len(slices_nums)):
+            plt.scatter(slices_nums[i],all_intersects[i],color = colours[match_counter[i]])
+        plt.xlabel("Slice")
+        plt.ylabel("Intersect")
+        plt.savefig(self.path_to_plots + "Largest_intersect_when_comparing_largest_cluster_in_slice_im1_with_all_clusters_in_slice_i.pdf")
+            
 
   
 

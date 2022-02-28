@@ -47,10 +47,9 @@ path = "./experiment12/experiment_12/"
 ##my_class = Graphs(path,"nx", attributes_bool = True)
 #my_class = PartitionWorker(path,"leiden")  #done for 800LouvainLeiden 600Louvain
 #my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=True)
-my_class = PlotClusterStats(path,"leiden") #done for 800Leiden
+#my_class = PlotClusterStats(path,"leiden") #done for 800LeidenLouvain 600LouvainLeiden
 ##my_class = PlotGraph(path, ["num_edges"])
-#my_class = ClusterTracker(path)
-#my_class = ClusterTracker_SD(path,"louvain")
-#my_class = MassVelocity(path,"louvain")
-
+#my_class = ClusterTracker(path)  #done 800 NL = 10, done for 600 NL=10 
+#my_class = ClusterTracker_SD(path,"louvain") #done 800leidenlouvain, 60leidenlouvain
+my_class = MassVelocity(path,"java") 
 #59-76 large num edges? Critical area?
