@@ -18,7 +18,7 @@ class PlotClusterStats:
             k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
             if int(k_value):
                 self.path = path + "k_" + str(k_value) + "/"
-                self.path_to_stats = self.path + "statistics/"
+                self.path_to_stats = self.path + "statistics/partition_worker/"
             if k_value == "no":
                 print("This experiment has no statistics yet")
                 sys.exit()
@@ -35,9 +35,10 @@ class PlotClusterStats:
         self.filename_number_of_clusters = "number_partitions_" + self.method + ".txt"
         self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
 
-        #self.nodes_in_largest_cluster()
+        self.nodes_in_largest_cluster()
+        self.cluster_size_dist_experiment()
         self.cluster_size_dist()
-        #self.cluster_size_dist_experiment()
+        
 
     def nodes_in_largest_cluster(self):
         clusters = []
@@ -121,17 +122,16 @@ class PlotClusterStats:
                     new_dist.append(0)
 
             dist = [sum(x) for x in zip(dist, new_dist)]
-
         
-        plt.xlabel("Num nodes in cluster", fontsize=14)
-        plt.ylabel("Frequency", fontsize=14)
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
-        plt.bar(range(len(dist)), dist)
-        plt.yscale("log")
-        plt.xscale("log")
-        plt.savefig(path + "LOG_cluster_size_distribution.pdf")
-        plt.clf()
+        #plt.xlabel("Num nodes in cluster", fontsize=14)
+        #plt.ylabel("Frequency", fontsize=14)
+        #plt.xticks(fontsize=12)
+        #plt.yticks(fontsize=12)
+        #plt.bar(range(len(dist)), dist)
+        #plt.yscale("log")
+        #plt.xscale("log")
+        #plt.savefig(path + "LOG_cluster_size_distribution.pdf")
+        #plt.clf()
 
         plt.xlabel("Num nodes in cluster", fontsize=14)
         plt.ylabel("Frequency", fontsize=14)
@@ -139,22 +139,22 @@ class PlotClusterStats:
         plt.yticks(fontsize=12)
         plt.bar(range(len(dist)), dist)
         plt.savefig(path + "cluster_size_distribution.pdf")
-        plt.clf()
-
-        plt.xlabel("Num nodes in cluster", fontsize=14)
-        plt.ylabel("Frequency", fontsize=14)
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
-        plt.bar(range(len(dist)), dist)
+        #plt.clf()
         plt.yscale("log")
         plt.savefig(path + "yLOG_cluster_size_distribution_slice.pdf")
+        plt.xscale("log")
+        plt.savefig(path + "LOG_cluster_size_distribution.pdf")
         plt.clf()
 
+        #plt.xlabel("Num nodes in cluster", fontsize=14)
+        #plt.ylabel("Frequency", fontsize=14)
+        #plt.xticks(fontsize=12)
+        #plt.yticks(fontsize=12)
+        #plt.bar(range(len(dist)), dist)
+        #plt.yscale("log")
+        #plt.savefig(path + "yLOG_cluster_size_distribution_slice.pdf")
+        #plt.clf()
         
-            
-
-        
-
 
 
     def cluster_size_dist(self):
@@ -182,15 +182,15 @@ class PlotClusterStats:
             data = all_data[s]
 
             
-            plt.xlabel("Num nodes in cluster", fontsize=14)
-            plt.ylabel("Frequency", fontsize=14)
-            plt.xticks(fontsize=12)
-            plt.yticks(fontsize=12)
-            plt.bar(range(len(data)), data)
-            plt.yscale("log")
-            plt.xscale("log")
-            plt.savefig(loglog_path + "LOG_cluster_size_distribution_slice" + s + ".pdf")
-            plt.clf()
+            #plt.xlabel("Num nodes in cluster", fontsize=14)
+            #plt.ylabel("Frequency", fontsize=14)
+            #plt.xticks(fontsize=12)
+            #plt.yticks(fontsize=12)
+            #plt.bar(range(len(data)), data)
+            #plt.yscale("log")
+            #plt.xscale("log")
+            #plt.savefig(loglog_path + "LOG_cluster_size_distribution_slice" + s + ".pdf")
+            #plt.clf()
 
             plt.xlabel("Num nodes in cluster", fontsize=14)
             plt.ylabel("Frequency", fontsize=14)
@@ -198,16 +198,22 @@ class PlotClusterStats:
             plt.yticks(fontsize=12)
             plt.bar(range(len(data)), data)
             plt.savefig(nolog_path + "cluster_size_distribution_slice" + s + ".pdf")
-            plt.clf()
-            
-
-            plt.xlabel("Num nodes in cluster", fontsize=14)
-            plt.ylabel("Frequency", fontsize=14)
-            plt.xticks(fontsize=12)
-            plt.yticks(fontsize=12)
-            plt.bar(range(len(data)), data)
+            #plt.clf()
             plt.yscale("log")
             plt.savefig(ylog_path + "yLOG_cluster_size_distribution_slice" + s + ".pdf")
+            plt.xscale("log")
+            plt.savefig(loglog_path + "LOG_cluster_size_distribution_slice" + s + ".pdf")
             plt.clf()
+
+            
+
+            #plt.xlabel("Num nodes in cluster", fontsize=14)
+            #plt.ylabel("Frequency", fontsize=14)
+            #plt.xticks(fontsize=12)
+            #plt.yticks(fontsize=12)
+            #plt.bar(range(len(data)), data)
+            #plt.yscale("log")
+            #plt.savefig(ylog_path + "yLOG_cluster_size_distribution_slice" + s + ".pdf")
+            #plt.clf()
 
     

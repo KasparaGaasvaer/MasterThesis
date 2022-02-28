@@ -32,25 +32,25 @@ from Clustering.mass_velocity import *
 #path = "./experiment7/experiment_7/"
 #path = "./experiment6/experiment_6/"
 #path = "./experiment100/experiment_100/"
-#path = "./experiment12/experiment_12/"
+path = "./experiment12/experiment_12/"
 #my_class = Slices(path)
 
 #path = "./experiment6/"
-path = "./experiment7/"
+#path = "./experiment7/"
 #path = "./experiment100/"
 #path = "./experiment12/experiment_12/"
 ##my_class = ExtractSlices(path)
 ##my_class.extract()  #for now called by constructor, aka not necessary
 
-#my_class = Leiden(path,"nx", attributes_bool = True)    #these take a lot longer with attributes?
-#my_class = Louvain(path,"nx", attributes_bool = True)
+#my_class = Leiden(path,"nx", attributes_bool = True)    #these take a lot longer with attributes? #done for k800/600
+#my_class = Louvain(path,"nx", attributes_bool = True) #done for k800/600
 ##my_class = Graphs(path,"nx", attributes_bool = True)
-#my_class = PartitionWorker(path,"louvain")
-##my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=True)
-#my_class = PlotClusterStats(path,"leiden")
+#my_class = PartitionWorker(path,"leiden")  #done for 800LouvainLeiden 600Louvain
+#my_class = PlotClusterGraphs(path,"louvain","all", attributes_bool=True)
+my_class = PlotClusterStats(path,"leiden") #done for 800Leiden
 ##my_class = PlotGraph(path, ["num_edges"])
 #my_class = ClusterTracker(path)
 #my_class = ClusterTracker_SD(path,"louvain")
-my_class = MassVelocity(path,"louvain")
+#my_class = MassVelocity(path,"louvain")
 
 #59-76 large num edges? Critical area?

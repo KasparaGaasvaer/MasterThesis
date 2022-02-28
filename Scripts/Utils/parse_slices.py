@@ -72,7 +72,7 @@ class Slices:
             self.slice_num = int(slices.replace("slice_", ""))  # Extracts slice number
             print("Working on slice_", self.slice_num)
             self.path = self.path2dir + folder + "/"  # Sets path
-            #self.cluster_dicts()
+            self.cluster_dicts()
             self.make_node_attributes()  # Calls function for producing dict with node attributes from corresponding labels.csv file
             #self.make_graph_dict()  # Calls function for producing graph dict from corresponding graph.mat file
             self.make_graph_dict_csv()  # Calls function for producing graph dict from corresponding graph.csv file

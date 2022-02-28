@@ -64,7 +64,7 @@ class Labels2GraphNodeId:
 
     def labels_2_graph_node_id_k_value(self):
         path2experiment = "./experiment" + str(self.exp_num) + "/experiment_" + str(self.exp_num) + "/"
-        k_values = ["600","800"]# ["400","600","800"]
+        k_values = ["400"]# ["400","600","800"]
         for k in k_values:
             path2k = path2experiment + "k_" + k + "/k" + k + "/"
             slices_files = os.listdir(path2k)
