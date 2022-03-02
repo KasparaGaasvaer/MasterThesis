@@ -25,7 +25,7 @@ class PlotClusterStats:
 
 
         self.method = method
-        self.path_to_plots = self.path + "plots/Clustering/" + self.method.title() + "/"
+        self.path_to_plots = self.path + "plots/Clustering/Plot_cluster_stats/" + self.method.title() + "/"
 
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
@@ -100,7 +100,7 @@ class PlotClusterStats:
         with open(self.path_to_stats + self.filename_cluster_size_dist, "r") as fp:
             all_data = json.load(fp)
         
-        path = self.path_to_plots + "Plot_cluster_stats/Cluster_Size_Dist/all_slices/"
+        path = self.path_to_plots + "Cluster_Size_Dist/all_slices/"
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -161,7 +161,7 @@ class PlotClusterStats:
         with open(self.path_to_stats + self.filename_cluster_size_dist, "r") as fp:
             all_data = json.load(fp)
         
-        path = self.path_to_plots + "Plot_cluster_stats/Cluster_Size_Dist/"
+        path = self.path_to_plots + "Cluster_Size_Dist/"
         if not os.path.exists(path):
             os.makedirs(path)
 

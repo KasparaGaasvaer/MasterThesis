@@ -1,4 +1,4 @@
-import json, os
+import json, os, time
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -85,7 +85,7 @@ class MassVelocity:
 
         #N_max = N
         outfile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
-        Min_size_cluster_im1 = 50 #minimum size of a cluster in Sim1 must have to be concidered
+        self.min_size_cluster_im1 = 50 #minimum size of a cluster in Sim1 must have to be concidered
 
         with open(self.clusters, "r") as inf:
             clusters = json.load(inf)
@@ -96,36 +96,11 @@ class MassVelocity:
         with open(self.path_to_save_stats+outfile_name,"w") as ouf:
             ouf.write(f"[s1,s2] [Largest Intersects] [Value Intersect] [Largest Growth ABS] [Values Growth ABS] [Largest Growth REL] [Value Growth REL]\n")
             
-            ID_LARGEST = []
-            SIZE_LARGEST = []
-
-            keyid = []
-            lenghts = []
-            for k in sim1.keys():
-                lenghts.append(len(sim1[k]))
-                keyid.append(k)
-
-            lenghts,keyid = zip(*sorted(zip(lenghts,keyid), reverse = True))
-
-            ID_LARGEST.append(keyid[:N])
-            SIZE_LARGEST.append(lenghts[:N])
-            
+           
             for s in range(2,self.num_slices+1):
                 ss = str(s)
                 print(ss)
                 si = clusters[ss]
-
-                
-                keyid = []
-                lenghts = []
-                for k in si.keys():
-                    lenghts.append(len(si[k]))
-                    keyid.append(k)
-
-                lenghts,keyid = zip(*sorted(zip(lenghts,keyid), reverse = True))
-                ID_LARGEST.append(keyid[:N])
-                SIZE_LARGEST.append(lenghts[:N])
-                
 
                 si_num_new =  np.zeros([len(sim1.keys()), len(si.keys())])
                 si_rel_growth = np.zeros([len(sim1.keys()), len(si.keys())])
@@ -133,50 +108,37 @@ class MassVelocity:
 
                 im1_l_min = 0
                 num_intersect_l_min = 0
+                t_s = time.perf_counter()
                 for im1_k in sim1.keys():
                     v_im1 = set(sim1[im1_k])
                     num_nodes_vim1 = len(v_im1)
-                    if num_nodes_vim1 >= Min_size_cluster_im1:  #checks if cluster is large enough to be concidered
+                    if num_nodes_vim1 >= self.min_size_cluster_im1:  #checks if cluster is large enough to be concidered
                         im1_l_min += 1
                         for i_k in si.keys():
                             v_i = set(si[i_k])
                             num_nodes_vi = len(v_i)
 
                             inters_n = v_im1.intersection(v_i)
-                            #inters_n = v_im1 & v_i
                             inters_per = float(len(inters_n))/num_nodes_vim1
                             num_new = num_nodes_vi - num_nodes_vim1
-                            #print(inters_per)
                             if inters_per > 0.9: #and num_new > 0:   #only growing clusters
                                 num_intersect_l_min += 1
                                 si_intersect[int(im1_k)][int(i_k)] = inters_per
-                                
-                                #print("im1:", im1_k , " ", v_im1)
-                                #print("i:", i_k , " ", v_i)
-                                
-                                #print(num_new)
                                 rel_growth = num_new/num_nodes_vim1
-                                #print(rel_growth)
-                                #print(" ")
 
                                 si_num_new[int(im1_k)][int(i_k)] = num_new
                                 si_rel_growth[int(im1_k)][int(i_k)] = rel_growth
-                
-            
-                #print(im1_l_min)
-                #print(num_intersect_l_min)
-                # Sjekk alle exp for små clusters i starten
 
+                t_e = time.perf_counter()
+                print(f"Time spent comparing {t_e-t_s:0.4f} s")
+    
                 intersects_2_file = []
-                #intersect_id_to_file = []
                 max_new_to_file = []
-                #max_new_id_= []
                 max_rel_g_to_file = []
-                #max_rel_g_id = []
 
-
+                t_s = time.perf_counter()
                 if num_intersect_l_min == 0:
-                    print(f"None of the {im1_l_min} clusters from slice {s-1} that had a minimum size of {Min_size_cluster_im1} were found in slice {s}")
+                    print(f"None of the {im1_l_min} clusters from slice {s-1} that had a minimum size of {self.min_size_cluster_im1} were found in slice {s}")
                     ouf.write("NODATA\n")
 
                 if num_intersect_l_min != 0 and num_intersect_l_min < N: 
@@ -240,6 +202,8 @@ class MassVelocity:
                         max_rel_g_to_file.append(si_rel_growth[max_rel_growth[itm]])
 
                     ouf.write(f"[{s-1},{s}] {intersect_idx} {intersects_2_file} {max_new_nodes} {max_new_to_file} {max_rel_growth} {max_rel_g_to_file}\n")
+                t_e = time.perf_counter()
+                print(f"Time spent sorting and extracting max ids :  {t_e-t_s:0.4f} s")
 
                 sim1 = si
                 
@@ -247,8 +211,10 @@ class MassVelocity:
 
     def track_growth_labelprop(self,N):
         #N_max = N
-        outfile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
-        Min_size_cluster_im1 = 50 #minimum size of a cluster in Sim1 must have to be concidered
+        self.min_size_cluster_im1 = 50 #minimum size of a cluster in Sim1 must have to be concidered
+        #outfile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
+        outfile_name = "tracking_" + str(N) +"_clusters_with_largest_absolute_growth_"+ self.method +"_min_cluster_size_" + str(self.min_size_cluster_im1) + ".txt"
+        
 
         with open(self.path_to_clusters + "c_2.json", "r") as inf:
             sim1 =  json.load(inf)
@@ -257,35 +223,11 @@ class MassVelocity:
         with open(self.path_to_save_stats+outfile_name,"w") as ouf:
             ouf.write(f"[s1,s2] [Largest Intersects] [Value Intersect] [Largest Growth ABS] [Values Growth ABS] [Largest Growth REL] [Value Growth REL]\n")
             
-            ID_LARGEST = []
-            SIZE_LARGEST = []
-
-            keyid = []
-            lenghts = []
-            for k in sim1.keys():
-                lenghts.append(len(sim1[k]["uid"]))
-                keyid.append(k)
-
-            lenghts,keyid = zip(*sorted(zip(lenghts,keyid), reverse = True))
-
-            ID_LARGEST.append(keyid[:N])
-            SIZE_LARGEST.append(lenghts[:N])
             
             for s in range(3,self.num_slices+1):
                 print(s)
                 with open(self.path_to_clusters + "c_" + str(s) + ".json", "r") as inf:
                     si =  json.load(inf)
-
-                
-                keyid = []
-                lenghts = []
-                for k in si.keys():
-                    lenghts.append(len(si[k]["uid"]))
-                    keyid.append(k)
-
-                lenghts,keyid = zip(*sorted(zip(lenghts,keyid), reverse = True))
-                ID_LARGEST.append(keyid[:N])
-                SIZE_LARGEST.append(lenghts[:N])
                 
 
                 si_num_new =  np.zeros([len(sim1.keys()), len(si.keys())])
@@ -294,10 +236,11 @@ class MassVelocity:
 
                 im1_l_min = 0
                 num_intersect_l_min = 0
+                t_s = time.perf_counter()
                 for im1_k in sim1.keys():
                     v_im1 = set(sim1[im1_k]["uid"])
                     num_nodes_vim1 = len(v_im1)
-                    if num_nodes_vim1 >= Min_size_cluster_im1:  #checks if cluster is large enough to be concidered
+                    if num_nodes_vim1 >= self.min_size_cluster_im1:  #checks if cluster is large enough to be concidered
                         im1_l_min += 1
                         for i_k in si.keys():
                             v_i = set(si[i_k]["uid"])
@@ -316,13 +259,16 @@ class MassVelocity:
                                 si_num_new[int(im1_k)][int(i_k)] = num_new
                                 si_rel_growth[int(im1_k)][int(i_k)] = rel_growth
                 
+                t_e = time.perf_counter()
+                print(f"Time spent comparing {t_e-t_s:0.4f} s")
 
                 intersects_2_file = []
                 max_new_to_file = []
                 max_rel_g_to_file = []
 
+                t_s = time.perf_counter()
                 if num_intersect_l_min == 0:
-                    print(f"None of the {im1_l_min} clusters from slice {s-1} that had a minimum size of {Min_size_cluster_im1} were found in slice {s}")
+                    print(f"None of the {im1_l_min} clusters from slice {s-1} that had a minimum size of {self.min_size_cluster_im1} were found in slice {s}")
                     ouf.write("NODATA\n")
 
                 if num_intersect_l_min != 0 and num_intersect_l_min < N: 
@@ -381,6 +327,9 @@ class MassVelocity:
 
                     ouf.write(f"[{s-1},{s}] {intersect_idx} {intersects_2_file} {max_new_nodes} {max_new_to_file} {max_rel_growth} {max_rel_g_to_file}\n")
 
+                t_e = time.perf_counter()
+                print(f"Time spent sorting and extracting max ids :  {t_e-t_s:0.4f} s")
+
                 sim1 = si
                 
 
@@ -396,7 +345,8 @@ class MassVelocity:
         rel_g_ids = []
         rel_g_vals = []
 
-        infile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
+        #infile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
+        infile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +"min_cluster_size_{self.min_size_cluster_im1}.txt "
         with open(self.path_to_save_stats + infile_name,"r") as inf:
             inf.readline()
             lines = inf.readlines()
