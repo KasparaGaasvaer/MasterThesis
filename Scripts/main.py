@@ -18,7 +18,7 @@ from Clustering.PlotScripts.plot_cluster_stats import *
 from Clustering.cluster_tracker import *
 from Clustering.cluster_tracker_SharedDict import *
 from Clustering.mass_velocity import *
-from Clustering.largest_clusters import *
+#from Clustering.largest_clusters import * #Fjerner denne når den ikke brukes, blir noe tull med matplotlib pga importene i den
 
 #exp6 = ["accumulative", 6]
 #fix_graph_class = Labels2GraphNodeId(exp6[0],exp6[1])
@@ -37,9 +37,9 @@ from Clustering.largest_clusters import *
 #my_class = Slices(path)
 
 #path = "./experiment6/"
-path = "./experiment7/"
+#path = "./experiment7/"
 #path = "./experiment100/"
-#path = "./experiment12/experiment_12/"
+path = "./experiment12/experiment_12/"
 ##my_class = ExtractSlices(path)
 ##my_class.extract()  #for now called by constructor, aka not necessary
 
@@ -50,8 +50,11 @@ path = "./experiment7/"
 #my_class = PlotClusterGraphs(path,"leiden","all", attributes_bool=True)
 #my_class = PlotClusterStats(path,"louvain") #done for 800LeidenLouvain 600LouvainLeiden, 6leidenlouvain
 ##my_class = PlotGraph(path, ["num_edges"])
-#my_class = ClusterTracker(path)  #done 800 NL = 10, done for 600 NL=10 
-#my_class = ClusterTracker_SD(path,"leiden") #done 800leidenlouvain, 600leidenlouvain, 6louvainleiden
-#my_class = MassVelocity(path,"leiden") #done for 800java 100200300400 #MISSING PLOTS FOR ALL
-my_class = LargestClusters(path,"leiden") #Leiden800/600/6/7, Louvain800/600/6/7, Java800/600
+my_class = ClusterTracker(path)  #done 800 NL = 10, done for 600 NL=10 
+#my_class = ClusterTracker_SD(path,"louvain") #done 800leidenlouvain, 600leidenlouvain, 6louvainleiden
+#my_class = MassVelocity(path,"java",50) #done for 800java 100200300400600 #MISSING PLOTS FOR ALL
+#my_class = LargestClusters(path,"leiden#") #Leiden800/600/6/7, Louvain800/600/6/7, Java800/600
 #59-76 large num edges? Critical area?
+
+
+# TRACKING LARGEST BRANCH CODE NOT WORKING FOR EXP7 LOUVAIN, THE LARGEST CLUSTER IN SLICE 3 HAS 0 INTERSECT WITH ALL SLICES IN SLICE 4

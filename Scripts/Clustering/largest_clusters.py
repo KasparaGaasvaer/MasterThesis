@@ -141,7 +141,6 @@ class LargestClusters:
                 ouf.write(f"{s} {LC_id} {LC_size} {num_nodes} {num_clusters} {size_div_nodes} {size_div_clusters}\n")
 
 
-
     def plot_largest_cluster(self):
 
         infile_name = self.path_to_save_stats + "stats_LC_Nnodes_Nclusters.txt"

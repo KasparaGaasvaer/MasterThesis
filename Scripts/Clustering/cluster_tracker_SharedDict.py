@@ -37,13 +37,14 @@ class ClusterTracker_SD:
 
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
-        self.track_largest()
+        #self.track_largest()
         NL = 10
-        self.plot_track_largest()
-        self.track_reid_largest_from_im12i()
-        self.table_biggest_cluster_size()
-        self.compare_clusters(NL, expnum)
-        self.compare_N_largest_across_slices(NL)
+        #self.plot_track_largest()
+        #self.track_reid_largest_from_im12i()
+        #self.table_biggest_cluster_size()
+        #self.compare_clusters(NL, expnum)
+        #self.compare_N_largest_across_slices(NL)
+        self.track_largest_branch()
 
         # FUNK SKAL HER FOR BARE EXP6 OG KSLICES I DEN ANDRE
 
@@ -124,9 +125,7 @@ class ClusterTracker_SD:
         plt.xlabel("Slice")
         plt.ylabel("Intersect")
         plt.savefig(self.path_to_plots + "Largest_intersect_when_comparing_largest_cluster_in_slice_im1_with_all_clusters_in_slice_i.pdf")
-            
-
-        
+                
     def track_largest(self):
         print("\nTrack Largest\n")
         open_time_start = time.perf_counter()
@@ -299,9 +298,7 @@ class ClusterTracker_SD:
                 
                 sim1 = clusters[str(s)]
                 L_sizes = Li_sizes
-                L_idxs = Li_idxs
-                
-        
+                L_idxs = Li_idxs 
 
     def plot_track_largest(self):
         print("\nPlot track largest\n")
@@ -373,7 +370,6 @@ class ClusterTracker_SD:
         c_df.to_csv(self.path_to_save_stats + "largest_clusters.csv",index=False)
 
         print(c_df)
-
 
     def compare_clusters(self, N_largest, expnum):
         print("\nCompare Clusters\n")
@@ -471,14 +467,67 @@ class ClusterTracker_SD:
             ouf.write(f"N/{N_largest}    Si    Sim1    [ID_im1, ID_i]\n")
             for p in range(len(reqz)):
                 ouf.write(f"{reqz[p]}        {p+1}      {p+2}             {reqz_id[p]}\n")
-                #ouf.write(f"We re-identified {reqz[p]} of the 100 largest clusters from slice_{p+1} in slice_{p+2}\n")
-                #diffs.append(recog/num_nodes_cim1)
-                #print(recog/num_nodes_cim1)
 
-        #with open(self.path_to_save_stats+f"{N_largest}_cluster_IDs_experiment{expnum}.txt", "w") as ouf:
-            #ouf.write("s_im1 -> s_i             [ID_im1, ID_i]\n")
-            #for p in range(len(reqz)):
-                #ouf.write(f"{p+1} -> {p+2}             {reqz_id[p]}\n")
+    def track_largest_branch(self):
+        # Lage en algo som tracker den største fra slice 1
+        # Når den med størst intersect ikke lenger er den største 
+        # så brancher vi og tracker den med størst intersect til den også
+        # slik fortsetter det 
+        
+        MASTER_MATCHES = []
+        MASTER_INTERSECTS = []
+        NUM_SLICES_IN_ROUND = []
+        with open(self.clusters, "r") as inf:
+            clusters = json.load(inf)
+
+        self.num_slices = len(clusters.keys())
+
+        for ss in range(1, self.num_slices): #Last slice has no following slices and so cant be tracked. 
+            print("STARTED NEW ROUND AT SLICE : ", ss)
+            sim1 = clusters[str(ss)]
+
+            im1_size = 0
+            Lim1_idx = -1
+            Matches = []
+            per_intersects = []
+            for k in range(len(sim1.keys())):
+                num_nodes = len(sim1[str(k)])
+                if num_nodes > im1_size:
+                    im1_size = num_nodes 
+                    Lim1_idx = int(k)
+
+            Matches.append(Lim1_idx)   #Save for tracking
+            per_intersects.append(0)   #No intersect since first slice
+            cim1 = set(sim1[str(Lim1_idx)])
+            for s in range(ss+1, self.num_slices+1):         #begins at slice after start slice of this round
+                si = clusters[str(s)]
+
+                max_intersect = 0
+                M_id = -1
+                for c in si.keys():
+                    ci = set(si[c])
+                    intersect_set = cim1.intersection(ci)
+                    intersect_per = len(intersect_set)/im1_size
+                    if intersect_per > max_intersect:
+                        max_intersect = intersect_per
+                        M_id = int(c)
+
+                Matches.append(M_id)
+                per_intersects.append(max_intersect)
+                cim1 = set(si[str(M_id)])
+                im1_size = len(cim1)
+
+            
+            MASTER_MATCHES.append(Matches)
+            MASTER_INTERSECTS.append(per_intersects)
+            NUM_SLICES_IN_ROUND.append(len(Matches))
+        
+        with open(self.path_to_save_stats + "tracking_all_branches_largest_cluster_in_each_slice.txt","w") as ouf:
+            ouf.write("startS:ids:intersects:num_slices\n")
+            for i in range(len(MASTER_INTERSECTS)):
+                ids_i = MASTER_MATCHES[i]
+                ints_i = MASTER_INTERSECTS[i]
+                n_slices =  NUM_SLICES_IN_ROUND[i]
+                ouf.write(f"{i+1}:{ids_i}:{ints_i}:{n_slices}\n")
 
 
-  

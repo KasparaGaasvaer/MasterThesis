@@ -5,11 +5,12 @@ import numpy as np
 
 
 class MassVelocity:
-    def __init__(self, path, method):
+    def __init__(self, path, method, min_size_cluster):
         
         self.path = path
         self.method = method 
         N_largest = 3
+        self.min_size_cluster_im1 = min_size_cluster #minimum size of a cluster in Sim1 must have to be concidered
 
         if self.method == "leiden" or self.method == "louvain":
             self.setup_modularity()
@@ -85,8 +86,7 @@ class MassVelocity:
 
         #N_max = N
         outfile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
-        self.min_size_cluster_im1 = 50 #minimum size of a cluster in Sim1 must have to be concidered
-
+      
         with open(self.clusters, "r") as inf:
             clusters = json.load(inf)
 
@@ -210,8 +210,6 @@ class MassVelocity:
 
 
     def track_growth_labelprop(self,N):
-        #N_max = N
-        self.min_size_cluster_im1 = 50 #minimum size of a cluster in Sim1 must have to be concidered
         #outfile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
         outfile_name = "tracking_" + str(N) +"_clusters_with_largest_absolute_growth_"+ self.method +"_min_cluster_size_" + str(self.min_size_cluster_im1) + ".txt"
         
@@ -344,9 +342,7 @@ class MassVelocity:
 
         rel_g_ids = []
         rel_g_vals = []
-
-        #infile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
-        infile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +"min_cluster_size_{self.min_size_cluster_im1}.txt "
+        infile_name = "tracking_"+str(N)+"_clusters_with_largest_absolute_growth_"+ self.method +"_min_cluster_size_" + str(self.min_size_cluster_im1) + ".txt"
         with open(self.path_to_save_stats + infile_name,"r") as inf:
             inf.readline()
             lines = inf.readlines()
@@ -386,8 +382,8 @@ class MassVelocity:
                 plt.plot(slices[i],float(rel_g_vals_sep[j]),".", color = colours[j])
             
         plt.xlabel("Slice Number")
-        plt.ylabel("(Size C_si - Size C_sim1)/Size C_sim1")
-        plt.savefig(self.path_to_plots + f"{N}_largest_relative_growth_in_each_slice.pdf")
+        plt.ylabel("(Size C_si - Size C_sim1) / Size C_sim1")
+        plt.savefig(self.path_to_plots + str(N) + "_largest_relative_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
         
         for i in range(n):
             num_g_vals = num_new_vals[i].split(",")
@@ -398,7 +394,7 @@ class MassVelocity:
 
         plt.xlabel("Slice Number")
         plt.ylabel("Size C_si - Size C_sim1")
-        plt.savefig(self.path_to_plots + f"{N}_largest_absolute_growth_in_each_slice.pdf" )
+        plt.savefig(self.path_to_plots + str(N) + "_largest_absolute_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
         
 
 
