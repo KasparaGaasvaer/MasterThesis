@@ -530,7 +530,7 @@ class ClusterTracker_SD:
             MASTER_SIZES.append(Lsizes)
         
         with open(self.path_to_save_stats + "tracking_all_branches_largest_cluster_in_each_slice.txt","w") as ouf:
-            ouf.write("startS:ids:intersects:num_slices\n")
+            ouf.write("startS:ids:intersects:sizes:num_slices\n")
             for i in range(len(MASTER_INTERSECTS)):
                 ids_i = MASTER_MATCHES[i]
                 ints_i = MASTER_INTERSECTS[i]

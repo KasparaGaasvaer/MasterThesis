@@ -1,3 +1,4 @@
+from Clustering.centrality import Centrality
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,6 +19,7 @@ from Clustering.PlotScripts.plot_cluster_stats import *
 from Clustering.cluster_tracker import *
 from Clustering.cluster_tracker_SharedDict import *
 from Clustering.mass_velocity import *
+from Clustering.centrality import *
 
 
 #exp6 = ["accumulative", 6]
@@ -30,11 +32,12 @@ from Clustering.mass_velocity import *
 #fix_k_order = ReOrderKexperiment(12) #DO NOT!! run this unless 10000% certain that it has not been run before!!
 
 
-#path = "./experiment7/experiment_7/"
+path = "./experiment7/experiment_7/"
 #path = "./experiment6/experiment_6/"
 #path = "./experiment100/experiment_100/"
 #path = "./experiment12/experiment_12/"
 #my_class = Slices(path)
+my_class = Centrality(path, "delta")
 
 #path = "./experiment6/"
 #path = "./experiment7/"
@@ -53,7 +56,7 @@ from Clustering.mass_velocity import *
 #my_class = ClusterTracker(path)  #done 800 NL = 10, done for 600 NL=10 
 #my_class = ClusterTracker_SD(path,"leiden") # 6leidenlouvain, 7louvainleiden, 600leidenlouvain , 800leidenlouvain
 
-
+"""
 min_cluster_sizes = [10,50,100,200,300,400,600,800,1000]
 #methods = ["leiden","louvain"]
 methods = ["leiden", "louvain", "java"]
@@ -62,7 +65,7 @@ for mi in min_cluster_sizes:
     for me in methods:
         print(f"Method = {me}")
         #my_class = MassVelocity(path,me,mi) #6,7
-
+"""
 
 #from Clustering.largest_clusters import * #Fjerner denne når den ikke brukes, blir noe tull med matplotlib pga importene i den
 #my_class = LargestClusters(path,"java") #6,7,800,600 all
