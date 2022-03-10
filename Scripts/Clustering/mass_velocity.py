@@ -85,7 +85,8 @@ class MassVelocity:
     def track_growth_modularity(self,N):
 
         #N_max = N
-        outfile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
+        #outfile_name = f"tracking_{N}_clusters_with_largest_absolute_growth_"+ self.method +".txt "
+        outfile_name = "tracking_" + str(N) +"_clusters_with_largest_absolute_growth_"+ self.method +"_min_cluster_size_" + str(self.min_size_cluster_im1) + ".txt"
       
         with open(self.clusters, "r") as inf:
             clusters = json.load(inf)
@@ -214,7 +215,7 @@ class MassVelocity:
         outfile_name = "tracking_" + str(N) +"_clusters_with_largest_absolute_growth_"+ self.method +"_min_cluster_size_" + str(self.min_size_cluster_im1) + ".txt"
         
 
-        with open(self.path_to_clusters + "c_2.json", "r") as inf:
+        with open(self.path_to_clusters + "c_1.json", "r") as inf:
             sim1 =  json.load(inf)
 
 
@@ -222,7 +223,7 @@ class MassVelocity:
             ouf.write(f"[s1,s2] [Largest Intersects] [Value Intersect] [Largest Growth ABS] [Values Growth ABS] [Largest Growth REL] [Value Growth REL]\n")
             
             
-            for s in range(3,self.num_slices+1):
+            for s in range(2,self.num_slices+1):
                 print(s)
                 with open(self.path_to_clusters + "c_" + str(s) + ".json", "r") as inf:
                     si =  json.load(inf)

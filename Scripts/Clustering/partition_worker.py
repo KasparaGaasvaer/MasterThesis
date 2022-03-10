@@ -44,46 +44,32 @@ class PartitionWorker():
         self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
 
         self.partition_dict = OpenDicts.open_dicts(["part_" + self.method])
+        #self.partition_dict = OpenDicts.open_dicts(["part_" + self.method + "_no_1"])
 
         self.num_total_slices = len(self.partition_dict.keys())
 
-        #self.compare_partitions()
+    
         self.identify_largest_cluster()
         self.extract_number_of_clusters()
         self.extract_cluster_size_dist()
 
-    def compare_partitions(self):
-        slice_num1 = "1"
-        slice_num2 = "2"
-        s_1 = self.partition_dict[slice_num1]
-        s_2 = self.partition_dict[slice_num2]
+        self.remove_one_node_communities()
 
-        keys_1 = list(s_1.keys())
-        keys_2 = list(s_2.keys())
-        for i in range(len(keys_1)):
-            keys_1[i] = int(keys_1[i])
+    def remove_one_node_communities(self):
 
-        keys_1 = sorted(keys_1)
+        new_part_name = "partitions_"+ str(self.method) + "_no_1_comms.json"
 
-        for i in range(len(keys_2)):
-            keys_2[i] = int(keys_2[i])
-
-        keys_2 = sorted(keys_2)
-
-        for k1 in keys_1:
-            list1 = s_1[str(k1)]
-            list2 = s_2[str(k1)]
-            result = all(n in list2 for n in list1)
-            if not result:
-                static_nodes = []
-                for n in list1:
-                    if n in list2:
-                        static_nodes.append(n)
-
-                print(
-                    f"Some of the nodes from slice {slice_num1} have moved to another clusters in slice {slice_num2}! This is the case for partition {k1}"
-                )
-                print(f"Static nodes in partiton are {static_nodes}\n")
+        p_dict_new = {}
+        for slice in self.partition_dict.keys():
+            s = self.partition_dict[slice]
+            p_dict_new[slice] = {}
+            p = p_dict_new[slice]
+            for cluster in s.keys():
+                if len(s[cluster]) > 1:
+                    p[cluster] = s[cluster]
+                
+        with open(self.path_to_partitions + new_part_name, "w") as fp:
+            json.dump(p_dict_new, fp)
 
     def identify_largest_cluster(self):
         largest_partitions = []

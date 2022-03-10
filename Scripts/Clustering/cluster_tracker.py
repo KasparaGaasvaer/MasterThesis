@@ -37,7 +37,7 @@ class ClusterTracker:
 
         
         #self.track_largest()
-        NL = 10 #num largest clusters
+        #NL = 10 #num largest clusters
         #self.plot_track_largest()
         #self.table_biggest_cluster_size() 
         #self.compare_clusters(NL, expnum)
@@ -55,13 +55,12 @@ class ClusterTracker:
 
         #TC = Tracked Cluster
         
-        with open(self.path_to_clusters + "c_2.json", "r") as inf:
+        with open(self.path_to_clusters + "c_1.json", "r") as inf:
             sim1 =  json.load(inf)
 
         
         TC_size = 0
         TC_idx = "a"
-        #Find largest cluster in slice 2 (No clusters from labelprob in slice 1)
         for k in range(len(sim1.keys())): 
             num_nodes = len(sim1[str(k)]["uid"])
             if num_nodes > TC_size:
@@ -80,7 +79,7 @@ class ClusterTracker:
         inters_3 = []
         TC_sizes.append(TC_size)
         TC_idxs.append(TC_idx)
-        for s in range(3,self.num_slices +1):
+        for s in range(2,self.num_slices +1):
             print(s)
 
             with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
@@ -120,7 +119,7 @@ class ClusterTracker:
             for l in range(len(TC_idxs)-1):
                 int_3 = inters_3[l]
                 int_3_idx = inters_3_ids[l]
-                ouf.write(f"{l+2}->{l+3}                     {TC_idxs[l]},{TC_idxs[l+1]}               {TC_sizes[l]},{TC_sizes[l+1]}            {int_3[0]},{int_3[1]},{int_3[2]}            {int_3_idx[0]},{int_3_idx[1]},{int_3_idx[2]}\n")     #{intersects[l]}\n")
+                ouf.write(f"{l+1}->{l+2}                     {TC_idxs[l]},{TC_idxs[l+1]}               {TC_sizes[l]},{TC_sizes[l+1]}            {int_3[0]},{int_3[1]},{int_3[2]}            {int_3_idx[0]},{int_3_idx[1]},{int_3_idx[2]}\n")     #{intersects[l]}\n")
 
 
     def compare_N_largest_across_slices(self,N):
@@ -138,7 +137,7 @@ class ClusterTracker:
         with open(self.path_to_save_stats + f"finding_{maxN}_largest_intersects_from_{N}_largest_clusters.txt","w") as ouf:
             ouf.write("[Sim1->Si] [Cid_im10,Cid_im11,Cid_im12] [Cid_i0,Cid_i1,Cid_i2] [IS_0, IS_1, IS_2] [Sz_im10,Sz_im11,Sz_im12] [Sz_i0,Sz_i1,Sz_i2]]\n")
             
-            with open(self.path_to_clusters + "c_2.json", "r") as inf:
+            with open(self.path_to_clusters + "c_1.json", "r") as inf:
                 sim1 =  json.load(inf)
 
             L_sizes = []
@@ -152,7 +151,7 @@ class ClusterTracker:
             L_sizes = L_sizes[:N]  #Num nodes in N-largest clusters
             L_idxs = L_idxs[:N]    #IDs of N-largest clusters
 
-            for s in range(3,self.num_slices +1):
+            for s in range(2,self.num_slices +1):
                 
                 print(s)
                 with open(self.path_to_clusters + "c_" + str(s) + ".json", "r") as inf:
@@ -265,7 +264,7 @@ class ClusterTracker:
         c_size = []
         c_idx = []
 
-        for s in range(2,self.num_slices+1):
+        for s in range(1,self.num_slices+1):
             print(s)
             slice_num.append(s)
             with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
@@ -298,7 +297,7 @@ class ClusterTracker:
         # 2. Identify 100 largest cluster in slice i
         # 3. Re identify those in slice i-1
 
-        with open(self.path_to_clusters + "c_2.json", "r") as inf:
+        with open(self.path_to_clusters + "c_1.json", "r") as inf:
             sim1 =  json.load(inf)
 
         sim1_csize = []
@@ -322,7 +321,7 @@ class ClusterTracker:
 
         reqz = []
         reqz_id = []
-        for i in range(3,self.num_slices+1):
+        for i in range(2,self.num_slices+1):
             print(i)
             with open(self.path_to_clusters + "c_" + str(i) +".json","r") as inf:
                 si = json.load(inf)
@@ -387,7 +386,7 @@ class ClusterTracker:
         with open(self.path_to_save_stats+f"{N_largest}_largestCluster_reID_experiment{expnum}.txt","w") as ouf:
             ouf.write(f"N/{N_largest}    Si    Sim1    [ID_im1, ID_i]\n")
             for p in range(len(reqz)):
-                ouf.write(f"{reqz[p]}        {p+2}      {p+3}             {reqz_id[p]}\n")
+                ouf.write(f"{reqz[p]}        {p+1}      {p+2}             {reqz_id[p]}\n")
                 #ouf.write(f"We re-identified {reqz[p]} of the 100 largest clusters from slice_{p+1} in slice_{p+2}\n")
                 #diffs.append(recog/num_nodes_cim1)
                 #print(recog/num_nodes_cim1)
@@ -402,7 +401,7 @@ class ClusterTracker:
         # planen her er å finne den største i s1, reidentifisere den i slice 2, se på intersect
         # så skal jeg finne den største i slice 2, om dette ikke er den samme så skal punktet sikifte farge,
         # også skal jeg reidentifisere den største slik som før (aka det må ikke være den samme som i slice 1)
-        with open(self.path_to_clusters + "c_2.json", "r") as inf:
+        with open(self.path_to_clusters + "c_1.json", "r") as inf:
             sim1 =  json.load(inf)
 
         all_intersects = []
@@ -423,7 +422,7 @@ class ClusterTracker:
         L_size = len(L_vertices)
 
 
-        for s in range(3,self.num_slices +1):
+        for s in range(2,self.num_slices +1):
             print(s)
             with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
                 si = json.load(innf)
@@ -463,7 +462,7 @@ class ClusterTracker:
             L_size = len(L_vertices)
 
 
-        slices_nums = [i for i in range(3,self.num_slices+1)]
+        slices_nums = [i for i in range(2,self.num_slices+1)]
         for i in range(len(slices_nums)):
             plt.scatter(slices_nums[i],all_intersects[i],color = colours[match_counter[i]])
         plt.xlabel("Slice")
@@ -482,7 +481,8 @@ class ClusterTracker:
         MASTER_MATCHES = []
         MASTER_INTERSECTS = []
         NUM_SLICES_IN_ROUND = []
-        for ss in range(2, self.num_slices): #Last slice has no following slices and so cant be tracked. 
+        MASTER_SIZES = []
+        for ss in range(1, self.num_slices): #Last slice has no following slices and so cant be tracked. 
             print("STARTED NEW ROUND AT SLICE : ", ss)
             with open(self.path_to_clusters + "c_" + str(ss) +".json","r") as innf:
                 sim1 = json.load(innf)
@@ -490,6 +490,7 @@ class ClusterTracker:
             im1_size = 0
             Lim1_idx = -1
             Matches = []
+            Lsizes = []
             per_intersects = []
             for k in range(len(sim1.keys())):
                 num_nodes = len(sim1[str(k)]["uid"])
@@ -499,6 +500,7 @@ class ClusterTracker:
 
             Matches.append(Lim1_idx)   #Save for tracking
             per_intersects.append(0)   #No intersect since first slice
+            Lsizes.append(im1_size)
             cim1 = set(sim1[str(Lim1_idx)]["uid"])
             for s in range(ss+1, self.num_slices+1):         #begins at slice after start slice of this round
                 with open(self.path_to_clusters + "c_" + str(s) +".json","r") as innf:
@@ -506,6 +508,7 @@ class ClusterTracker:
 
                 max_intersect = 0
                 M_id = -1
+                ci_size = 0
                 for c in si.keys():
                     ci = set(si[c]["uid"])
                     intersect_set = cim1.intersection(ci)
@@ -513,9 +516,11 @@ class ClusterTracker:
                     if intersect_per > max_intersect:
                         max_intersect = intersect_per
                         M_id = int(c)
+                        ci_size = len(ci)
 
                 Matches.append(M_id)
                 per_intersects.append(max_intersect)
+                Lsizes.append(ci_size)
                 cim1 = set(si[str(M_id)]["uid"])
                 im1_size = len(cim1)
 
@@ -523,14 +528,16 @@ class ClusterTracker:
             MASTER_MATCHES.append(Matches)
             MASTER_INTERSECTS.append(per_intersects)
             NUM_SLICES_IN_ROUND.append(len(Matches))
+            MASTER_SIZES.append(Lsizes)
         
         with open(self.path_to_save_stats + "tracking_all_branches_largest_cluster_in_each_slice.txt","w") as ouf:
-            ouf.write("startS:ids:intersects:num_slices\n")
+            ouf.write("startS:ids:intersects:sizes:num_slices\n")
             for i in range(len(MASTER_INTERSECTS)):
                 ids_i = MASTER_MATCHES[i]
                 ints_i = MASTER_INTERSECTS[i]
                 n_slices =  NUM_SLICES_IN_ROUND[i]
-                ouf.write(f"{i+2}:{ids_i}:{ints_i}:{n_slices}\n")
+                sizes_i = MASTER_SIZES[i]
+                ouf.write(f"{i+1}:{ids_i}:{ints_i}:{sizes_i}:{n_slices}\n")
 
 
 
