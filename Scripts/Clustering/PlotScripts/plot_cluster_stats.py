@@ -106,7 +106,7 @@ class PlotClusterStats:
 
         dist = all_data["1"]
   
-        for k in range(2,len(all_data.keys())+1):
+        for k in range(1,len(all_data.keys())+1):
             ks = str(k)
             
             new_dist = all_data[ks]

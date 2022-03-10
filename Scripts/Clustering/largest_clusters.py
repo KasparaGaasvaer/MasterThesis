@@ -12,11 +12,11 @@ class LargestClusters:
 
         if self.method == "leiden" or self.method == "louvain":
             self.setup_modularity()
-            #self.extract_largest_cluster_modularity()
+            self.extract_largest_cluster_modularity()
         
         if self.method == "java":
             self.setup_labelprop()
-            #self.extract_largest_cluster_labelprop()
+            self.extract_largest_cluster_labelprop()
 
         self.plot_largest_cluster()
 
@@ -116,7 +116,7 @@ class LargestClusters:
         with open(self.path_to_save_stats+outfile_name,"w") as ouf:
             ouf.write(f"[Slice_i] [Largest cluster id] [Largest cluster size] [Num nodes in slice] [Num clusters in slice] [size/nodes] [size/clusters]\n")
 
-            for s in range(2,self.num_slices+1):
+            for s in range(1,self.num_slices+1):
                 print(s)
                 with open(self.path_to_clusters + "c_" + str(s) + ".json", "r") as inf:
                     si = json.load(inf)
@@ -168,7 +168,7 @@ class LargestClusters:
 
         slice, c_id, c_size, num_n, num_c, s_div_n, s_div_c = np.array(slice), np.array(c_id), np.array(c_size), np.array(num_n), np.array(num_c), np.array(s_div_n), np.array(s_div_c)  
 
-        """
+        
         #Plot size/nodes
         plt.plot(slice, s_div_n,".k")
         plt.ylabel(r"$\frac{\text{Largest cluster}}{\text{Nodes in slice}}$", fontsize=16)
@@ -189,15 +189,15 @@ class LargestClusters:
         plt.xlabel("Slice", fontsize=14)
         plt.savefig(self.path_to_plots + "LC_size.pdf")
         plt.clf()
-        """
+        
 
         #mean_LC_div_n = np.mean(s_div_n)
         #std_LC_div_n = np.std(s_div_c)
         #print(f"mean : {mean_LC_div_n}, std : {std_LC_div_n}")
 
-        standard_error = np.std(s_div_c)/np.sqrt(len(s_div_c))
-        plt.errorbar(slice, s_div_n, yerr=standard_error, capsize=2, fmt = ".k")
-        plt.savefig(self.path_to_plots + "TEST.pdf")
+        #standard_error = np.std(s_div_c)/np.sqrt(len(s_div_c))
+        #plt.errorbar(slice, s_div_n, yerr=standard_error, capsize=2, fmt = ".k")
+        #plt.savefig(self.path_to_plots + "TEST.pdf")
 
 
         

@@ -38,7 +38,7 @@ class ClusterTracker_SD:
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
         #self.track_largest()
-        NL = 10
+        #NL = 10
         #self.plot_track_largest()
         #self.track_reid_largest_from_im12i()
         #self.table_biggest_cluster_size()
@@ -477,6 +477,7 @@ class ClusterTracker_SD:
         MASTER_MATCHES = []
         MASTER_INTERSECTS = []
         NUM_SLICES_IN_ROUND = []
+        MASTER_SIZES = []
         with open(self.clusters, "r") as inf:
             clusters = json.load(inf)
 
@@ -489,6 +490,7 @@ class ClusterTracker_SD:
             im1_size = 0
             Lim1_idx = -1
             Matches = []
+            Lsizes = []
             per_intersects = []
             for k in range(len(sim1.keys())):
                 num_nodes = len(sim1[str(k)])
@@ -498,12 +500,14 @@ class ClusterTracker_SD:
 
             Matches.append(Lim1_idx)   #Save for tracking
             per_intersects.append(0)   #No intersect since first slice
+            Lsizes.append(im1_size)
             cim1 = set(sim1[str(Lim1_idx)])
             for s in range(ss+1, self.num_slices+1):         #begins at slice after start slice of this round
                 si = clusters[str(s)]
 
                 max_intersect = 0
                 M_id = -1
+                ci_size = 0
                 for c in si.keys():
                     ci = set(si[c])
                     intersect_set = cim1.intersection(ci)
@@ -511,9 +515,11 @@ class ClusterTracker_SD:
                     if intersect_per > max_intersect:
                         max_intersect = intersect_per
                         M_id = int(c)
+                        ci_size = len(ci)
 
                 Matches.append(M_id)
                 per_intersects.append(max_intersect)
+                Lsizes.append(ci_size)
                 cim1 = set(si[str(M_id)])
                 im1_size = len(cim1)
 
@@ -521,6 +527,7 @@ class ClusterTracker_SD:
             MASTER_MATCHES.append(Matches)
             MASTER_INTERSECTS.append(per_intersects)
             NUM_SLICES_IN_ROUND.append(len(Matches))
+            MASTER_SIZES.append(Lsizes)
         
         with open(self.path_to_save_stats + "tracking_all_branches_largest_cluster_in_each_slice.txt","w") as ouf:
             ouf.write("startS:ids:intersects:num_slices\n")
@@ -528,6 +535,7 @@ class ClusterTracker_SD:
                 ids_i = MASTER_MATCHES[i]
                 ints_i = MASTER_INTERSECTS[i]
                 n_slices =  NUM_SLICES_IN_ROUND[i]
-                ouf.write(f"{i+1}:{ids_i}:{ints_i}:{n_slices}\n")
+                sizes_i = MASTER_SIZES[i]
+                ouf.write(f"{i+1}:{ids_i}:{ints_i}:{sizes_i}:{n_slices}\n")
 
 
