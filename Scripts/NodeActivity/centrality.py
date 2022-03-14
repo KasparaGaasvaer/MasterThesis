@@ -184,7 +184,7 @@ class Centrality(Graphs):
             deg_con = json.load(inff)
 
         for ss in range(1,self.num_slices+1):
-            print("Slice ", s)
+            print("Slice ", ss)
             s = str(ss)
             dc = deg_con[s]
             
@@ -196,6 +196,10 @@ class Centrality(Graphs):
 
 
             plt.scatter(kv, kavg)
+            plt.xscale("log")
+            plt.yscale("log")
+            plt.xlabel("k")
+            plt.ylabel("average degree connectivity")
             plt.savefig(path_to_these_plots + f"s{s}_degree_connectivity.pdf")
             plt.clf()
 
