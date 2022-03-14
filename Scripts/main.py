@@ -19,9 +19,10 @@ from Clustering.PlotScripts.plot_cluster_stats import *
 from Clustering.cluster_tracker import *
 from Clustering.cluster_tracker_SharedDict import *
 from Clustering.mass_velocity import *
-from Clustering.centrality import *
+#from Clustering.centrality import *
 
 from NodeActivity.track_node_activity import *
+from NodeActivity.centrality import *
 
 #exp6 = ["accumulative", 6]
 #fix_graph_class = Labels2GraphNodeId(exp6[0],exp6[1])
@@ -58,7 +59,8 @@ path = "./experiment9/"
 ##my_class = ExtractSlices(path)
 ##my_class.extract()  #for now called by constructor, aka not necessary
 
-my_class = NodeActivity(path)
+#my_class = NodeActivity(path)
+my_class = Centrality(path)
 
     #my_class = Leiden(path,"nx", attributes_bool = True)    #6, 7, 800,600
     #my_class = Louvain(path,"nx", attributes_bool = True) #6, 7, 800,600
