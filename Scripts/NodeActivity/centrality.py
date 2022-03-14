@@ -39,7 +39,9 @@ class Centrality(Graphs):
         #self.closeness_c()
         #self.betweenness_c()
         #self.avg_nhood_degree()
-        self.degdeg_plot()
+        #self.degdeg_plot()
+        #self.avg_degree_connectivity()
+        self.deg_connectivity_plot()
 
     def deg_c(self):
         master_dict = {}
@@ -116,12 +118,30 @@ class Centrality(Graphs):
         with open(self.path_to_stats + "avg_nhood_deg_dict.json","w") as ouf:
             json.dump(master_dict, ouf)
 
+    def avg_degree_connectivity(self):
+        master_dict = {}
+
+        for s in range(1,self.num_slices+1):
+            print("Slice ", s)
+            G = self.graphs[str(s)]["graph"]
+
+            start_s = time.perf_counter()
+            s_dict = nx.average_degree_connectivity(G)
+            end_s = time.perf_counter()
+
+            print(f"Time spent calculating avg degree connectivity {end_s-start_s:0.4f} s\n")
+
+            master_dict[str(s)] = s_dict 
+        
+        with open(self.path_to_stats + "avg_deg_connectivity_dict.json","w") as ouf:
+            json.dump(master_dict, ouf)
+
 
     def degdeg_plot(self):
 
-        self.path_to_these_plots = self.path_to_plots + "kk-correlation/" 
-        if not os.path.exists(self.path_to_these_plots):
-            os.makedirs(self.path_to_these_plots)
+        path_to_these_plots = self.path_to_plots + "kk-correlation/" 
+        if not os.path.exists(path_to_these_plots):
+            os.makedirs(path_to_these_plots)
 
         with open(self.path_to_stats + "deg_c_dict.json","r") as inff:
             ind_deg = json.load(inff)
@@ -147,14 +167,29 @@ class Centrality(Graphs):
                 k.append(i_deg[n])
                 k_means.append(n_deg[n])
 
-            plt.plot(k,k_means, "*")
+            plt.scatter(k,k_means)
             plt.xscale("log")
             plt.yscale("log")
             plt.xlabel("k")
             plt.ylabel("k_mean")
-            plt.savefig(self.path_to_these_plots + f"s{s}_k_vs_kmean.pdf")
+            plt.savefig(path_to_these_plots + f"s{s}_k_vs_kmean.pdf")
+            plt.clf()
             
+    def deg_connectivity_plot(self):
+        path_to_these_plots = self.path_to_plots + "degree_connectivity/" 
+        if not os.path.exists(path_to_these_plots):
+            os.makedirs(path_to_these_plots)
 
+        with open(self.path_to_stats + "avg_deg_connectivity_dict.json","r") as inff:
+            deg_con = json.load(inff)
+
+        for ss in range(1,self.num_slices+1):
+            s = str(ss)
+            dc = deg_con[s]
+
+            plt.plot(list(dc.keys()), list(dc.values()))
+            plt.savefig(path_to_these_plots + f"s{s}_degree_connectivity.pdf")
+            plt.clf()
 
 
 
