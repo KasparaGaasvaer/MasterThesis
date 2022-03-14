@@ -55,8 +55,7 @@ class Louvain(Graphs):
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
-        self.num_total_slices = len(self.graphs.keys())
-
+    
         if graph_type == "nx":
             self.nx_louvain()
 

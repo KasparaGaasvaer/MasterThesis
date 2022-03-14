@@ -302,6 +302,50 @@ class Centrality:
                 slice_info.append(p)
 
             M_info.append(slice_info)
+        
+        if do_labelprop:
+            num_methods = 3
+            print("new method")
+            method = self.methods[2]
+            largest_cluster_ids = []
+            largest_cluster_sizes = []
+            central_node_clusters = []
+            central_node_c_sizes = []
+
+            file_largest_c = path_2_exp + "statistics/Largest_clusters/" + method.title() + "/stats_LC_Nnodes_Nclusters.txt"
+            with open(file_largest_c,"r") as inf:
+                inf.readline()
+                lines = inf.readlines()
+                for line in lines:
+                    largest_cluster_ids.append(int(line.split()[1]))
+
+            
+            clusters_file = path_2_partitions + "Clusters/"
+
+            for s in self.slice_nums:
+                with open(clusters_file + "c_" + str(s) + ".json", "r") as inf:
+                    si = json.load(inf)
+                C_nodes = central_node_ids[s-1]
+                tmp_c = []
+                tmp_s = []
+                for n in C_nodes:
+                    c_k = int(n)
+                    for k in si.keys():
+                        ci = set(si[k]["uid"])
+                        if c_k in ci:
+                            tmp_c.append(int(k))
+                            tmp_s.append(len(ci))
+                            break
+                central_node_clusters.append(tmp_c)
+                central_node_c_sizes.append(tmp_s)
+                largest_cluster_sizes.append(len(set(si[str(largest_cluster_ids[s-1])]["uid"])))
+
+            slice_info = []
+            for i in range(len(central_node_clusters)):
+                p = [central_node_clusters[i],largest_cluster_ids[i],central_node_c_sizes[i],largest_cluster_sizes[i]]
+                slice_info.append(p)
+
+            M_info.append(slice_info)
        
         print(M_info)
         df = pd.DataFrame() 
@@ -310,6 +354,7 @@ class Centrality:
         
         print(df)
         df.to_csv(self.path_to_save_compare + "compare_Lc_2_CNc_top5.csv", index=False, sep = " ")
+        
         
 
         

@@ -1,6 +1,7 @@
 **/.DS_Store
 __pycache__/
 *.json
+
 **/experiment100/experiment_100/
 **/experiment100/parsed_dictionaries/
 **/experiment100/statistics/
@@ -23,6 +24,12 @@ __pycache__/
 **/experiment7/experiment_7/
 **/experiment7/parsed_dictionaries/
 **/experiment7/statistics/
+**/experiment8/experiment_8/
+**/experiment8/parsed_dictionaries/
+**/experiment8/statistics/
+**/experiment9/experiment_9/
+**/experiment9/parsed_dictionaries/
+**/experiment9/statistics/
 **/k800/
 **/k400/
 **/k600/
