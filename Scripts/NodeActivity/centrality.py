@@ -140,7 +140,7 @@ class Centrality(Graphs):
             if len(i_deg) != len(n_deg):
                 print("problem")
 
-            """
+            
             k = []
             k_means = []
             for n in i_deg.keys():
@@ -148,10 +148,12 @@ class Centrality(Graphs):
                 k_means.append(n_deg[n])
 
             plt.plot(k,k_means, "*")
+            plt.xscale("log")
+            plt.yscale("log")
             plt.xlabel("k")
             plt.ylabel("k_mean")
             plt.savefig(self.path_to_these_plots + f"s{s}_k_vs_kmean.pdf")
-            """
+            
 
 
 
