@@ -42,7 +42,8 @@ class Centrality(Graphs):
         #self.avg_nhood_degree()
         #self.degdeg_plot()
         #self.avg_degree_connectivity()
-        self.deg_connectivity_plot()
+        self.N_phases_deg_connectivity_plot()
+        #self.deg_connectivity_plot()
 
     def deg_c(self):
         master_dict = {}
@@ -269,30 +270,11 @@ class Centrality(Graphs):
             kv = []
             kavg = []
             for k in dc.keys():
-                kv.append(int(k))
-                kavg.append(dc[k])
                 try:
                     all_dict[k].append(dc[k])
                 except KeyError:
                     all_dict[k] = []
                     all_dict[k].append(dc[k])
-
-            x = np.log10(np.array(kv))
-            y = np.log10(np.array(kavg))
-
-            plt.scatter(x, y)
-
-            x_2d = x.reshape((-1, 1))
-            model = linear_model.LinearRegression().fit(x_2d,y)
-            y_pred = model.predict(x_2d)
-
-            plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
-            plt.xlabel("k")
-            plt.ylabel("average degree connectivity")
-            plt.savefig(path_to_these_plots + f"s{s}_degree_connectivity.pdf")
-            plt.clf()
-            
-
         kv = []
         kavg = []
         for k in all_dict.keys():
@@ -303,19 +285,27 @@ class Centrality(Graphs):
         x = np.log10(np.array(kv))
         y = np.log10(np.array(kavg))
 
-        plt.scatter(x, y)
+        x1,x2,x3 = x[:230], x[230:550], x[550:]
+        y1,y2,y3 = y[:230], y[230:550], y[550:]
 
-        x_2d = x.reshape((-1, 1))
-        model = linear_model.LinearRegression().fit(x_2d,y)
-        y_pred = model.predict(x_2d)
+        X = [x1,x2,x3]
+        Y = [y1,y2,y3]
+
+        for i in range(len(X)):
+            plt.scatter(X[i], Y[i])
+
+            x_2d = X[i].reshape((-1, 1))
+            model = linear_model.LinearRegression().fit(x_2d,Y[i])
+            y_pred = model.predict(x_2d)
 
         
-        plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
-        plt.legend()
-        plt.xlabel("k")
-        plt.ylabel("average degree connectivity")
-        plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
-        plt.clf()
+            plt.plot(X[i],y_pred, label = "Prediction from OLS", color = "r")
+            plt.legend()
+            plt.xlabel("k")
+            plt.ylabel("average degree connectivity")
+            plt.title(f"Phase {i}")
+            plt.savefig(path_to_these_plots + f"over_all_slices_degree_connectivity_phase_{i}.pdf")
+            plt.clf()
 
 
 
