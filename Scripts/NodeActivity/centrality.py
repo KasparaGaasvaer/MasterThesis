@@ -2,6 +2,7 @@ import sys, os, json, time
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn import linear_model
 
 from Utils.graphs import Graphs
 sys.path.append("..")  # Adds higher directory to python modules path, looking for Graphs-class one level up
@@ -35,12 +36,12 @@ class Centrality(Graphs):
 
     def calculate_centralities(self):
         
-        #self.deg_c()
+        self.deg_c()
         #self.closeness_c()
         #self.betweenness_c()
-        #self.avg_nhood_degree()
-        #self.degdeg_plot()
-        #self.avg_degree_connectivity()
+        self.avg_nhood_degree()
+        self.degdeg_plot()
+        self.avg_degree_connectivity()
         self.deg_connectivity_plot()
 
     def deg_c(self):
@@ -183,6 +184,8 @@ class Centrality(Graphs):
         with open(self.path_to_stats + "avg_deg_connectivity_dict.json","r") as inff:
             deg_con = json.load(inff)
 
+        all_dict = {}
+
         for ss in range(1,self.num_slices+1):
             print("Slice ", ss)
             s = str(ss)
@@ -193,15 +196,55 @@ class Centrality(Graphs):
             for k in dc.keys():
                 kv.append(int(k))
                 kavg.append(dc[k])
+                try:
+                    all_dict[k].append(dc[k])
+                except KeyError:
+                    all_dict[k] = []
+                    all_dict[k].append(dc[k])
 
+            x = np.log10(np.array(kv))
+            y = np.log10(np.array(kavg))
 
-            plt.scatter(kv, kavg)
-            plt.xscale("log")
-            plt.yscale("log")
+            plt.scatter(x, y)
+
+            x_2d = x.reshape((-1, 1))
+            model = linear_model.LinearRegression().fit(x_2d,y)
+            y_pred = model.predict(x_2d)
+
+            plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
             plt.xlabel("k")
             plt.ylabel("average degree connectivity")
             plt.savefig(path_to_these_plots + f"s{s}_degree_connectivity.pdf")
             plt.clf()
+            
+
+        kv = []
+        kavg = []
+        for k in all_dict.keys():
+            kv.append(int(k))
+            kavg.append(np.mean(all_dict[k]))
+
+        
+        x = np.log10(np.array(kv))
+        y = np.log10(np.array(kavg))
+
+        plt.scatter(x, y)
+
+        x_2d = x.reshape((-1, 1))
+        model = linear_model.LinearRegression().fit(x_2d,y)
+        y_pred = model.predict(x_2d)
+
+        
+        plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
+        plt.legend()
+        plt.xlabel("k")
+        plt.ylabel("average degree connectivity")
+        plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
+        plt.clf()
+
+        
+
+
 
 
 

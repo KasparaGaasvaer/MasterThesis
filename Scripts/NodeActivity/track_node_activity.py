@@ -24,13 +24,13 @@ class NodeActivity(Graphs):
             os.makedirs(self.path_to_plots)
 
 
-        #self.make_graphs()
+        self.make_graphs()
 
-        #self.make_NAC_dict()
+        self.make_NAC_dict()
 
-        #self.sort_NAC_dict()
+        self.sort_NAC_dict()
 
-        #self.mapping_dict()
+        self.mapping_dict()
         
         self.plot_NAC()
 
@@ -156,7 +156,7 @@ class NodeActivity(Graphs):
     
             
     def plot_NAC(self):
-        centrality_measure = "0.9_median"#"3_mean"
+        centrality_measure = "3_mean" #"0.9_median"
 
         self.find_ids(centrality_measure)
 
