@@ -19,7 +19,7 @@ class Centrality(Graphs):
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
-        self.make_graphs()
+        #self.make_graphs()
         self.calculate_centralities()
 
     def make_graphs(self):
@@ -36,12 +36,12 @@ class Centrality(Graphs):
 
     def calculate_centralities(self):
         
-        self.deg_c()
+        #self.deg_c()
         #self.closeness_c()
         #self.betweenness_c()
-        self.avg_nhood_degree()
-        self.degdeg_plot()
-        self.avg_degree_connectivity()
+        #self.avg_nhood_degree()
+        #self.degdeg_plot()
+        #self.avg_degree_connectivity()
         self.deg_connectivity_plot()
 
     def deg_c(self):
@@ -150,6 +150,8 @@ class Centrality(Graphs):
         with open(self.path_to_stats + "avg_nhood_deg_dict.json","r") as inff:
             nhood_deg = json.load(inff)
 
+        self.num_slices = len(ind_deg.keys())
+
         
         for ss in range(1,self.num_slices+1):
             print("Slice ", ss)
@@ -184,6 +186,79 @@ class Centrality(Graphs):
         with open(self.path_to_stats + "avg_deg_connectivity_dict.json","r") as inff:
             deg_con = json.load(inff)
 
+        all_dict = {}
+
+        self.num_slices = len(deg_con.keys())
+
+        for ss in range(1,self.num_slices+1):
+            print("Slice ", ss)
+            s = str(ss)
+            dc = deg_con[s]
+            
+            kv = []
+            kavg = []
+            for k in dc.keys():
+                #kv.append(int(k))
+                #kavg.append(dc[k])
+                try:
+                    all_dict[k].append(dc[k])
+                except KeyError:
+                    all_dict[k] = []
+                    all_dict[k].append(dc[k])
+
+            """
+            x = np.log10(np.array(kv))
+            y = np.log10(np.array(kavg))
+
+            plt.scatter(x, y)
+
+            x_2d = x.reshape((-1, 1))
+            model = linear_model.LinearRegression().fit(x_2d,y)
+            y_pred = model.predict(x_2d)
+
+            plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
+            plt.xlabel("k")
+            plt.ylabel("average degree connectivity")
+            plt.savefig(path_to_these_plots + f"s{s}_degree_connectivity.pdf")
+            plt.clf()
+            """
+            
+
+        kv = []
+        kavg = []
+        for k in all_dict.keys():
+            kv.append(int(k))
+            kavg.append(np.mean(all_dict[k]))
+
+        
+        x = np.log(np.array(kv))
+        y = np.log(np.array(kavg))
+
+        plt.scatter(x, y)
+
+        x_2d = x.reshape((-1, 1))
+        model = linear_model.LinearRegression().fit(x_2d,y)
+        y_pred = model.predict(x_2d)
+
+        
+        plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
+        plt.legend()
+        plt.xlabel("k")
+        plt.ylabel("average degree connectivity")
+        plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity_naturalLog.pdf")
+        plt.clf()
+
+
+
+    def N_phases_deg_connectivity_plot(self):
+        path_to_these_plots = self.path_to_plots + "degree_connectivity/" 
+        if not os.path.exists(path_to_these_plots):
+            os.makedirs(path_to_these_plots)
+
+        with open(self.path_to_stats + "avg_deg_connectivity_dict.json","r") as inff:
+            deg_con = json.load(inff)
+
+        self.num_slices = len(deg_con.keys())
         all_dict = {}
 
         for ss in range(1,self.num_slices+1):
@@ -242,7 +317,6 @@ class Centrality(Graphs):
         plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
         plt.clf()
 
-        
 
 
 
