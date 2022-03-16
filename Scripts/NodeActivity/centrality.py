@@ -232,8 +232,8 @@ class Centrality(Graphs):
             kavg.append(np.mean(all_dict[k]))
 
         
-        x = np.log(np.array(kv))
-        y = np.log(np.array(kavg))
+        x = np.log10(np.array(kv))
+        y = np.log10(np.array(kavg))
 
         plt.scatter(x, y)
 
@@ -246,7 +246,7 @@ class Centrality(Graphs):
         plt.legend()
         plt.xlabel("k")
         plt.ylabel("average degree connectivity")
-        plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity_naturalLog.pdf")
+        plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
         plt.clf()
 
 
@@ -262,52 +262,57 @@ class Centrality(Graphs):
         self.num_slices = len(deg_con.keys())
         all_dict = {}
 
-        for ss in range(1,self.num_slices+1):
-            print("Slice ", ss)
-            s = str(ss)
-            dc = deg_con[s]
-            
+        s_list = [i for i in range(1,self.num_slices+1)]
+        phases = [s_list[:231], s_list[231:551], s_list[551:]]
+
+        m_dict = {}
+        i = 0
+        for p in phases:
+            m_dict[str(i)] = {}
+            print("NEW PHASE ")
+            for ss in p:
+                print("Slice ", ss)
+                s = str(ss)
+                dc = deg_con[s]
+                kv = []
+                kavg = []
+                for k in dc.keys():
+                    try:
+                        m_dict[str(i)][k].append(dc[k])
+                    except KeyError:
+                        m_dict[str(i)][k] = []
+                        m_dict[str(i)][k].append(dc[k])
+            i += 1
+
+        for j in range(len(phases)):
+            all_dict = m_dict[str(j)]
+
             kv = []
             kavg = []
-            for k in dc.keys():
-                try:
-                    all_dict[k].append(dc[k])
-                except KeyError:
-                    all_dict[k] = []
-                    all_dict[k].append(dc[k])
-        kv = []
-        kavg = []
-        for k in all_dict.keys():
-            kv.append(int(k))
-            kavg.append(np.mean(all_dict[k]))
+            for k in all_dict.keys():
+                kv.append(int(k))
+                kavg.append(np.mean(all_dict[k]))
+            
+            x = np.log(np.array(kv))
+            y = np.log(np.array(kavg))
 
-        
-        x = np.log10(np.array(kv))
-        y = np.log10(np.array(kavg))
+            print(len(x), len(y))
 
-        x1,x2,x3 = x[:230], x[230:550], x[550:]
-        y1,y2,y3 = y[:230], y[230:550], y[550:]
+            plt.scatter(x, y)
 
-        X = [x1,x2,x3]
-        Y = [y1,y2,y3]
-
-        for i in range(len(X)):
-            plt.scatter(X[i], Y[i])
-
-            x_2d = X[i].reshape((-1, 1))
-            model = linear_model.LinearRegression().fit(x_2d,Y[i])
+            x_2d = x.reshape((-1, 1))
+            model = linear_model.LinearRegression().fit(x_2d,y)
             y_pred = model.predict(x_2d)
-
-        
-            plt.plot(X[i],y_pred, label = "Prediction from OLS", color = "r")
+                
+            plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
             plt.legend()
             plt.xlabel("k")
+            plt.title(f"Phase {j}")
             plt.ylabel("average degree connectivity")
-            plt.title(f"Phase {i}")
-            plt.savefig(path_to_these_plots + f"over_all_slices_degree_connectivity_phase_{i}.pdf")
+            plt.savefig(path_to_these_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
             plt.clf()
 
-
+        
 
 
 
