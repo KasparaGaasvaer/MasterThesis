@@ -293,8 +293,8 @@ class Centrality(Graphs):
                 kv.append(int(k))
                 kavg.append(np.mean(all_dict[k]))
             
-            x = np.log(np.array(kv))
-            y = np.log(np.array(kavg))
+            x = np.log10(np.array(kv))
+            y = np.log10(np.array(kavg))
 
             print(len(x), len(y))
 
