@@ -59,8 +59,8 @@ path = "./experiment8/"
 ##my_class = ExtractSlices(path)
 ##my_class.extract()  #for now called by constructor, aka not necessary
 
-#my_class = NodeActivity(path)
-my_class = Centrality(path)
+my_class = NodeActivity(path)
+#my_class = Centrality(path)
 
     #my_class = Leiden(path,"nx", attributes_bool = True)    #6, 7, 800,600
     #my_class = Louvain(path,"nx", attributes_bool = True) #6, 7, 800,600

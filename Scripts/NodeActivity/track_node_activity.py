@@ -24,15 +24,17 @@ class NodeActivity(Graphs):
             os.makedirs(self.path_to_plots)
 
 
-        self.make_graphs()
+        #self.make_graphs()
 
-        self.make_NAC_dict()
+        #self.make_NAC_dict()
 
-        self.sort_NAC_dict()
+        #self.sort_NAC_dict()
 
-        self.mapping_dict()
+        #self.mapping_dict()
         
-        self.plot_NAC()
+        #self.plot_NAC()
+
+        self.compare_NAC_2_contacts()
 
     def make_graphs(self):
         
@@ -69,6 +71,35 @@ class NodeActivity(Graphs):
         
         with open(self.path_to_stats + "activity_dict.json","w") as ouf:
             json.dump(master_dict, ouf)
+
+    def compare_NAC_2_contacts(self):
+
+        with open(self.path_to_stats + "activity_dict.json","r") as inff:
+            master_dict = json.load(inff)
+
+        self.num_slices = [i for i in range(1,len(master_dict.keys())+1)]
+
+        max_acts = []
+        for s in master_dict.keys():
+            print("Slice ", s)
+            max_a = 0
+            slice = master_dict[s]
+            for n in slice.keys():
+                activity = slice[n]
+                if activity > max_a:
+                    max_a = activity
+            max_acts.append(max_a)
+
+        max_acts = np.array(max_acts)    
+        contacts = np.load(self.path + "statistics/ExpStats/len_graphs.npy")
+
+        plt.plot(self.num_slices,max_acts, label = "Activity of most active node")
+        plt.plot(self.num_slices, contacts, label = "Total number of contacts")
+        plt.xlabel("Slice")
+        plt.legend()
+        plt.savefig(self.path_to_plots + "max_NAC_vs_num_contacts.pdf")
+        plt.clf()
+
         
 
 
