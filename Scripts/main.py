@@ -72,7 +72,7 @@ my_class = NodeActivity(path)
     #my_class = PlotClusterStats(path,"leiden")
 ##my_class = PlotGraph(path, ["num_edges"])
 #my_class = ClusterTracker(path)  #done 800 NL = 10, done for 600 NL=10 
-    #my_class = ClusterTracker_SD(path,"leiden") # 6leidenlouvain, 7louvainleiden, 600leidenlouvain , 800leidenlouvain
+#my_class = ClusterTracker_SD(path,"louvain") # 6leidenlouvain, 7louvainleiden, 600leidenlouvain , 800leidenlouvain
     #my_class = ClusterTracker_SD(path,"louvain") # 6leidenlouvain, 7louvainleiden, 600leidenlouvain , 800leidenlouvain
 
 """

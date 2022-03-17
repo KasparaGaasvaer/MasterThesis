@@ -37,14 +37,13 @@ class ClusterTracker_SD:
 
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
-        self.track_largest()
-        NL = 10
-        self.plot_track_largest()
-        self.track_reid_largest_from_im12i()
+        #self.track_largest()
+        #NL = 10
+        #self.plot_track_largest()
+        #self.track_reid_largest_from_im12i()
         self.table_biggest_cluster_size()
-        self.compare_clusters(NL, expnum)
-        self.compare_N_largest_across_slices(NL)
-        self.track_largest_branch()
+        #self.compare_clusters(NL, expnum)
+        #self.compare_N_largest_across_slices(NL)
 
         # FUNK SKAL HER FOR BARE EXP6 OG KSLICES I DEN ANDRE
 
@@ -344,7 +343,9 @@ class ClusterTracker_SD:
         with open(self.clusters, "r") as inf:
             clusters = json.load(inf)
 
-        for s in range(1,self.num_slices):
+        self.num_slices = len(clusters.keys())
+
+        for s in range(1,self.num_slices+1):
             print(s)
             slice_num.append(s)
             si = clusters[str(s)]

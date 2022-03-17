@@ -1,5 +1,6 @@
 from doctest import master
 import sys, os, time, json
+import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -74,6 +75,7 @@ class NodeActivity(Graphs):
 
     def compare_NAC_2_contacts(self):
 
+        method = "Leiden"       
         std_n = 4
 
         with open(self.path_to_stats + "activity_dict.json","r") as inff:
@@ -106,8 +108,12 @@ class NodeActivity(Graphs):
         max_acts = np.array(max_acts)    
         top_acts = np.array(top_acts)
         num_top_acts = np.array(num_top_acts)
+
         contacts = np.load(self.path + "statistics/ExpStats/len_graphs.npy")
         nodes = np.load(self.path + "statistics/ExpStats/len_labels.npy")
+        size_of_largest_cluster = pd.read_csv(self.path + f"statistics/Cluster_tracker/{method}/largest_clusters.csv", header = 0, usecols=[2])
+        size_of_largest_cluster = size_of_largest_cluster.to_numpy()[:,0]
+        
 
         perc_in_top  = (num_top_acts/nodes) *100
 
@@ -122,6 +128,7 @@ class NodeActivity(Graphs):
         #fig.suptitle("Delta Slices (dt = 1 day)")
         axs[0].plot(self.num_slices, top_acts, label = "Activity of most active nodes")
         axs[0].plot(self.num_slices, contacts, label = "Total number of contacts")
+        axs[0].plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method})")
         axs[0].set_title(f"Cut off = mean + {std_n}std")
         axs[0].set(xlabel = "Slice")#, ylabel = "Nodes")
         axs[0].ticklabel_format(axis='y', style='scientific',scilimits=(0,0))

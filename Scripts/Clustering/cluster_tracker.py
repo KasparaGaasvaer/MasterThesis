@@ -39,11 +39,11 @@ class ClusterTracker:
         #self.track_largest()
         #NL = 10 #num largest clusters
         #self.plot_track_largest()
-        #self.table_biggest_cluster_size() 
+        self.table_biggest_cluster_size() 
         #self.compare_clusters(NL, expnum)
         #self.compare_N_largest_across_slices(NL)
         #self.track_reid_largest_from_im12i()
-        self.track_largest_branch()
+        #self.track_largest_branch()
 
     def track_largest(self):
         print("\ntrack Largest\n")
@@ -287,7 +287,7 @@ class ClusterTracker:
 
         c_dict = {'Slice num': slice_num, 'Cluster idx' : c_idx, 'Cluster size' : c_size}
         c_df = pd.DataFrame(c_dict)
-        c_df.to_csv(self.path_to_save_stats + "largest_clusters.csv",index=False)
+        c_df.to_csv(self.path_to_save_stats + "largest_clusters.csv",index=True)
 
         print(c_df)
 
