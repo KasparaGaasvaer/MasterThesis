@@ -74,24 +74,42 @@ class NodeActivity(Graphs):
 
     def compare_NAC_2_contacts(self):
 
+        std_n = 4
+
         with open(self.path_to_stats + "activity_dict.json","r") as inff:
             master_dict = json.load(inff)
 
         self.num_slices = [i for i in range(1,len(master_dict.keys())+1)]
 
         max_acts = []
+        top_acts = []
+        num_top_acts = []
         for s in master_dict.keys():
             print("Slice ", s)
             max_a = 0
+            top_a = 0
+            num_top = 0
             slice = master_dict[s]
+            vals = list(slice.values())
+            cut_off = np.mean(vals) + std_n*np.std(vals)
             for n in slice.keys():
                 activity = slice[n]
-                if activity > max_a:
-                    max_a = activity
+                if activity > cut_off:
+                    num_top += 1
+                    top_a += activity
+                    if activity > max_a:
+                        max_a = activity
             max_acts.append(max_a)
+            top_acts.append(top_a)
+            num_top_acts.append(num_top)
 
         max_acts = np.array(max_acts)    
+        top_acts = np.array(top_acts)
+        num_top_acts = np.array(num_top_acts)
         contacts = np.load(self.path + "statistics/ExpStats/len_graphs.npy")
+        nodes = np.load(self.path + "statistics/ExpStats/len_labels.npy")
+
+        perc_in_top  = (num_top_acts/nodes) *100
 
         plt.plot(self.num_slices,max_acts, label = "Activity of most active node")
         plt.plot(self.num_slices, contacts, label = "Total number of contacts")
@@ -99,6 +117,32 @@ class NodeActivity(Graphs):
         plt.legend()
         plt.savefig(self.path_to_plots + "max_NAC_vs_num_contacts.pdf")
         plt.clf()
+
+        fig, axs = plt.subplots(1, 2)
+        #fig.suptitle("Delta Slices (dt = 1 day)")
+        axs[0].plot(self.num_slices, top_acts, label = "Activity of most active nodes")
+        axs[0].plot(self.num_slices, contacts, label = "Total number of contacts")
+        axs[0].set_title(f"Cut off = mean + {std_n}std")
+        axs[0].set(xlabel = "Slice")#, ylabel = "Nodes")
+        axs[0].ticklabel_format(axis='y', style='scientific',scilimits=(0,0))
+        axs[1].plot(self.num_slices, perc_in_top, ".")
+        axs[1].set_title("% Most active nodes")
+        axs[1].set(xlabel = "Slice")#, ylabel = "Contacts")
+        axs[1].ticklabel_format(axis='y', style='scientific',scilimits=(0,0))
+        fig.tight_layout(pad=1.0)
+        axs[0].legend()
+        plt.savefig(self.path_to_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
+        plt.clf()
+
+        """
+        plt.plot(self.num_slices, top_acts, label = "Activity of most active nodes")
+        plt.plot(self.num_slices, contacts, label = "Total number of contacts")
+        plt.title(f"Cut off = mean + {std_n}std")
+        plt.xlabel("Slice")
+        plt.legend()
+        plt.savefig(self.path_to_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
+        plt.clf()
+        """
 
         
 
