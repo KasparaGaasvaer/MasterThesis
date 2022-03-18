@@ -128,6 +128,14 @@ class NodeActivity(Graphs):
                 plt.legend()
                 plt.savefig(self.path_to_plots + f"max_NAC_vs_num_contacts_clusters_{method}.pdf")
                 plt.clf()
+                
+                plt.plot(self.num_slices,max_acts, label = "Activity of most active node")
+                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method})")
+                plt.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
+                plt.xlabel("Slice")
+                plt.legend()
+                plt.savefig(self.path_to_plots + f"max_NAC_and_largest_cluster_{method}.pdf")
+                plt.clf()
 
                 fig, axs = plt.subplots(1, 2)
                 axs[0].plot(self.num_slices, top_acts, label = "Activity of most active nodes")
@@ -144,15 +152,6 @@ class NodeActivity(Graphs):
                 plt.savefig(self.path_to_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
                 plt.clf()
 
-                """
-                plt.plot(self.num_slices, top_acts, label = "Activity of most active nodes")
-                plt.plot(self.num_slices, contacts, label = "Total number of contacts")
-                plt.title(f"Cut off = mean + {std_n}std")
-                plt.xlabel("Slice")
-                plt.legend()
-                plt.savefig(self.path_to_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
-                plt.clf()
-                """
 
         
 
