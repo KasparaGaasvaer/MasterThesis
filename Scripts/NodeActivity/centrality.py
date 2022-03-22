@@ -37,12 +37,12 @@ class Centrality(Graphs):
     def calculate_centralities(self):
         
         #self.deg_c()
-        #self.closeness_c()
-        #self.betweenness_c()
+        self.closeness_c()
+        self.betweenness_c()
         #self.avg_nhood_degree()
         #self.degdeg_plot()
         #self.avg_degree_connectivity()
-        self.N_phases_deg_connectivity_plot()
+        #self.N_phases_deg_connectivity_plot()
         #self.deg_connectivity_plot()
 
     def deg_c(self):
