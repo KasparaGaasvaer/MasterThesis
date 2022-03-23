@@ -47,10 +47,15 @@ from NodeActivity.centrality import *
 #my_class = Slices(path)
 #my_class = Centrality(path, 600)
 
+paths = ["./experiment7/", "./experiment6/", "./experiment8/", "./experiment9/"]
+
+for path in paths:
+    my_class = Leiden(path,"nx", attributes_bool = False)
+
 
 #path = "./experiment6/"
 #path = "./experiment7/"
-path = "./experiment8/"
+#path = "./experiment8/"
 #path = "./experiment9/"
 #paths = [path8,path9]
 #for path in paths:
@@ -59,7 +64,7 @@ path = "./experiment8/"
 ##my_class = ExtractSlices(path)
 ##my_class.extract()  #for now called by constructor, aka not necessary
 
-my_class = NodeActivity(path)
+#my_class = NodeActivity(path)
 #my_class = Centrality(path)
 
     #my_class = Leiden(path,"nx", attributes_bool = True)    #6, 7, 800,600

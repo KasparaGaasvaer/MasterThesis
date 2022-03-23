@@ -62,12 +62,12 @@ class Leiden(Graphs):
         if graph_type == "ig":
             self.ig_leiden()
 
-        self.num_total_slices = 1
 
     def nx_leiden(self):
         """Leiden algorithm for NetworkX-graphs
         """
-        self.partition_dict = {}
+        #self.partition_dict = {}
+        Modularity_score = {}
         for i in range(1, self.num_total_slices + 1):
             print("Starting with with slice ", i)
             self.slice_num = str(i)
@@ -83,24 +83,29 @@ class Leiden(Graphs):
             partition = la.find_partition(G, la.ModularityVertexPartition)
             part_e = time.perf_counter()
             print(f"Time spent making partitions is {part_e-part_s:0.4f} s")
-    
-            dict_s = time.perf_counter()
-            self.nx_make_partition_dict(G, partition)
-            dict_e = time.perf_counter()
-            print(f"Time spent making dict is {dict_e-dict_s:0.4f} s")
+
+            comp_mod_s = time.perf_counter()
+            Q = ig.Graph.modularity(G,partition)
+            comp_mod_e = time.perf_counter()
+            print(f"Time spent calculating modularity is {comp_mod_e-comp_mod_s:0.4f} s")
+            Modularity_score[self.slice_num] = Q
+
+            #dict_s = time.perf_counter()
+            #self.nx_make_partition_dict(G, partition)
+            #dict_e = time.perf_counter()
+            #print(f"Time spent making dict is {dict_e-dict_s:0.4f} s")
         
-            # print(partition)
-            # print(len(partition))
-        # partition = la.find_partition(G, la.CPMVertexPartition, resolution_parameter = 0.05)
-
-        # ig.plot(partition)
-
-        # layout = G.layout(layout='auto')
-        # ig.plot(G, layout = layout)
-        # plt.show()
-
-        with open(self.path_to_dict + "partitions_leiden.json", "w") as fp:
-            json.dump(self.partition_dict, fp)
+        """
+        partition = la.find_partition(G, la.CPMVertexPartition, resolution_parameter = 0.05)
+        ig.plot(partition)
+        layout = G.layout(layout='auto')
+        ig.plot(G, layout = layout)
+        plt.show()
+        """
+        with open(self.path_to_dict + "modularity_score_leiden.json","w") as ouf:
+            json.dump(Modularity_score,ouf)
+        #with open(self.path_to_dict + "partitions_leiden.json", "w") as fp:
+            #json.dump(self.partition_dict, fp)
 
     def ig_leiden(self):
         G = self.graphs["1"]["graph"]

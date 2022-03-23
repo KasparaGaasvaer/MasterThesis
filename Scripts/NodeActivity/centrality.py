@@ -250,7 +250,6 @@ class Centrality(Graphs):
         plt.clf()
 
 
-
     def N_phases_deg_connectivity_plot(self):
         path_to_these_plots = self.path_to_plots + "degree_connectivity/" 
         if not os.path.exists(path_to_these_plots):

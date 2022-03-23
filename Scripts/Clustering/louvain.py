@@ -1,4 +1,5 @@
 import networkx as nx
+import networkx.algorithms.community as nx_comm
 import igraph as ig
 import numpy as np
 import pandas as pd
@@ -55,7 +56,7 @@ class Louvain(Graphs):
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
-    
+        self.num_total_slices = len(self.graphs.keys())
         if graph_type == "nx":
             self.nx_louvain()
 
@@ -64,7 +65,8 @@ class Louvain(Graphs):
 
     def nx_louvain(self):
 
-        self.partition_dict = {}
+        Modularity_score = {}
+        #self.partition_dict = {}
         for i in range(1, self.num_total_slices + 1):
             self.slice_num = str(i)
             print("Starting with with slice ", i)
@@ -76,16 +78,26 @@ class Louvain(Graphs):
             part_e = time.perf_counter()
             print(f"Time spent making partitions is {part_e-part_s:0.4f} s")
 
-            dict_s = time.perf_counter()
-            self.nx_make_partition_dict(G, partition)
-            dict_e = time.perf_counter()
-            print(f"Time spent making dict is {dict_e-dict_s:0.4f} s")
+            comp_mod_s = time.perf_counter()
+            Q = cluster_louvain.modularity(partition,G)
+            comp_mod_e = time.perf_counter()
+            print(f"Time spent calculating modularity is {comp_mod_e-comp_mod_s:0.4f} s")
+            Modularity_score[self.slice_num] = Q
+
+
+            #dict_s = time.perf_counter()
+            #self.nx_make_partition_dict(G, partition)
+            #dict_e = time.perf_counter()
+            #print(f"Time spent making dict is {dict_e-dict_s:0.4f} s")
         
 
             # self.plot_louvain(G,partition)
+        
+        with open(self.path_to_dict + "modularity_score_louvain.json","w") as ouf:
+            json.dump(Modularity_score,ouf)
 
-        with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
-            json.dump(self.partition_dict, fp)
+        #with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
+            #json.dump(self.partition_dict, fp)
        
 
     def nx_make_partition_dict(self, G, partition):
