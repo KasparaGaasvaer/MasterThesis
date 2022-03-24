@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TARGET_PATH="/Users/kaspara/Documents/MASTER_GIT_GAMMEL_MAC/daniel_repo/plots/"
+TARGET_PATH="/Users/kaspara/Documents/MASTER_GIT_GAMMEL_MAC/daniel_repo/synced_plots/"
 
 cp -r "/Users/kaspara/Documents/MASTER_GIT_GAMMEL_MAC/MasterThesis//Scripts/experiment6/plots/" "${TARGET_PATH}experiment6/"
 cp -r "/Users/kaspara/Documents/MASTER_GIT_GAMMEL_MAC/MasterThesis//Scripts/experiment7/plots/" "${TARGET_PATH}experiment7/"
