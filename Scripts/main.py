@@ -4,25 +4,183 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
-from Utils.parse_slices import *
-from Utils.extract_from_slice import *
-from Utils.plot_graph_stats import *
-from Utils.restore_graph_node_id import *
-from Utils.re_ordering_k_experiments import *
 
+#from Clustering.PlotScripts.plot_cluster_graphs import *
+#from Clustering.cluster_tracker import *
+#from Utils.plot_graph_stats import *
+
+#---------------------------SWITCH LABELS IN GRAPH--------------------------------
+"""
+from Utils.restore_graph_node_id import *
+fix_ids_exps = [["accumulative", 6], ["delta",7], ["delta",8], ["delta",9]] 
+fix_ids_exps = ["accumulative", 6], ["delta",8], ["delta",9]] 
+for exp in fix_ids_exps:
+    fix_graph_class = Labels2GraphNodeId(exp[0],exp[1])
+"""
+#---------------------------------------------------------------------------------
+
+
+
+
+
+
+#--------------------------------PARSE SLICES-------------------------------------
+
+"""
+from Utils.parse_slices import *
+outer_paths = ["./experiment8/experiment_8/","./experiment9/experiment_9/"] 
+
+for outer in outer_paths:
+    my_class = Slices(outer) #do experiment 6 over night, very slow
+"""
+
+#----------------------------------------------------------------------------------
+
+
+
+
+
+#------------------------------LEIDEN & LOUVAIN------------------------------------
+"""
 from Clustering.louvain import *
 from Clustering.leiden import *
-from Clustering.partition_worker import *
-from Clustering.PlotScripts.plot_cluster_graphs import *
-from Clustering.PlotScripts.plot_cluster_stats import *
-from Clustering.cluster_tracker import *
-from Clustering.cluster_tracker_SharedDict import *
-from Clustering.mass_velocity import *
 
+inner_paths = ["./experiment8/","./experiment9/"]
+
+for inner in inner_paths:
+    my_class = Leiden(inner,"nx", attributes_bool = False)
+    my_class = Louvain(inner,"nx", attributes_bool = False)
+"""
+#----------------------------------------------------------------------------------
+
+
+
+
+
+#--------------------------------PARTITION WORKER----------------------------------
+
+"""
+from Clustering.partition_worker import *
+
+inner_paths = ["./experiment8/","./experiment9/"]
+methods = ["leiden", "louvain", "lprop"]
+
+for inner in inner_paths:
+    for method in methods:
+        my_class = PartitionWorker(inner,method) 
+
+"""
+#----------------------------------------------------------------------------------
+
+
+
+
+
+#--------------------------------PLOT CLUSTER STATS--------------------------------
+"""
+from Clustering.PlotScripts.plot_cluster_stats import *
+
+inner_paths = ["./experiment8/","./experiment9/"]
+methods = ["leiden", "louvain", "lprop"]
+
+for inner in inner_paths:
+    for method in methods:
+        my_class = PlotClusterStats(inner,method)
+"""
+
+#----------------------------------------------------------------------------------
+
+
+
+
+
+#--------------------------------CLUSTER TRACKER----------------------------------
+"""
+from Clustering.cluster_tracker_SharedDict import *
+
+inner_paths = ["./experiment8/","./experiment9/"]
+methods = ["leiden", "louvain", "lprop"]
+
+for inner in inner_paths:
+    for method in methods:
+        my_class = ClusterTracker_SD(inner,method)
+"""
+
+#----------------------------------------------------------------------------------
+
+
+
+
+#--------------------------------MASS VELOCITY-------------------------------------
+
+
+#GJØR PÅ NYTT!!
+"""
+from Clustering.mass_velocity import *
+min_cluster_sizes = [10,50,100,200,300,400,600,800,1000]
+inner_paths = ["./experiment9/"]
+methods = ["leiden", "louvain", "lprop"]
+
+for inner in inner_paths:
+    print(inner)
+    for mi in min_cluster_sizes:
+        print(f"Min size = {mi}")
+        for me in methods:
+            print(f"Method = {me}\n")
+            my_class = MassVelocity(inner,me,mi)
+"""
+#------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+#--------------------------------LARGEST CLUSTER-------------------------------------
+
+"""
+from Clustering.largest_clusters import *
+
+inner_paths = ["./experiment8/","./experiment9/"]
+methods = ["leiden", "louvain", "lprop"]
+
+for inner in inner_paths:
+    for method in methods:
+        my_class = LargestClusters(inner,method)
+"""
+
+#-------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+#---------------------------------NODE ACTIVITY & CENTRALITY--------------------------
+
+"""
 from NodeActivity.track_node_activity import *
 from NodeActivity.centrality import *
 
-fix_ids_exps = [["accumulative", 6], ["delta",7], ["delta",8], ["delta",9]] 
-for exp in fix_ids_exps:
-    fix_graph_class = Labels2GraphNodeId(exp[0],exp[1])
+inner_paths = ["./experiment8/","./experiment9/"]
+for inner in inner_paths:
+    my_class = NodeActivity(inner) 
+    my_class = Centrality(inner) 
+"""
+#-------------------------------------------------------------------------------------
 
+
+        
+
+#----------------------FIX LABELPROP CLUSTER STRUCTURE--------------------------------
+"""
+from Utils.sync_cluster_structure import *
+p = "./experiment12/experiment_12/k_800/"
+
+sync_paths = ["./experiment8/", "./experiment9/"]
+for p in sync_paths:
+    testt = SyncCluster(p)
+"""
+#-------------------------------------------------------------------------------------

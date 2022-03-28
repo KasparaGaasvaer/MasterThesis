@@ -10,7 +10,7 @@ class LargestClusters:
         self.method = method
         self.path = path
 
-        if self.method == "leiden" or self.method == "louvain":
+        if self.method == "leiden" or self.method == "louvain" or self.method == "lprop":
             self.setup_modularity()
             self.extract_largest_cluster_modularity()
         

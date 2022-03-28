@@ -74,13 +74,13 @@ class Slices:
             self.slice_num = int(slices.replace("slice_", ""))  # Extracts slice number
             print("Working on slice_", self.slice_num)
             self.path = self.path2dir + folder + "/"  # Sets path
-            if self.is_k_exp:
-                self.cluster_dicts()
+            #if self.is_k_exp:
+            self.cluster_dicts()
             self.make_node_attributes()  # Calls function for producing dict with node attributes from corresponding labels.csv file
             #self.make_graph_dict()  # Calls function for producing graph dict from corresponding graph.mat file
             self.make_graph_dict_csv()  # Calls function for producing graph dict from corresponding graph.csv file
             #self.find_timeline()  # Calls function for extracting first and last tweet in slice
-            self.find_num_nodes()  # Calls function for extracting number of nodes (tweets) in slice
+            #self.find_num_nodes()  # Calls function for extracting number of nodes (tweets) in slice
         #self.find_timeline_of_set()  # Calls function for extracting first and last tweet in the entire set of slices in dir
 
     def SaveSlice(self):

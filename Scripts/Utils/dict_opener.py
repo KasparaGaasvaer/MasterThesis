@@ -30,8 +30,7 @@ class OpenDict:
             "graphs" : "graph_all_slices.json",
             "part_louvain" : "partitions_louvain.json",
             "part_leiden" : "partitions_leiden.json",
-            "part_leiden_no_1": "partitions_leiden_no_1_comms.json",
-            "part_louvain_no_1": "partitions_louvain_no_1_comms.json"
+            "part_lprop" : "partitions_lprop.json"
         }
 
 

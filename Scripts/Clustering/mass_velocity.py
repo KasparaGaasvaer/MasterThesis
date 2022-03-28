@@ -12,7 +12,7 @@ class MassVelocity:
         N_largest = 3
         self.min_size_cluster_im1 = min_size_cluster #minimum size of a cluster in Sim1 must have to be concidered
 
-        if self.method == "leiden" or self.method == "louvain":
+        if self.method == "leiden" or self.method == "louvain" or self.method == "lprop":
             self.setup_modularity()
             self.track_growth_modularity(N_largest)
         
@@ -48,7 +48,6 @@ class MassVelocity:
             os.makedirs(self.path_to_plots)
 
         self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + self.method.title() + "/"
-        self.start_slice = 1
 
 
 
@@ -79,11 +78,7 @@ class MassVelocity:
             os.makedirs(self.path_to_plots)
 
         self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "LabelProp/"
-
-        self.start_slice = 2  #slice 1 has no clusters
-
         
-
 
     def track_growth_modularity(self,N):
 
@@ -103,7 +98,7 @@ class MassVelocity:
            
             for s in range(2,self.num_slices+1):
                 ss = str(s)
-                print(ss)
+                #print(ss)
                 si = clusters[ss]
 
                 si_num_new =  np.zeros([len(sim1.keys()), len(si.keys())])
@@ -134,7 +129,7 @@ class MassVelocity:
                                 si_rel_growth[int(im1_k)][int(i_k)] = rel_growth
 
                 t_e = time.perf_counter()
-                print(f"Time spent comparing {t_e-t_s:0.4f} s")
+                #print(f"Time spent comparing {t_e-t_s:0.4f} s")
     
                 intersects_2_file = []
                 max_new_to_file = []
@@ -207,7 +202,7 @@ class MassVelocity:
 
                     ouf.write(f"[{s-1},{s}] {intersect_idx} {intersects_2_file} {max_new_nodes} {max_new_to_file} {max_rel_growth} {max_rel_g_to_file}\n")
                 t_e = time.perf_counter()
-                print(f"Time spent sorting and extracting max ids :  {t_e-t_s:0.4f} s")
+                #print(f"Time spent sorting and extracting max ids :  {t_e-t_s:0.4f} s")
 
                 sim1 = si
                 
@@ -381,7 +376,7 @@ class MassVelocity:
         for i in range(n):
             rel_g_vals_sep = rel_g_vals[i].split(",")
             num_vals = len(rel_g_vals_sep)
-            print(num_vals)
+            #print(num_vals)
             for j in range(num_vals):
                 plt.plot(slices[i],float(rel_g_vals_sep[j]),".", color = colours[j])
             
@@ -389,6 +384,7 @@ class MassVelocity:
         plt.ylabel("(Size C_si - Size C_sim1) / Size C_sim1")
         plt.savefig(self.path_to_plots + str(N) + "_largest_relative_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
         plt.savefig(self.path_to_overleaf_plots + str(N) + "_largest_relative_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
+        plt.clf()
         
         for i in range(n):
             num_g_vals = num_new_vals[i].split(",")
@@ -401,6 +397,7 @@ class MassVelocity:
         plt.ylabel("Size C_si - Size C_sim1")
         plt.savefig(self.path_to_plots + str(N) + "_largest_absolute_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
         plt.savefig(self.path_to_overleaf_plots + str(N) + "_largest_absolute_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
+        plt.clf()
         
 
 

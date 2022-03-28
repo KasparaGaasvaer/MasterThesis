@@ -37,7 +37,7 @@ class PlotClusterStats:
 
         self.nodes_in_largest_cluster()
         self.cluster_size_dist_experiment()
-        self.cluster_size_dist()
+        #self.cluster_size_dist()
         
 
     def nodes_in_largest_cluster(self):
@@ -123,15 +123,6 @@ class PlotClusterStats:
 
             dist = [sum(x) for x in zip(dist, new_dist)]
         
-        #plt.xlabel("Num nodes in cluster", fontsize=14)
-        #plt.ylabel("Frequency", fontsize=14)
-        #plt.xticks(fontsize=12)
-        #plt.yticks(fontsize=12)
-        #plt.bar(range(len(dist)), dist)
-        #plt.yscale("log")
-        #plt.xscale("log")
-        #plt.savefig(path + "LOG_cluster_size_distribution.pdf")
-        #plt.clf()
 
         plt.xlabel("Num nodes in cluster", fontsize=14)
         plt.ylabel("Frequency", fontsize=14)
@@ -139,21 +130,13 @@ class PlotClusterStats:
         plt.yticks(fontsize=12)
         plt.bar(range(len(dist)), dist)
         plt.savefig(path + "cluster_size_distribution.pdf")
-        #plt.clf()
         plt.yscale("log")
         plt.savefig(path + "yLOG_cluster_size_distribution_slice.pdf")
         plt.xscale("log")
         plt.savefig(path + "LOG_cluster_size_distribution.pdf")
         plt.clf()
 
-        #plt.xlabel("Num nodes in cluster", fontsize=14)
-        #plt.ylabel("Frequency", fontsize=14)
-        #plt.xticks(fontsize=12)
-        #plt.yticks(fontsize=12)
-        #plt.bar(range(len(dist)), dist)
-        #plt.yscale("log")
-        #plt.savefig(path + "yLOG_cluster_size_distribution_slice.pdf")
-        #plt.clf()
+
         
 
 
@@ -180,40 +163,19 @@ class PlotClusterStats:
         for s in all_data.keys():
             print("Slice ", s)
             data = all_data[s]
-
             
-            #plt.xlabel("Num nodes in cluster", fontsize=14)
-            #plt.ylabel("Frequency", fontsize=14)
-            #plt.xticks(fontsize=12)
-            #plt.yticks(fontsize=12)
-            #plt.bar(range(len(data)), data)
-            #plt.yscale("log")
-            #plt.xscale("log")
-            #plt.savefig(loglog_path + "LOG_cluster_size_distribution_slice" + s + ".pdf")
-            #plt.clf()
-
             plt.xlabel("Num nodes in cluster", fontsize=14)
             plt.ylabel("Frequency", fontsize=14)
             plt.xticks(fontsize=12)
             plt.yticks(fontsize=12)
             plt.bar(range(len(data)), data)
             plt.savefig(nolog_path + "cluster_size_distribution_slice" + s + ".pdf")
-            #plt.clf()
             plt.yscale("log")
             plt.savefig(ylog_path + "yLOG_cluster_size_distribution_slice" + s + ".pdf")
             plt.xscale("log")
             plt.savefig(loglog_path + "LOG_cluster_size_distribution_slice" + s + ".pdf")
             plt.clf()
 
-            
-
-            #plt.xlabel("Num nodes in cluster", fontsize=14)
-            #plt.ylabel("Frequency", fontsize=14)
-            #plt.xticks(fontsize=12)
-            #plt.yticks(fontsize=12)
-            #plt.bar(range(len(data)), data)
-            #plt.yscale("log")
-            #plt.savefig(ylog_path + "yLOG_cluster_size_distribution_slice" + s + ".pdf")
-            #plt.clf()
+        
 
     

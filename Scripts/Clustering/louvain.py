@@ -66,7 +66,7 @@ class Louvain(Graphs):
     def nx_louvain(self):
 
         Modularity_score = {}
-        #self.partition_dict = {}
+        self.partition_dict = {}
         for i in range(1, self.num_total_slices + 1):
             self.slice_num = str(i)
             print("Starting with with slice ", i)
@@ -85,10 +85,10 @@ class Louvain(Graphs):
             Modularity_score[self.slice_num] = Q
 
 
-            #dict_s = time.perf_counter()
-            #self.nx_make_partition_dict(G, partition)
-            #dict_e = time.perf_counter()
-            #print(f"Time spent making dict is {dict_e-dict_s:0.4f} s")
+            dict_s = time.perf_counter()
+            self.nx_make_partition_dict(G, partition)
+            dict_e = time.perf_counter()
+            print(f"Time spent making dict is {dict_e-dict_s:0.4f} s")
         
 
             # self.plot_louvain(G,partition)
@@ -96,8 +96,8 @@ class Louvain(Graphs):
         with open(self.path_to_dict + "modularity_score_louvain.json","w") as ouf:
             json.dump(Modularity_score,ouf)
 
-        #with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
-            #json.dump(self.partition_dict, fp)
+        with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
+            json.dump(self.partition_dict, fp)
        
 
     def nx_make_partition_dict(self, G, partition):

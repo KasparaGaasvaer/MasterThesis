@@ -44,32 +44,13 @@ class PartitionWorker():
         self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
 
         self.partition_dict = OpenDicts.open_dicts(["part_" + self.method])
-        #self.partition_dict = OpenDicts.open_dicts(["part_" + self.method + "_no_1"])
 
         self.num_total_slices = len(self.partition_dict.keys())
-
     
         self.identify_largest_cluster()
         self.extract_number_of_clusters()
         self.extract_cluster_size_dist()
 
-        self.remove_one_node_communities()
-
-    def remove_one_node_communities(self):
-
-        new_part_name = "partitions_"+ str(self.method) + "_no_1_comms.json"
-
-        p_dict_new = {}
-        for slice in self.partition_dict.keys():
-            s = self.partition_dict[slice]
-            p_dict_new[slice] = {}
-            p = p_dict_new[slice]
-            for cluster in s.keys():
-                if len(s[cluster]) > 1:
-                    p[cluster] = s[cluster]
-                
-        with open(self.path_to_partitions + new_part_name, "w") as fp:
-            json.dump(p_dict_new, fp)
 
     def identify_largest_cluster(self):
         largest_partitions = []
