@@ -47,6 +47,7 @@ class MassVelocity:
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
+        self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + self.method.title() + "/"
         self.start_slice = 1
 
 
@@ -76,6 +77,8 @@ class MassVelocity:
         self.path_to_plots = self.path + "plots/Clustering/Mass_velocity/Java/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
+
+        self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "LabelProp/"
 
         self.start_slice = 2  #slice 1 has no clusters
 
@@ -385,6 +388,7 @@ class MassVelocity:
         plt.xlabel("Slice Number")
         plt.ylabel("(Size C_si - Size C_sim1) / Size C_sim1")
         plt.savefig(self.path_to_plots + str(N) + "_largest_relative_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
+        plt.savefig(self.path_to_overleaf_plots + str(N) + "_largest_relative_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
         
         for i in range(n):
             num_g_vals = num_new_vals[i].split(",")
@@ -396,6 +400,7 @@ class MassVelocity:
         plt.xlabel("Slice Number")
         plt.ylabel("Size C_si - Size C_sim1")
         plt.savefig(self.path_to_plots + str(N) + "_largest_absolute_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
+        plt.savefig(self.path_to_overleaf_plots + str(N) + "_largest_absolute_growth_in_each_slice_min_size_cluster_" +str(self.min_size_cluster_im1) +".pdf")
         
 
 

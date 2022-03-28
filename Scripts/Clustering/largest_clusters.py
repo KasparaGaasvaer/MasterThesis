@@ -45,6 +45,8 @@ class LargestClusters:
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
+        self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + self.method.title() + "/"
+
 
     def setup_labelprop(self):
         self.path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
@@ -71,6 +73,8 @@ class LargestClusters:
         self.path_to_plots = self.path + "plots/Clustering/Largest_clusters/Java/"
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
+
+        self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "LabelProp/"
 
    
     def extract_largest_cluster_modularity(self):
@@ -174,6 +178,7 @@ class LargestClusters:
         plt.ylabel(r"$\frac{\text{Largest cluster}}{\text{Nodes in slice}}$", fontsize=16)
         plt.xlabel("Slice", fontsize=14)
         plt.savefig(self.path_to_plots + "LC_div_Nnodes.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "LC_div_Nnodes.pdf")
         plt.clf()
 
         #plot size/clusters
@@ -181,6 +186,7 @@ class LargestClusters:
         plt.ylabel(r"$\frac{\text{Largest cluster}}{\text{Clusters in slice}}$", fontsize=16)
         plt.xlabel("Slice", fontsize=14)
         plt.savefig(self.path_to_plots + "LC_div_Nclusters.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "LC_div_Nclusters.pdf")
         plt.clf()
 
         #plot size
@@ -188,6 +194,7 @@ class LargestClusters:
         plt.ylabel("Size of largest cluster", fontsize=16)
         plt.xlabel("Slice", fontsize=14)
         plt.savefig(self.path_to_plots + "LC_size.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "LC_size.pdf")
         plt.clf()
         
 

@@ -35,6 +35,7 @@ class ClusterTracker:
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
 
+        self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "LabelProp/"
         
         #self.track_largest()
         #NL = 10 #num largest clusters
@@ -248,6 +249,7 @@ class ClusterTracker:
         plt.ylabel("Num vertices in cluster")
         plt.title("Size of cluster when tracking largest from slice 1")
         plt.savefig(self.path_to_plots + "size_largest.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "size_largest.pdf")
         plt.clf()
 
         plt.plot(slices[1:],intersects, ".k")
@@ -255,6 +257,7 @@ class ClusterTracker:
         plt.ylabel(r"Intersect from slice $S_{i-1} \rightarrow S_i$")
         plt.title(r"Intersect of largest cluster $C_{i-1} \rightarrow C_i$")
         plt.savefig(self.path_to_plots + "intersect_largest.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "intersect_largest.pdf")
         plt.clf()
 
         
@@ -468,6 +471,7 @@ class ClusterTracker:
         plt.xlabel("Slice")
         plt.ylabel("Intersect")
         plt.savefig(self.path_to_plots + "Largest_intersect_when_comparing_largest_cluster_in_slice_im1_with_all_clusters_in_slice_i.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "Largest_intersect_when_comparing_largest_cluster_in_slice_im1_with_all_clusters_in_slice_i.pdf")
             
 
   
