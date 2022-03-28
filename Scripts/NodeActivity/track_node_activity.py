@@ -16,13 +16,32 @@ class NodeActivity(Graphs):
     def __init__(self,path):
 
         self.path = path 
-        self.path_to_stats = self.path + "statistics/NodeActivity/"
-        if not os.path.exists(self.path_to_stats):
-            os.makedirs(self.path_to_stats)
 
-        self.path_to_plots = self.path + "plots/NodeActivity/"
-        if not os.path.exists(self.path_to_plots):
-            os.makedirs(self.path_to_plots)
+        if path == "./experiment12/experiment_12/":
+            k_value = input("Input k_value\n")
+            if int(k_value):
+                self.path = self.path + "k_" + str(k_value) + "/"
+                self.path_to_plots = self.path + "plots/NodeActivity/" 
+                if not os.path.exists(self.path_to_plots):
+                    os.makedirs(self.path_to_plots)
+                
+                self.path_to_stats = self.path + "statistics/NodeActivity/"
+                if not os.path.exists(self.path_to_stats):
+                    os.makedirs(self.path_to_stats)
+
+                self.path_to_overleaf_plots = "./p_2_overleaf/k_" + k_value + "/UnderlyingGraph/"
+
+        else:
+            self.path_to_stats = self.path + "statistics/NodeActivity/"
+            if not os.path.exists(self.path_to_stats):
+                os.makedirs(self.path_to_stats)
+
+            self.path_to_plots = self.path + "plots/NodeActivity/" 
+            if not os.path.exists(self.path_to_plots):
+                os.makedirs(self.path_to_plots)
+
+            self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "UnderlyingGraph/"
+
 
 
         #self.make_graphs()
@@ -75,7 +94,7 @@ class NodeActivity(Graphs):
 
     def compare_NAC_2_contacts(self):
 
-        methods = ["Leiden", "Louvain"]
+        methods = ["Leiden", "Louvain", "Java"]
         #std_n = 4
 
         with open(self.path_to_stats + "activity_dict.json","r") as inff:
@@ -86,6 +105,9 @@ class NodeActivity(Graphs):
         stds = [1,2,3,4,5]
         for std_n in stds:
             for method in methods:
+                method_name = method
+                if method == "Java":
+                    method_name = "LabelProp"
                 max_acts = []
                 top_acts = []
                 num_top_acts = []
@@ -122,19 +144,19 @@ class NodeActivity(Graphs):
 
                 plt.plot(self.num_slices,max_acts, label = "Activity of most active node")
                 plt.plot(self.num_slices, contacts, label = "Total number of contacts")
-                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method})")
+                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})")
                 plt.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
                 plt.xlabel("Slice")
                 plt.legend()
-                plt.savefig(self.path_to_plots + f"max_NAC_vs_num_contacts_clusters_{method}.pdf")
+                plt.savefig(self.path_to_plots + f"max_NAC_vs_num_contacts_clusters_{method_name}.pdf")
                 plt.clf()
                 
                 plt.plot(self.num_slices,max_acts, label = "Activity of most active node")
-                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method})")
+                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})")
                 plt.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
                 plt.xlabel("Slice")
                 plt.legend()
-                plt.savefig(self.path_to_plots + f"max_NAC_and_largest_cluster_{method}.pdf")
+                plt.savefig(self.path_to_plots + f"max_NAC_and_largest_cluster_{method_name}.pdf")
                 plt.clf()
 
                 fig, axs = plt.subplots(1, 2)
@@ -272,6 +294,7 @@ class NodeActivity(Graphs):
         plt.xlabel("Slice")
         plt.ylabel("Activity")
         plt.savefig(self.path_to_plots + f"{centrality_measure}_ids.pdf")
+        plt.savefig(self.path_to_overleaf_plots + f"{centrality_measure}_ids.pdf")
 
     def mean_min_val(self, values, cut_off):
         return np.mean(values) + cut_off*np.std(values)

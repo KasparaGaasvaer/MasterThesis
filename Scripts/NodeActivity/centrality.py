@@ -11,13 +11,37 @@ class Centrality(Graphs):
     def __init__(self,path):
 
         self.path = path 
-        self.path_to_stats = self.path + "statistics/Centrality/"
-        if not os.path.exists(self.path_to_stats):
-            os.makedirs(self.path_to_stats)
 
-        self.path_to_plots = self.path + "plots/Centrality/"
-        if not os.path.exists(self.path_to_plots):
-            os.makedirs(self.path_to_plots)
+        if path == "./experiment12/experiment_12/":
+            k_value = input("Input k_value\n")
+            if int(k_value):
+                self.path = self.path + "k_" + str(k_value) + "/"
+                self.path_to_plots = self.path + "plots/Centrality/"
+                if not os.path.exists(self.path_to_plots):
+                    os.makedirs(self.path_to_plots)
+                
+                self.path_to_stats = self.path + "statistics/Centrality/"
+                if not os.path.exists(self.path_to_stats):
+                    os.makedirs(self.path_to_stats)
+
+                self.path_to_overleaf_plots = "./p_2_overleaf/k_" + k_value + "/UnderlyingGraph/"
+                if not os.path.exists(self.path_to_overleaf_plots):
+                    os.makedirs(self.path_to_overleaf_plots)
+
+
+        else:
+            self.path_to_stats = self.path + "statistics/Centrality/"
+            if not os.path.exists(self.path_to_stats):
+                os.makedirs(self.path_to_stats)
+
+            self.path_to_plots = self.path + "plots/Centrality/"
+            if not os.path.exists(self.path_to_plots):
+                os.makedirs(self.path_to_plots)
+
+            self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "UnderlyingGraph/"
+            if not os.path.exists(self.path_to_overleaf_plots):
+                os.makedirs(self.path_to_overleaf_plots)
+
 
         #self.make_graphs()
         self.calculate_centralities()
@@ -177,6 +201,7 @@ class Centrality(Graphs):
             plt.xlabel("k")
             plt.ylabel("k_mean")
             plt.savefig(path_to_these_plots + f"s{s}_k_vs_kmean.pdf")
+            plt.savefig(self.path_to_overleaf_plots + f"s{s}_k_vs_kmean.pdf")
             plt.clf()
             
     def deg_connectivity_plot(self):
@@ -247,6 +272,7 @@ class Centrality(Graphs):
         plt.xlabel("k")
         plt.ylabel("average degree connectivity")
         plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "over_all_slices_degree_connectivity.pdf")
         plt.clf()
 
 
@@ -309,6 +335,7 @@ class Centrality(Graphs):
             plt.title(f"Phase {j}")
             plt.ylabel("average degree connectivity")
             plt.savefig(path_to_these_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
+            plt.savefig(self.path_to_overleaf_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
             plt.clf()
 
         
