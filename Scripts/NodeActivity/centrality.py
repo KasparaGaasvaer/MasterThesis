@@ -43,7 +43,7 @@ class Centrality(Graphs):
                 os.makedirs(self.path_to_overleaf_plots)
 
 
-        #self.make_graphs()
+        self.make_graphs()
         self.calculate_centralities()
 
     def make_graphs(self):
@@ -61,15 +61,17 @@ class Centrality(Graphs):
     def calculate_centralities(self):
         
         #self.deg_c()
-        self.closeness_c()
-        self.betweenness_c()
         #self.avg_nhood_degree()
-        #self.degdeg_plot()
+        #self.degdeg_plot() #denne som gir de stygge plottene
         #self.avg_degree_connectivity()
         #self.N_phases_deg_connectivity_plot()
         #self.deg_connectivity_plot()
-
+        #self.assortativity_coeff()
+        #self.closeness_c() #takes forever?
+        #self.betweenness_c()
+ 
     def deg_c(self):
+        print("DEGREE CENTRALITY\n")
         master_dict = {}
 
         for s in range(1,self.num_slices+1):
@@ -91,6 +93,7 @@ class Centrality(Graphs):
             json.dump(master_dict, ouf)
 
     def closeness_c(self):
+        print("CLOSENESS CENTRALITY\n")
         master_dict = {}
 
         for s in range(1,self.num_slices+1):
@@ -101,7 +104,7 @@ class Centrality(Graphs):
             s_dict = nx.closeness_centrality(G, u=None, distance=None, wf_improved=True)
             end_s = time.perf_counter()
 
-            print(f"Time spent calculating centrality {end_s-start_s:0.4f} s\n")
+            print(f"Time spent calculating closeness centrality {end_s-start_s:0.4f} s\n")
 
             master_dict[str(s)] = s_dict 
         
@@ -109,6 +112,7 @@ class Centrality(Graphs):
             json.dump(master_dict, ouf)
 
     def betweenness_c(self):
+        print("BETWEENNESS CENTRALITY\n")
         master_dict = {}
 
         for s in range(1,self.num_slices+1):
@@ -119,14 +123,32 @@ class Centrality(Graphs):
             s_dict = nx.betweenness_centrality(G, k=None, normalized=True, weight=None, endpoints=False, seed=None)
             end_s = time.perf_counter()
 
-            print(f"Time spent calculating centrality {end_s-start_s:0.4f} s\n")
+            print(f"Time spent calculating betweenness centrality {end_s-start_s:0.4f} s\n")
 
             master_dict[str(s)] = s_dict 
         
         with open(self.path_to_stats + "betweenness_c_dict.json","w") as ouf:
             json.dump(master_dict, ouf)
 
+    def assortativity_coeff(self):
+        print("ASSORTITIVIY COEFFICIENT")
+        master_dict = {}
+        for s in range(1,self.num_slices+1):
+            G = self.graphs[str(s)]["graph"]
+            start_s = time.perf_counter()
+            s_dict = nx.degree_pearson_correlation_coefficient(G)
+            end_s = time.perf_counter()
+
+            print(f"Time spent calculating assortivity {end_s-start_s:0.4f} s\n")
+
+            master_dict[str(s)] = s_dict 
+        
+        with open(self.path_to_stats + "degree_assortivity_dict.json","w") as ouf:
+            json.dump(master_dict, ouf)
+
+
     def avg_nhood_degree(self):
+        print("AVG NHOOD DEG")
         master_dict = {}
 
         for s in range(1,self.num_slices+1):
@@ -145,6 +167,7 @@ class Centrality(Graphs):
             json.dump(master_dict, ouf)
 
     def avg_degree_connectivity(self):
+        print("AVG DEG CONNECTIVITY")
         master_dict = {}
 
         for s in range(1,self.num_slices+1):
@@ -164,7 +187,7 @@ class Centrality(Graphs):
 
 
     def degdeg_plot(self):
-
+        print("DEGDEG PLOT")
         path_to_these_plots = self.path_to_plots + "kk-correlation/" 
         if not os.path.exists(path_to_these_plots):
             os.makedirs(path_to_these_plots)
@@ -205,6 +228,7 @@ class Centrality(Graphs):
             plt.clf()
             
     def deg_connectivity_plot(self):
+        print("DEGCON PLOT")
         path_to_these_plots = self.path_to_plots + "degree_connectivity/" 
         if not os.path.exists(path_to_these_plots):
             os.makedirs(path_to_these_plots)
@@ -266,7 +290,6 @@ class Centrality(Graphs):
         model = linear_model.LinearRegression().fit(x_2d,y)
         y_pred = model.predict(x_2d)
 
-        
         plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
         plt.legend()
         plt.xlabel("k")
@@ -277,6 +300,7 @@ class Centrality(Graphs):
 
 
     def N_phases_deg_connectivity_plot(self):
+        print("PHASE PLOT")
         path_to_these_plots = self.path_to_plots + "degree_connectivity/" 
         if not os.path.exists(path_to_these_plots):
             os.makedirs(path_to_these_plots)
@@ -288,14 +312,15 @@ class Centrality(Graphs):
         all_dict = {}
 
         s_list = [i for i in range(1,self.num_slices+1)]
-        phases = [s_list[:231], s_list[231:551], s_list[551:]]
+        s_list = np.array(s_list)
+        phases = np.array_split(s_list, 3)
 
         m_dict = {}
         i = 0
-        for p in phases:
+        for phase in phases:
             m_dict[str(i)] = {}
             print("NEW PHASE ")
-            for ss in p:
+            for ss in phase:
                 print("Slice ", ss)
                 s = str(ss)
                 dc = deg_con[s]
@@ -328,6 +353,8 @@ class Centrality(Graphs):
             x_2d = x.reshape((-1, 1))
             model = linear_model.LinearRegression().fit(x_2d,y)
             y_pred = model.predict(x_2d)
+
+            print(model.coef_)
                 
             plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
             plt.legend()

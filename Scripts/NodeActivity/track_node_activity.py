@@ -30,6 +30,9 @@ class NodeActivity(Graphs):
                     os.makedirs(self.path_to_stats)
 
                 self.path_to_overleaf_plots = "./p_2_overleaf/k_" + k_value + "/UnderlyingGraph/"
+                if not os.path.exists(self.path_to_overleaf_plots):
+                    os.makedirs(self.path_to_overleaf_plots)
+
 
         else:
             self.path_to_stats = self.path + "statistics/NodeActivity/"
@@ -41,18 +44,21 @@ class NodeActivity(Graphs):
                 os.makedirs(self.path_to_plots)
 
             self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "UnderlyingGraph/"
+            if not os.path.exists(self.path_to_overleaf_plots):
+                os.makedirs(self.path_to_overleaf_plots)
 
 
 
-        #self.make_graphs()
 
-        #self.make_NAC_dict()
+        self.make_graphs()
 
-        #self.sort_NAC_dict()
+        self.make_NAC_dict()
 
-        #self.mapping_dict()
+        self.sort_NAC_dict()
+
+        self.mapping_dict()
         
-        #self.plot_NAC()
+        self.plot_NAC()
 
         self.compare_NAC_2_contacts()
 
@@ -107,12 +113,13 @@ class NodeActivity(Graphs):
             for method in methods:
                 method_name = method
                 if method == "Java":
-                    method_name = "LabelProp"
+                    method_name = "Lprop"
+                print(method_name)
                 max_acts = []
                 top_acts = []
                 num_top_acts = []
                 for s in master_dict.keys():
-                    print("Slice ", s)
+                    #print("Slice ", s)
                     max_a = 0
                     top_a = 0
                     num_top = 0
@@ -136,7 +143,7 @@ class NodeActivity(Graphs):
 
                 contacts = np.load(self.path + "statistics/ExpStats/len_graphs.npy")
                 nodes = np.load(self.path + "statistics/ExpStats/len_labels.npy")
-                size_of_largest_cluster = pd.read_csv(self.path + f"statistics/Cluster_tracker/{method}/largest_clusters.csv", header = 0, usecols=[2])
+                size_of_largest_cluster = pd.read_csv(self.path + f"statistics/Cluster_tracker/{method_name}/largest_clusters.csv", header = 0, usecols=[2])
                 size_of_largest_cluster = size_of_largest_cluster.to_numpy()[:,0]
                 
 
@@ -149,6 +156,7 @@ class NodeActivity(Graphs):
                 plt.xlabel("Slice")
                 plt.legend()
                 plt.savefig(self.path_to_plots + f"max_NAC_vs_num_contacts_clusters_{method_name}.pdf")
+                plt.savefig(self.path_to_overleaf_plots + f"max_NAC_vs_num_contacts_clusters_{method_name}.pdf")
                 plt.clf()
                 
                 plt.plot(self.num_slices,max_acts, label = "Activity of most active node")
@@ -157,6 +165,7 @@ class NodeActivity(Graphs):
                 plt.xlabel("Slice")
                 plt.legend()
                 plt.savefig(self.path_to_plots + f"max_NAC_and_largest_cluster_{method_name}.pdf")
+                plt.savefig(self.path_to_overleaf_plots + f"max_NAC_and_largest_cluster_{method_name}.pdf")
                 plt.clf()
 
                 fig, axs = plt.subplots(1, 2)
@@ -172,6 +181,7 @@ class NodeActivity(Graphs):
                 fig.tight_layout(pad=1.0)
                 axs[0].legend()
                 plt.savefig(self.path_to_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
+                plt.savefig(self.path_to_overleaf_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
                 plt.clf()
 
 
@@ -262,7 +272,7 @@ class NodeActivity(Graphs):
     
             
     def plot_NAC(self):
-        centrality_measure = "3_mean" #"0.9_median"
+        centrality_measure = "9_mean" #"0.9_median"
 
         self.find_ids(centrality_measure)
 
@@ -295,6 +305,7 @@ class NodeActivity(Graphs):
         plt.ylabel("Activity")
         plt.savefig(self.path_to_plots + f"{centrality_measure}_ids.pdf")
         plt.savefig(self.path_to_overleaf_plots + f"{centrality_measure}_ids.pdf")
+        plt.clf()
 
     def mean_min_val(self, values, cut_off):
         return np.mean(values) + cut_off*np.std(values)

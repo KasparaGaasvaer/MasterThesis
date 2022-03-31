@@ -114,11 +114,11 @@ for inner in inner_paths:
 #--------------------------------MASS VELOCITY-------------------------------------
 
 
-#GJØR PÅ NYTT!!
+
 """
 from Clustering.mass_velocity import *
 min_cluster_sizes = [10,50,100,200,300,400,600,800,1000]
-inner_paths = ["./experiment9/"]
+inner_paths = ["./experiment8/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
@@ -142,7 +142,7 @@ for inner in inner_paths:
 """
 from Clustering.largest_clusters import *
 
-inner_paths = ["./experiment8/","./experiment9/"]
+inner_paths = ["./experiment8/"]#,"./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
@@ -160,15 +160,18 @@ for inner in inner_paths:
 
 #---------------------------------NODE ACTIVITY & CENTRALITY--------------------------
 
-"""
+
 from NodeActivity.track_node_activity import *
 from NodeActivity.centrality import *
+from NodeActivity.extract_from_centrality import *
 
-inner_paths = ["./experiment8/","./experiment9/"]
+inner_paths = ["./experiment9/"]#,"./experiment8/"]
 for inner in inner_paths:
-    my_class = NodeActivity(inner) 
+    #my_class = NodeActivity(inner) 
     my_class = Centrality(inner) 
-"""
+    #my_class = ExtractCentrality(inner)
+
+
 #-------------------------------------------------------------------------------------
 
 
