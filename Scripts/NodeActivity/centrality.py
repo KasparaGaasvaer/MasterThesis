@@ -43,7 +43,7 @@ class Centrality(Graphs):
                 os.makedirs(self.path_to_overleaf_plots)
 
 
-        self.make_graphs()
+        #self.make_graphs()
         self.calculate_centralities()
 
     def make_graphs(self):
@@ -64,7 +64,7 @@ class Centrality(Graphs):
         #self.avg_nhood_degree()
         #self.degdeg_plot() #denne som gir de stygge plottene
         #self.avg_degree_connectivity()
-        #self.N_phases_deg_connectivity_plot()
+        self.N_phases_deg_connectivity_plot()
         #self.deg_connectivity_plot()
         #self.assortativity_coeff()
         #self.closeness_c() #takes forever?
@@ -311,9 +311,11 @@ class Centrality(Graphs):
         self.num_slices = len(deg_con.keys())
         all_dict = {}
 
+        phases_slice = np.load(self.path_to_stats + "slice_phases.npy")
+
         s_list = [i for i in range(1,self.num_slices+1)]
         s_list = np.array(s_list)
-        phases = np.array_split(s_list, 3)
+        phases = [:phases_slice[0], phases_slice[0]:phases_slice[1], phases_slice[1]:] #NOT CORRECT
 
         m_dict = {}
         i = 0

@@ -26,13 +26,13 @@ for exp in fix_ids_exps:
 
 #--------------------------------PARSE SLICES-------------------------------------
 
-"""
+
 from Utils.parse_slices import *
-outer_paths = ["./experiment8/experiment_8/","./experiment9/experiment_9/"] 
+outer_paths = ["./experiment6/experiment_6/"]#["./experiment8/experiment_8/","./experiment9/experiment_9/"] 
 
 for outer in outer_paths:
     my_class = Slices(outer) #do experiment 6 over night, very slow
-"""
+
 
 #----------------------------------------------------------------------------------
 
@@ -160,18 +160,19 @@ for inner in inner_paths:
 
 #---------------------------------NODE ACTIVITY & CENTRALITY--------------------------
 
+"""
 
 from NodeActivity.track_node_activity import *
 from NodeActivity.centrality import *
 from NodeActivity.extract_from_centrality import *
 
-inner_paths = ["./experiment9/"]#,"./experiment8/"]
+inner_paths = ["./experiment8/"]#,"./experiment8/"]
 for inner in inner_paths:
     #my_class = NodeActivity(inner) 
     my_class = Centrality(inner) 
     #my_class = ExtractCentrality(inner)
 
-
+"""
 #-------------------------------------------------------------------------------------
 
 
