@@ -3,6 +3,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import linear_model
+from scipy.optimize import curve_fit
 
 from Utils.graphs import Graphs
 sys.path.append("..")  # Adds higher directory to python modules path, looking for Graphs-class one level up
@@ -46,6 +47,7 @@ class Centrality(Graphs):
         #self.make_graphs()
         self.calculate_centralities()
 
+
     def make_graphs(self):
         
         self.path_to_dict = self.path + "parsed_dictionaries/"
@@ -65,6 +67,7 @@ class Centrality(Graphs):
         #self.degdeg_plot() #denne som gir de stygge plottene
         #self.avg_degree_connectivity()
         self.N_phases_deg_connectivity_plot()
+        #self.is_scale_free()
         #self.deg_connectivity_plot()
         #self.assortativity_coeff()
         #self.closeness_c() #takes forever?
@@ -350,16 +353,17 @@ class Centrality(Graphs):
             x = np.log10(np.array(kv))
             y = np.log10(np.array(kavg))
 
-            plt.scatter(x, y)
+            plt.scatter(x, y, color = "b")
 
             x_2d = x.reshape((-1, 1))
-            model = linear_model.LinearRegression().fit(x_2d,y)
-            y_pred = model.predict(x_2d)
+            lin_model = linear_model.LinearRegression().fit(x_2d,y)
+            y_pred = lin_model.predict(x_2d)
 
-            print(model.coef_)
-            print(model.intercept_)
-                
-            plt.plot(x,y_pred, label = f"Prediction from OLS:\n K(K) ~ {model.coef_[0]:.4f}k + {model.intercept_:.4f}", color = "r")
+            f = lambda x,a: x**a
+            pow_coeff, cov = curve_fit(f, x, y)
+
+            plt.plot(x,f(x,*pow_coeff),"g-", label = f"K(k) ~ k^{pow_coeff[0]}")
+            plt.plot(x,y_pred, label = f"K(K) ~ {lin_model.coef_[0]:.4f}k + {lin_model.intercept_:.4f}", color = "r")
             plt.legend()
             plt.xlabel("k")
             plt.title(f"Phase {j}")
@@ -367,6 +371,46 @@ class Centrality(Graphs):
             plt.savefig(path_to_these_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
             plt.savefig(self.path_to_overleaf_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
             plt.clf()
+
+    def is_scale_free(self):
+
+        from scipy.optimize import curve_fit
+        with open(self.path_to_stats + "deg_c_dict.json","r") as inff:
+            degree = json.load(inff)
+
+        distribution = {}
+        num_nodes = 0
+        for s in degree.keys():
+            d = degree[s]
+            for n in d.keys():
+                num_nodes += 1
+                d_n = d[n]
+                try:
+                    distribution[str(d_n)] +=1 
+                except KeyError:
+                    distribution[str(d_n)] = 1
+        
+
+        degrees = list(distribution.keys())
+        count = list(distribution.values())
+
+        degrees = np.array([float(i) for i in degrees])
+        count = np.array([int(i) for i in count])/num_nodes
+
+        degrees, count = zip(*sorted(zip(degrees,count)))
+
+        f = lambda x,a: x**a
+
+        coeff, cov = curve_fit(f, degrees, count)
+        plt.plot(degrees, count, "b-", label = "Data")
+        plt.plot(degrees,f(degrees,coeff),"r*", label = f"Power Fit: k^{coeff[0]}")
+        plt.legend()
+        plt.ylim([1e-7,1])
+        plt.xscale("log")
+        plt.yscale("log")
+        plt.savefig("TEST_scale_free.pdf")
+
+
 
         
 
