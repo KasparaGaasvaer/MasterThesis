@@ -362,7 +362,7 @@ class Centrality(Graphs):
             f = lambda x,a: x**a
             pow_coeff, cov = curve_fit(f, x, y)
 
-            plt.plot(x,f(x,*pow_coeff),"g-", label = f"K(k) ~ k^{pow_coeff[0]}")
+            plt.plot(x,f(x,*pow_coeff),"g.", label = f"K(k) ~ k^{pow_coeff[0]}")
             plt.plot(x,y_pred, label = f"K(K) ~ {lin_model.coef_[0]:.4f}k + {lin_model.intercept_:.4f}", color = "r")
             plt.legend()
             plt.xlabel("k")
