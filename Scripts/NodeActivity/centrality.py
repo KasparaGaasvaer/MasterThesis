@@ -359,7 +359,7 @@ class Centrality(Graphs):
             print(model.coef_)
             print(model.intercept_)
                 
-            plt.plot(x,y_pred, label = f"Prediction from OLS: K(K) ~ {model.coef_:4f}k + {model.intercept_:4f}", color = "r")
+            plt.plot(x,y_pred, label = f"Prediction from OLS:\n K(K) ~ {model.coef_[0]:4f}k + {model.intercept_:4f}", color = "r")
             plt.legend()
             plt.xlabel("k")
             plt.title(f"Phase {j}")
