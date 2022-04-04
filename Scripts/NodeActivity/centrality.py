@@ -317,6 +317,7 @@ class Centrality(Graphs):
         s_list = [i for i in range(1,self.num_slices+1)]
         s_list = np.array(s_list)
         phases = [s_list[:int(phases_slice[0])], s_list[int(phases_slice[0]):int(phases_slice[1])], s_list[int(phases_slice[1]):]]
+        print(phases)
 
         m_dict = {}
         i = 0
@@ -349,8 +350,6 @@ class Centrality(Graphs):
             x = np.log10(np.array(kv))
             y = np.log10(np.array(kavg))
 
-            print(len(x), len(y))
-
             plt.scatter(x, y)
 
             x_2d = x.reshape((-1, 1))
@@ -358,12 +357,13 @@ class Centrality(Graphs):
             y_pred = model.predict(x_2d)
 
             print(model.coef_)
+            print(model.intercept_)
                 
-            plt.plot(x,y_pred, label = "Prediction from OLS", color = "r")
+            plt.plot(x,y_pred, label = f"Prediction from OLS: K(K) ~ {model.coef_:4f}k + {model.intercept_:4f}", color = "r")
             plt.legend()
             plt.xlabel("k")
             plt.title(f"Phase {j}")
-            plt.ylabel("average degree connectivity")
+            plt.ylabel("K(k)")
             plt.savefig(path_to_these_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
             plt.savefig(self.path_to_overleaf_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
             plt.clf()
