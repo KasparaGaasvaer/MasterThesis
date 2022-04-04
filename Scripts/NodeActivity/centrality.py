@@ -312,10 +312,11 @@ class Centrality(Graphs):
         all_dict = {}
 
         phases_slice = np.load(self.path_to_stats + "slice_phases.npy")
+ 
 
         s_list = [i for i in range(1,self.num_slices+1)]
         s_list = np.array(s_list)
-        phases = [:phases_slice[0], phases_slice[0]:phases_slice[1], phases_slice[1]:] #NOT CORRECT
+        phases = [s_list[:int(phases_slice[0])], s_list[int(phases_slice[0]):int(phases_slice[1])], s_list[int(phases_slice[1]):]]
 
         m_dict = {}
         i = 0

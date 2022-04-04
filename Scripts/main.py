@@ -21,18 +21,27 @@ for exp in fix_ids_exps:
 
 
 
+#----------------------FIX LABELPROP CLUSTER STRUCTURE--------------------------------
+"""
+from Utils.sync_cluster_structure import *
+#p = "./experiment12/experiment_12/k_800/"
 
+sync_paths = ["./experiment6/"]#["./experiment8/", "./experiment9/"]
+for p in sync_paths:
+    testt = SyncCluster(p)
+"""
+#-------------------------------------------------------------------------------------
 
 
 #--------------------------------PARSE SLICES-------------------------------------
 
-
+"""
 from Utils.parse_slices import *
-outer_paths = ["./experiment6/experiment_6/"]#["./experiment8/experiment_8/","./experiment9/experiment_9/"] 
+outer_paths = ["./experiment6/experiment_6/","./experiment8/experiment_8/","./experiment9/experiment_9/"] 
 
 for outer in outer_paths:
     my_class = Slices(outer) #do experiment 6 over night, very slow
-
+"""
 
 #----------------------------------------------------------------------------------
 
@@ -45,7 +54,7 @@ for outer in outer_paths:
 from Clustering.louvain import *
 from Clustering.leiden import *
 
-inner_paths = ["./experiment8/","./experiment9/"]
+inner_paths = ["./experiment6/","./experiment8/","./experiment9/"]
 
 for inner in inner_paths:
     my_class = Leiden(inner,"nx", attributes_bool = False)
@@ -62,7 +71,7 @@ for inner in inner_paths:
 """
 from Clustering.partition_worker import *
 
-inner_paths = ["./experiment8/","./experiment9/"]
+inner_paths = ["./experiment6/","./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
@@ -77,10 +86,11 @@ for inner in inner_paths:
 
 
 #--------------------------------PLOT CLUSTER STATS--------------------------------
+
 """
 from Clustering.PlotScripts.plot_cluster_stats import *
 
-inner_paths = ["./experiment8/","./experiment9/"]
+inner_paths = ["./experiment6/"]#,"./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
@@ -98,7 +108,7 @@ for inner in inner_paths:
 """
 from Clustering.cluster_tracker_SharedDict import *
 
-inner_paths = ["./experiment8/","./experiment9/"]
+inner_paths = ["./experiment6/"]#,"./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
@@ -160,7 +170,7 @@ for inner in inner_paths:
 
 #---------------------------------NODE ACTIVITY & CENTRALITY--------------------------
 
-"""
+
 
 from NodeActivity.track_node_activity import *
 from NodeActivity.centrality import *
@@ -172,19 +182,9 @@ for inner in inner_paths:
     my_class = Centrality(inner) 
     #my_class = ExtractCentrality(inner)
 
-"""
+
 #-------------------------------------------------------------------------------------
 
 
         
 
-#----------------------FIX LABELPROP CLUSTER STRUCTURE--------------------------------
-"""
-from Utils.sync_cluster_structure import *
-p = "./experiment12/experiment_12/k_800/"
-
-sync_paths = ["./experiment8/", "./experiment9/"]
-for p in sync_paths:
-    testt = SyncCluster(p)
-"""
-#-------------------------------------------------------------------------------------

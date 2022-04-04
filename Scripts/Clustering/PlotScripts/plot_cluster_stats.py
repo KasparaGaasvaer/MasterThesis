@@ -41,6 +41,7 @@ class PlotClusterStats:
         
 
     def nodes_in_largest_cluster(self):
+        print("Nodes in Largest Cluster")
         clusters = []
         num_nodes = []
         slices = []
@@ -97,6 +98,7 @@ class PlotClusterStats:
 
 
     def cluster_size_dist_experiment(self):
+        print("Cluster Size Dist Experiment\n")
         with open(self.path_to_stats + self.filename_cluster_size_dist, "r") as fp:
             all_data = json.load(fp)
         
