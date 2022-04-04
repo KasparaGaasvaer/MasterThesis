@@ -350,6 +350,9 @@ class Centrality(Graphs):
                 kv.append(int(k))
                 kavg.append(np.mean(all_dict[k]))
             
+            f = lambda x,a: x**a
+            pow_coeff, cov = curve_fit(f, kv, kavg)
+            
             x = np.log10(np.array(kv))
             y = np.log10(np.array(kavg))
 
@@ -358,9 +361,6 @@ class Centrality(Graphs):
             x_2d = x.reshape((-1, 1))
             lin_model = linear_model.LinearRegression().fit(x_2d,y)
             y_pred = lin_model.predict(x_2d)
-
-            f = lambda x,a: x**a
-            pow_coeff, cov = curve_fit(f, x, y)
 
             plt.plot(x,f(x,*pow_coeff),"g.", label = f"K(k) ~ k^{pow_coeff[0]}")
             plt.plot(x,y_pred, label = f"K(K) ~ {lin_model.coef_[0]:.4f}k + {lin_model.intercept_:.4f}", color = "r")
