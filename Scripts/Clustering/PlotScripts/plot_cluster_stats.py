@@ -14,16 +14,6 @@ class PlotClusterStats:
         
         self.path = path
         self.path_to_stats = path + "statistics/partition_worker/"
-        if not os.path.exists(self.path_to_stats):
-            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
-            if int(k_value):
-                self.path = path + "k_" + str(k_value) + "/"
-                self.path_to_stats = self.path + "statistics/partition_worker/"
-            if k_value == "no":
-                print("This experiment has no statistics yet")
-                sys.exit()
-
-
         self.method = method
         self.path_to_plots = self.path + "plots/Clustering/Plot_cluster_stats/" + self.method.title() + "/"
 

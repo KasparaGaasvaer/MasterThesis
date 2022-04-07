@@ -7,17 +7,8 @@ import pandas as pd
 class Centrality:
     def __init__(self, path, type):
 
-
-        if type == "delta" or type == "accu":
-            self.path = path 
-            self.methods = ["leiden", "louvain"]
-            # self.compare_centrality() #look at central nodes across slices
-            do_labelprop = False
-
-        else:
-            self.methods = ["leiden", "louvain", "java"]
-            self.path = path + "k_" + str(type) + "/k" + str(type) + "/"
-            do_labelprop = True
+        self.methods = ["leiden", "louvain", "lprop"]
+        self.path = path
 
     
         self.num_slices = os.listdir(self.path)
@@ -42,8 +33,8 @@ class Centrality:
         #self.calculate_centrality()
         #self.get_top_5_nodes()
         #self.get_top_1_node()
-        #self.compare_centrality_and_largest_cluster(do_labelprop)
-        self.find_id_of_top_5(do_labelprop)
+        #self.compare_centrality_and_largest_cluster()
+        self.find_id_of_top_5()
 
 
     def calculate_centrality(self):
@@ -135,10 +126,10 @@ class Centrality:
             for i in range(len(M_ids)):
                 ouf.write(f"{i+1}:{M_ids[i]}:{M_c_score[i]}\n")
 
-    def compare_centrality_and_largest_cluster(self, do_labelprop):
+    def compare_centrality_and_largest_cluster(self):
 
         M_info = []
-        num_methods = 2
+        num_methods = 3
         central_node_ids = []
         path_2_exp = self.path.rsplit("/",2)[0] + "/"
         path_2_partitions = path_2_exp + "parsed_dictionaries/"
@@ -150,7 +141,7 @@ class Centrality:
             for line in lines: 
                 central_node_ids.append(line.split(":")[1])
 
-        for method in self.methods[:2]:
+        for method in self.methods:
             print("new method")
             largest_cluster_ids = []
             central_node_clusters = []
@@ -183,39 +174,6 @@ class Centrality:
 
             M_info.append(slice_info)
 
-        if do_labelprop:
-            num_methods = 3
-            method = self.methods[2]
-            print("Lprop")
-            largest_cluster_ids = []
-            central_node_clusters = []
-
-            file_largest_c = path_2_exp + "statistics/Largest_clusters/" + method.title() + "/stats_LC_Nnodes_Nclusters.txt"
-            with open(file_largest_c,"r") as inf:
-                inf.readline()
-                lines = inf.readlines()
-                for line in lines:
-                    largest_cluster_ids.append(line.split()[1])
-            
-            clusters_file = path_2_partitions + "Clusters/"
-            for s in self.slice_nums:
-                with open(clusters_file + "c_" + str(s) + ".json", "r") as inf:
-                    si = json.load(inf)
-                C_node = int(central_node_ids[s-1])
-                for k in si.keys():
-                    ci = set(si[k]["uid"])
-                    if C_node in ci:
-                        central_node_clusters.append(k)
-                        break
-            
-            slice_info = []
-            for i in range(len(central_node_clusters)):
-                slice_info.append(f"{central_node_clusters[i]},{largest_cluster_ids[i]}")
-
-
-            M_info.append(slice_info)
-        
-
         df = pd.DataFrame() 
         for m in range(num_methods):
             df.insert(m, f"{self.methods[m]}", M_info[m], True)
@@ -236,11 +194,11 @@ class Centrality:
         #      sN|id, id_L|id, id_L (|  id, id_L   |)
 
 
-    def find_id_of_top_5(self, do_labelprop):
+    def find_id_of_top_5(self):
         # Find Cid and size of 5 largest
         m =0
         M_info = []
-        num_methods = 2
+        num_methods = 3
         central_node_ids = []
         path_2_exp = self.path.rsplit("/",2)[0] + "/"
         path_2_partitions = path_2_exp + "parsed_dictionaries/"
@@ -260,7 +218,7 @@ class Centrality:
                 central_node_ids.append(ids)
 
         
-        for method in self.methods[:2]:
+        for method in self.methods:
             print("new method")
             largest_cluster_ids = []
             largest_cluster_sizes = []
@@ -303,50 +261,6 @@ class Centrality:
 
             M_info.append(slice_info)
         
-        if do_labelprop:
-            num_methods = 3
-            print("new method")
-            method = self.methods[2]
-            largest_cluster_ids = []
-            largest_cluster_sizes = []
-            central_node_clusters = []
-            central_node_c_sizes = []
-
-            file_largest_c = path_2_exp + "statistics/Largest_clusters/" + method.title() + "/stats_LC_Nnodes_Nclusters.txt"
-            with open(file_largest_c,"r") as inf:
-                inf.readline()
-                lines = inf.readlines()
-                for line in lines:
-                    largest_cluster_ids.append(int(line.split()[1]))
-
-            
-            clusters_file = path_2_partitions + "Clusters/"
-
-            for s in self.slice_nums:
-                with open(clusters_file + "c_" + str(s) + ".json", "r") as inf:
-                    si = json.load(inf)
-                C_nodes = central_node_ids[s-1]
-                tmp_c = []
-                tmp_s = []
-                for n in C_nodes:
-                    c_k = int(n)
-                    for k in si.keys():
-                        ci = set(si[k]["uid"])
-                        if c_k in ci:
-                            tmp_c.append(int(k))
-                            tmp_s.append(len(ci))
-                            break
-                central_node_clusters.append(tmp_c)
-                central_node_c_sizes.append(tmp_s)
-                largest_cluster_sizes.append(len(set(si[str(largest_cluster_ids[s-1])]["uid"])))
-
-            slice_info = []
-            for i in range(len(central_node_clusters)):
-                p = [central_node_clusters[i],largest_cluster_ids[i],central_node_c_sizes[i],largest_cluster_sizes[i]]
-                slice_info.append(p)
-
-            M_info.append(slice_info)
-       
         print(M_info)
         df = pd.DataFrame() 
         for m in range(num_methods):

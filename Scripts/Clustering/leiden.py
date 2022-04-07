@@ -39,14 +39,6 @@ class Leiden(Graphs):
 
         self.path = path
         self.path_to_dict = self.path + "parsed_dictionaries/"
-        if not os.path.exists(self.path_to_dict):
-            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
-            if int(k_value):
-                self.path = path + "k_" + str(k_value) + "/"
-                self.path_to_dict = self.path + "parsed_dictionaries/"
-            if k_value == "no":
-                print("This experiment has no parsed dictionaries yet")
-                sys.exit()
 
         super().__init__(self.path, graph_type, attributes_bool)
 

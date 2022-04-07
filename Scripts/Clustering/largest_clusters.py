@@ -10,18 +10,13 @@ class LargestClusters:
         self.method = method
         self.path = path
 
-        if self.method == "leiden" or self.method == "louvain" or self.method == "lprop":
-            self.setup_modularity()
-            self.extract_largest_cluster_modularity()
-        
-        if self.method == "java":
-            self.setup_labelprop()
-            self.extract_largest_cluster_labelprop()
-
+   
+        self.setup()
+        self.extract_largest_cluster()
         self.plot_largest_cluster()
 
 
-    def setup_modularity(self):
+    def setup(self):
 
         expnum = self.path.split("/")[1]
         expnum = int(expnum.split("t")[1])   
@@ -48,36 +43,8 @@ class LargestClusters:
         self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + self.method.title() + "/"
 
 
-    def setup_labelprop(self):
-        self.path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
-
-        expnum = self.path.split("/")[1]
-        expnum = int(expnum.split("t")[1])   
-
-
-        if not os.path.exists(self.path_to_clusters):
-            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
-            if int(k_value):
-                self.path = self.path + "k_" + str(k_value) + "/"
-                self.path_to_clusters = self.path + "parsed_dictionaries/Clusters/"
-                expnum = str(expnum) + "_k" + str(k_value)
-                self.num_slices = len(os.listdir(self.path_to_clusters))
-        else:
-            self.num_slices = len(os.listdir(self.path_to_clusters))
-
-        self.path_to_save_stats = self.path + "statistics/Largest_clusters/Java/"
-        if not os.path.exists(self.path_to_save_stats):
-            os.makedirs(self.path_to_save_stats)
-
-
-        self.path_to_plots = self.path + "plots/Clustering/Largest_clusters/Java/"
-        if not os.path.exists(self.path_to_plots):
-            os.makedirs(self.path_to_plots)
-
-        self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "LabelProp/"
-
    
-    def extract_largest_cluster_modularity(self):
+    def extract_largest_cluster(self):
 
         outfile_name = "stats_LC_Nnodes_Nclusters.txt"
 
@@ -112,37 +79,6 @@ class LargestClusters:
 
                 ouf.write(f"{s} {LC_id} {LC_size} {num_nodes} {num_clusters} {size_div_nodes} {size_div_clusters}\n")
                     
-
-    def extract_largest_cluster_labelprop(self):
-
-        outfile_name = "stats_LC_Nnodes_Nclusters.txt"
-
-        with open(self.path_to_save_stats+outfile_name,"w") as ouf:
-            ouf.write(f"[Slice_i] [Largest cluster id] [Largest cluster size] [Num nodes in slice] [Num clusters in slice] [size/nodes] [size/clusters]\n")
-
-            for s in range(1,self.num_slices+1):
-                print(s)
-                with open(self.path_to_clusters + "c_" + str(s) + ".json", "r") as inf:
-                    si = json.load(inf)
-
-                LC_id = "a"
-                LC_size = 0
-                num_clusters = len(si.keys())
-                num_nodes = 0
-                for c in si.keys():
-                    cluster = si[c]["uid"]
-                    nodes_in_c = len(cluster)
-                    num_nodes += nodes_in_c
-                    if nodes_in_c == LC_size:
-                        print(f"Two equally large clusters {LC_size}, {nodes_in_c}")
-                    if nodes_in_c > LC_size:
-                        LC_id = c
-                        LC_size = nodes_in_c
-
-                size_div_nodes = LC_size/num_nodes
-                size_div_clusters = LC_size/num_clusters
-
-                ouf.write(f"{s} {LC_id} {LC_size} {num_nodes} {num_clusters} {size_div_nodes} {size_div_clusters}\n")
 
 
     def plot_largest_cluster(self):

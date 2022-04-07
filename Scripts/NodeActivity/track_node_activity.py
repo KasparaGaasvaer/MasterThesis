@@ -17,35 +17,18 @@ class NodeActivity(Graphs):
 
         self.path = path 
 
-        if path == "./experiment12/experiment_12/":
-            k_value = input("Input k_value\n")
-            if int(k_value):
-                self.path = self.path + "k_" + str(k_value) + "/"
-                self.path_to_plots = self.path + "plots/NodeActivity/" 
-                if not os.path.exists(self.path_to_plots):
-                    os.makedirs(self.path_to_plots)
-                
-                self.path_to_stats = self.path + "statistics/NodeActivity/"
-                if not os.path.exists(self.path_to_stats):
-                    os.makedirs(self.path_to_stats)
+ 
+        self.path_to_stats = self.path + "statistics/NodeActivity/"
+        if not os.path.exists(self.path_to_stats):
+            os.makedirs(self.path_to_stats)
 
-                self.path_to_overleaf_plots = "./p_2_overleaf/k_" + k_value + "/UnderlyingGraph/"
-                if not os.path.exists(self.path_to_overleaf_plots):
-                    os.makedirs(self.path_to_overleaf_plots)
+        self.path_to_plots = self.path + "plots/NodeActivity/" 
+        if not os.path.exists(self.path_to_plots):
+            os.makedirs(self.path_to_plots)
 
-
-        else:
-            self.path_to_stats = self.path + "statistics/NodeActivity/"
-            if not os.path.exists(self.path_to_stats):
-                os.makedirs(self.path_to_stats)
-
-            self.path_to_plots = self.path + "plots/NodeActivity/" 
-            if not os.path.exists(self.path_to_plots):
-                os.makedirs(self.path_to_plots)
-
-            self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "UnderlyingGraph/"
-            if not os.path.exists(self.path_to_overleaf_plots):
-                os.makedirs(self.path_to_overleaf_plots)
+        self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "UnderlyingGraph/"
+        if not os.path.exists(self.path_to_overleaf_plots):
+            os.makedirs(self.path_to_overleaf_plots)
 
 
 

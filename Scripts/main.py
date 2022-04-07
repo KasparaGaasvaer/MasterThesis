@@ -97,7 +97,6 @@ for inner in inner_paths:
     for method in methods:
         my_class = PlotClusterStats(inner,method)
 """
-
 #----------------------------------------------------------------------------------
 
 
@@ -106,16 +105,16 @@ for inner in inner_paths:
 
 #--------------------------------CLUSTER TRACKER----------------------------------
 """
-from Clustering.cluster_tracker_SharedDict import *
+from Clustering.cluster_tracker import *
 
 inner_paths = ["./experiment6/"]#,"./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
     for method in methods:
-        my_class = ClusterTracker_SD(inner,method)
-"""
+        my_class = ClusterTracker(inner,method)
 
+"""
 #----------------------------------------------------------------------------------
 
 
@@ -127,8 +126,8 @@ for inner in inner_paths:
 
 """
 from Clustering.mass_velocity import *
-min_cluster_sizes = [10,50,100,200,300,400,600,800,1000]
-inner_paths = ["./experiment8/"]
+min_cluster_sizes = [1000,800,600,400,300,200,100,50,10]#10,50,100,200,300,400,600,800,1000]
+inner_paths = ["./experiment6/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
@@ -152,7 +151,7 @@ for inner in inner_paths:
 """
 from Clustering.largest_clusters import *
 
-inner_paths = ["./experiment8/"]#,"./experiment9/"]
+inner_paths = ["./experiment6/"]#,"./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
@@ -171,17 +170,17 @@ for inner in inner_paths:
 #---------------------------------NODE ACTIVITY & CENTRALITY--------------------------
 
 
-
+"""
 from NodeActivity.track_node_activity import *
 from NodeActivity.centrality import *
 from NodeActivity.extract_from_centrality import *
 
-inner_paths = ["./experiment8/"]#,"./experiment8/"]
+inner_paths = ["./experiment6/"]#,"./experiment8/"]
 for inner in inner_paths:
-    #my_class = NodeActivity(inner) 
+    my_class = NodeActivity(inner) 
     my_class = Centrality(inner) 
-    #my_class = ExtractCentrality(inner)
-
+    my_class = ExtractCentrality(inner)
+"""
 
 #-------------------------------------------------------------------------------------
 

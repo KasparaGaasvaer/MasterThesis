@@ -13,35 +13,17 @@ class Centrality(Graphs):
 
         self.path = path 
 
-        if path == "./experiment12/experiment_12/":
-            k_value = input("Input k_value\n")
-            if int(k_value):
-                self.path = self.path + "k_" + str(k_value) + "/"
-                self.path_to_plots = self.path + "plots/Centrality/"
-                if not os.path.exists(self.path_to_plots):
-                    os.makedirs(self.path_to_plots)
-                
-                self.path_to_stats = self.path + "statistics/Centrality/"
-                if not os.path.exists(self.path_to_stats):
-                    os.makedirs(self.path_to_stats)
+        self.path_to_stats = self.path + "statistics/Centrality/"
+        if not os.path.exists(self.path_to_stats):
+            os.makedirs(self.path_to_stats)
 
-                self.path_to_overleaf_plots = "./p_2_overleaf/k_" + k_value + "/UnderlyingGraph/"
-                if not os.path.exists(self.path_to_overleaf_plots):
-                    os.makedirs(self.path_to_overleaf_plots)
+        self.path_to_plots = self.path + "plots/Centrality/"
+        if not os.path.exists(self.path_to_plots):
+            os.makedirs(self.path_to_plots)
 
-
-        else:
-            self.path_to_stats = self.path + "statistics/Centrality/"
-            if not os.path.exists(self.path_to_stats):
-                os.makedirs(self.path_to_stats)
-
-            self.path_to_plots = self.path + "plots/Centrality/"
-            if not os.path.exists(self.path_to_plots):
-                os.makedirs(self.path_to_plots)
-
-            self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "UnderlyingGraph/"
-            if not os.path.exists(self.path_to_overleaf_plots):
-                os.makedirs(self.path_to_overleaf_plots)
+        self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + "UnderlyingGraph/"
+        if not os.path.exists(self.path_to_overleaf_plots):
+            os.makedirs(self.path_to_overleaf_plots)
 
 
         #self.make_graphs()
@@ -350,9 +332,6 @@ class Centrality(Graphs):
                 kv.append(int(k))
                 kavg.append(np.mean(all_dict[k]))
             
-            f = lambda x,a: x**a
-            pow_coeff, cov = curve_fit(f, kv, kavg)
-            
             x = np.log10(np.array(kv))
             y = np.log10(np.array(kavg))
 
@@ -362,7 +341,10 @@ class Centrality(Graphs):
             lin_model = linear_model.LinearRegression().fit(x_2d,y)
             y_pred = lin_model.predict(x_2d)
 
-            plt.plot(x,f(x,*pow_coeff),"g.", label = f"K(k) ~ k^{pow_coeff[0]}")
+            #f = lambda x,a: x**a
+            #pow_coeff, cov = curve_fit(f, x, y)
+
+            #plt.plot(x,f(x,*pow_coeff),"g.", label = f"K(k) ~ k^{pow_coeff[0]}")
             plt.plot(x,y_pred, label = f"K(K) ~ {lin_model.coef_[0]:.4f}k + {lin_model.intercept_:.4f}", color = "r")
             plt.legend()
             plt.xlabel("k")

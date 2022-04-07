@@ -1,1 +1,0 @@
-These are the slices we built based on fixed k values + an agreement protocol. Each slice is contained in its own folder. Compared to previous experiments we have added a simple graph clustering for which the results can be found in the cluster foldeer

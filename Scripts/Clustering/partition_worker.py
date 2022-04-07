@@ -24,14 +24,6 @@ class PartitionWorker():
         """
         self.path = path
         self.path_to_partitions = path + "parsed_dictionaries/"
-        if not os.path.exists(self.path_to_partitions):
-            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
-            if int(k_value):
-                self.path = path + "k_" + str(k_value) + "/"
-                self.path_to_partitions= self.path + "parsed_dictionaries/"
-            if k_value == "no":
-                print("This experiment has no parsed dictionaries yet")
-                sys.exit()
 
         OpenDicts = OpenDict(self.path)
         self.path_to_stats_results = self.path + "statistics/partition_worker/"

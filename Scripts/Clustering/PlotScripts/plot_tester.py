@@ -5,7 +5,7 @@ import json
 import os
 
 def plot_size_largest_cluster_louvain():
-    paths = ["../experiment12/experiment_12/k_600/parsed_dictionaries/partitions_louvain.json", "../experiment12/experiment_12/k_800/parsed_dictionaries/partitions_louvain.json", "../experiment7/parsed_dictionaries/partitions_louvain.json", "../experiment6/parsed_dictionaries/partitions_louvain.json", "../experiment8/parsed_dictionaries/partitions_louvain.json", "../experiment9/parsed_dictionaries/partitions_louvain.json"]
+    paths = ["../experiment600/experiment_600/parsed_dictionaries/partitions_louvain.json", "../experiment800/experiment_800/parsed_dictionaries/partitions_louvain.json", "../experiment7/parsed_dictionaries/partitions_louvain.json", "../experiment6/parsed_dictionaries/partitions_louvain.json", "../experiment8/parsed_dictionaries/partitions_louvain.json", "../experiment9/parsed_dictionaries/partitions_louvain.json"]
 
     for p in paths:
         with open(p, "r") as inf:
@@ -41,7 +41,7 @@ def plot_size_largest_cluster_louvain():
         plt.clf()
 
 def plot_size_largest_cluster_leiden():
-    paths = ["../experiment12/experiment_12/k_600/parsed_dictionaries/partitions_leiden.json", "../experiment12/experiment_12/k_800/parsed_dictionaries/partitions_leiden.json", "../experiment7/parsed_dictionaries/partitions_leiden.json", "../experiment6/parsed_dictionaries/partitions_leiden.json", "../experiment8/parsed_dictionaries/partitions_leiden.json", "../experiment9/parsed_dictionaries/partitions_leiden.json"]
+    paths = ["../experiment600/experiment_600/parsed_dictionaries/partitions_leiden.json", "../experiment800/experiment_800/parsed_dictionaries/partitions_leiden.json", "../experiment7/parsed_dictionaries/partitions_leiden.json", "../experiment6/parsed_dictionaries/partitions_leiden.json", "../experiment8/parsed_dictionaries/partitions_leiden.json", "../experiment9/parsed_dictionaries/partitions_leiden.json"]
 
     for p in paths:
         with open(p, "r") as inf:
