@@ -139,6 +139,7 @@ class MassVelocity:
 
 
                 if num_intersect_l_min == N or num_intersect_l_min > N: 
+                    print("No problems for slice", s)
                     intersect_idx_tmp = np.argsort(si_intersect.ravel())[::-1]  #flatten and sorted after arguments
                     #intersect_idx = [(int(k//si_intersect.shape[1]), int(k%si_intersect.shape[1])) for k in intersect_idx_tmp][:N] #unravel indexes, pick out N largest
                     all_result = np.unravel_index(intersect_idx_tmp, si_intersect.shape)

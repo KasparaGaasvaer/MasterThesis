@@ -71,14 +71,15 @@ for inner in inner_paths:
 """
 from Clustering.partition_worker import *
 
-inner_paths = ["./experiment6/","./experiment8/","./experiment9/"]
+inner_paths = ["./experiment800/", "./experiment600/"]#["./experiment6/","./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
     for method in methods:
+        print("New method")
         my_class = PartitionWorker(inner,method) 
-
 """
+
 #----------------------------------------------------------------------------------
 
 
@@ -90,11 +91,12 @@ for inner in inner_paths:
 """
 from Clustering.PlotScripts.plot_cluster_stats import *
 
-inner_paths = ["./experiment6/"]#,"./experiment8/","./experiment9/"]
+inner_paths = ["./experiment800/", "./experiment600/"]#["./experiment6/","./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
     for method in methods:
+        print("new method")
         my_class = PlotClusterStats(inner,method)
 """
 #----------------------------------------------------------------------------------
@@ -107,13 +109,13 @@ for inner in inner_paths:
 """
 from Clustering.cluster_tracker import *
 
-inner_paths = ["./experiment6/"]#,"./experiment8/","./experiment9/"]
+inner_paths = ["./experiment800/"]#, "./experiment600/"]#["./experiment6/","./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
     for method in methods:
+        print("new method")
         my_class = ClusterTracker(inner,method)
-
 """
 #----------------------------------------------------------------------------------
 
@@ -127,7 +129,7 @@ for inner in inner_paths:
 """
 from Clustering.mass_velocity import *
 min_cluster_sizes = [1000,800,600,400,300,200,100,50,10]#10,50,100,200,300,400,600,800,1000]
-inner_paths = ["./experiment6/"]
+inner_paths = ["./experiment600/"]# "./experiment600/"]#["./experiment6/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
@@ -138,6 +140,7 @@ for inner in inner_paths:
             print(f"Method = {me}\n")
             my_class = MassVelocity(inner,me,mi)
 """
+
 #------------------------------------------------------------------------------------
 
 
