@@ -32,18 +32,21 @@ class NodeActivity(Graphs):
 
 
 
-
+        """
         self.make_graphs()
 
         self.make_NAC_dict()
 
         self.sort_NAC_dict()
 
+        self.plot_NAC_distribution(make_dist_dict=True)
+
         self.mapping_dict()
         
         self.plot_NAC()
 
         self.compare_NAC_2_contacts()
+        """
 
     def make_graphs(self):
         
@@ -59,8 +62,6 @@ class NodeActivity(Graphs):
 
 
     def make_NAC_dict(self):
-        # Åpne graf filer 
-        # g1: loop gjennom alle linjer 
         master_dict = {}
 
         for s in range(1,self.num_slices+1):
@@ -74,7 +75,7 @@ class NodeActivity(Graphs):
 
             print(f"Time spent calculating activity {end_s-start_s:0.4f} s\n")
 
-            s_dict.update((x, y*nn) for x, y in s_dict.items())
+            s_dict.update((x, y*nn) for x, y in s_dict.items()) #NX gives out degree/num nodes, we want full degree
 
             master_dict[str(s)] = s_dict 
         
@@ -167,11 +168,6 @@ class NodeActivity(Graphs):
                 plt.savefig(self.path_to_overleaf_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
                 plt.clf()
 
-
-        
-
-
-
     def sort_NAC_dict(self):
 
         with open(self.path_to_stats + "activity_dict.json","r") as inff:
@@ -193,6 +189,54 @@ class NodeActivity(Graphs):
         print(len(sorted_dict.keys()))
         with open(self.path_to_stats + "sorted_activity_dict.json","w") as ouf:
             json.dump(sorted_dict, ouf)
+
+
+    def plot_NAC_distribution(self, make_dist_dict = False):
+
+        if make_dist_dict:
+            with open(self.path_to_stats + "activity_dict.json","r") as inff:
+                master_dict = json.load(inff)
+
+            dist_dict = {}
+            for s in master_dict.keys():
+                slice = master_dict[s]
+                for id in slice.keys():
+                    degree = round(slice[id])
+                    try:
+                        dist_dict[str(degree)] += 1
+                    except KeyError:
+                        dist_dict[str(degree)] = 1
+            
+            with open(self.path_to_stats + "activity_distribution_dict.json", "w") as ouf:
+                json.dump(dist_dict,ouf)
+
+
+        with open(self.path_to_stats + "activity_distribution_dict.json","r") as inff:
+                dist_dict = json.load(inff)
+
+        values = []
+        frequencies = []
+        for num_n in dist_dict.keys():
+            values.append(int(num_n))
+            frequencies.append(int(dist_dict[num_n]))
+
+
+        fig, ax = plt.subplots(figsize=(16,10), facecolor='white', dpi= 80)
+        fz = 25
+        for v,f in zip(values,frequencies):
+            ax.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=20)
+
+
+        ax.set_ylabel("Frequency", fontsize = fz)
+        ax.set_xlabel("Num Neighbours", fontsize = fz)
+        
+        plt.xticks(fontsize = fz)
+        plt.yticks(fontsize = fz)
+        plt.xscale("log")
+        plt.yscale("log")
+        plt.savefig(self.path_to_plots + "node_activity_distribution.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "node_activity_distribution.pdf")
+
 
     def mapping_dict(self):
 
