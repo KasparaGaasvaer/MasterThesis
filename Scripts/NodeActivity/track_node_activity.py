@@ -59,8 +59,6 @@ class NodeActivity(Graphs):
 
         self.num_slices = len(self.graphs.keys())
 
-
-
     def make_NAC_dict(self):
         master_dict = {}
 
@@ -190,10 +188,21 @@ class NodeActivity(Graphs):
         with open(self.path_to_stats + "sorted_activity_dict.json","w") as ouf:
             json.dump(sorted_dict, ouf)
 
+    def make_distribution_dict(self):
+        if self.path == "./experiment6/":
+            with open(self.path_to_stats + "activity_dict.json","r") as inff:
+                master_dict = json.load(inff)
 
-    def plot_NAC_distribution(self, make_dist_dict = False):
-
-        if make_dist_dict:
+            dist_dict = {}
+            s = "99"
+            slice = master_dict[s]
+            for id in slice.keys():
+                degree = round(slice[id])
+                try:
+                    dist_dict[str(degree)] += 1
+                except KeyError:
+                    dist_dict[str(degree)] = 1
+        else:
             with open(self.path_to_stats + "activity_dict.json","r") as inff:
                 master_dict = json.load(inff)
 
@@ -207,9 +216,14 @@ class NodeActivity(Graphs):
                     except KeyError:
                         dist_dict[str(degree)] = 1
             
-            with open(self.path_to_stats + "activity_distribution_dict.json", "w") as ouf:
-                json.dump(dist_dict,ouf)
+        with open(self.path_to_stats + "activity_distribution_dict.json", "w") as ouf:
+            json.dump(dist_dict,ouf)
 
+    def plot_NAC_distribution(self, make_dist_dict = False):
+
+        if make_dist_dict:
+            self.make_distribution_dict()
+            
 
         with open(self.path_to_stats + "activity_distribution_dict.json","r") as inff:
                 dist_dict = json.load(inff)

@@ -178,13 +178,13 @@ from NodeActivity.track_node_activity import *
 #from NodeActivity.centrality import *
 #from NodeActivity.extract_from_centrality import *
 
-inner_paths = ["./experiment8/"]#,"./experiment6/"]
+inner_paths = ["./experiment6/"]#,"./experiment8/"]
 for inner in inner_paths:
     activity_class = NodeActivity(inner)
     #activity_class.make_graphs()
     #activity_class.make_NAC_dict()
     #activity_class.sort_NAC_dict()
-    activity_class.plot_NAC_distribution(make_dist_dict=False)
+    activity_class.plot_NAC_distribution(make_dist_dict=True)
     #activity_class.mapping_dict()
     #activity_class.plot_NAC()
     #activity_class.compare_NAC_2_contacts()
