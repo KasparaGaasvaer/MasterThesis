@@ -220,6 +220,8 @@ class NodeActivity(Graphs):
             json.dump(dist_dict,ouf)
 
     def plot_NAC_distribution(self, make_dist_dict = False):
+        from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, inset_axes
+        from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
         if make_dist_dict:
             self.make_distribution_dict()
@@ -234,6 +236,9 @@ class NodeActivity(Graphs):
             values.append(int(num_n))
             frequencies.append(int(dist_dict[num_n]))
 
+        values, frequencies = zip(*sorted(zip(values, frequencies)))
+        print(values)
+        
 
         fig, ax = plt.subplots(figsize=(16,10), facecolor='white', dpi= 80)
         fz = 25
@@ -243,11 +248,43 @@ class NodeActivity(Graphs):
 
         ax.set_ylabel("Frequency", fontsize = fz)
         ax.set_xlabel("Num Neighbours", fontsize = fz)
-        
         plt.xticks(fontsize = fz)
         plt.yticks(fontsize = fz)
-        plt.xscale("log")
         plt.yscale("log")
+
+        frequencies, values = np.array(frequencies), np.array(values)
+        end_value = 1000
+        end_id = np.where(values > end_value)[0][0]
+        
+        zoomed_f = frequencies[:end_id]
+        zoomed_v = values[:end_id]
+        #print(zoomed_v)
+
+        
+        right_inset_ax = fig.add_axes([.45, .35, .4, .4], facecolor='white')
+        for v,f in zip(zoomed_v,zoomed_f):
+            right_inset_ax.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=20)
+        plt.yscale("log")
+        plt.xticks(fontsize = fz-2)
+        plt.yticks(fontsize = fz-2)
+        
+        
+        
+
+
+        """
+        #axins = zoomed_inset_axes(ax, -2, loc=1) # zoom = 2
+        axins= inset_axes(ax, 2, 2, bbox_to_anchor=(0.7, 0.7), bbox_transform=ax.figure.transFigure)
+        for v,f in zip(zoomed_v,zoomed_f):
+            axins.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=20)
+        plt.xticks(visible=False)
+        plt.yticks(visible=False)
+        plt.yscale("log")
+        mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
+        plt.draw()
+        """
+                
+        #plt.xscale("log")
         plt.savefig(self.path_to_plots + "node_activity_distribution.pdf")
         plt.savefig(self.path_to_overleaf_plots + "node_activity_distribution.pdf")
 

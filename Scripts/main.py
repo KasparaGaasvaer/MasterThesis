@@ -178,7 +178,7 @@ from NodeActivity.track_node_activity import *
 #from NodeActivity.centrality import *
 #from NodeActivity.extract_from_centrality import *
 
-inner_paths = ["./experiment6/"]#,"./experiment8/"]
+inner_paths = ["./experiment8/"]#,"./experiment8/"]
 for inner in inner_paths:
     activity_class = NodeActivity(inner)
     #activity_class.make_graphs()
