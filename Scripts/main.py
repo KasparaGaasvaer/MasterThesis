@@ -54,10 +54,10 @@ for outer in outer_paths:
 from Clustering.louvain import *
 from Clustering.leiden import *
 
-inner_paths = ["./experiment6/","./experiment8/","./experiment9/"]
-
+#inner_paths = ["./experiment6/","./experiment8/","./experiment9/"]
+inner_paths = ["./experiment9/"]
 for inner in inner_paths:
-    my_class = Leiden(inner,"nx", attributes_bool = False)
+    #my_class = Leiden(inner,"nx", attributes_bool = False)
     my_class = Louvain(inner,"nx", attributes_bool = False)
 """
 #----------------------------------------------------------------------------------
@@ -71,15 +71,17 @@ for inner in inner_paths:
 """
 from Clustering.partition_worker import *
 
-inner_paths = ["./experiment800/", "./experiment600/"]#["./experiment6/","./experiment8/","./experiment9/"]
+inner_paths = ["./experiment800/", "./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
-    for method in methods:
-        print("New method")
-        my_class = PartitionWorker(inner,method) 
-"""
+    print("new exp")
+    my_class = PartitionWorker(inner,"leiden")
+    #for method in methods:
+        #print("New method")
+        #my_class = PartitionWorker(inner,method) 
 
+"""
 #----------------------------------------------------------------------------------
 
 
@@ -88,17 +90,19 @@ for inner in inner_paths:
 
 #--------------------------------PLOT CLUSTER STATS--------------------------------
 
-"""
+
 from Clustering.PlotScripts.plot_cluster_stats import *
 
-inner_paths = ["./experiment800/", "./experiment600/"]#["./experiment6/","./experiment8/","./experiment9/"]
+inner_paths = ["./experiment800/","./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
-    for method in methods:
-        print("new method")
-        my_class = PlotClusterStats(inner,method)
-"""
+    my_class = PlotClusterStats(inner,"leiden")
+    #for method in methods:
+        #print("new method")
+        #my_class = PlotClusterStats(inner,method)
+
+#my_class = PlotClusterStats("./experiment8/","leiden")
 #----------------------------------------------------------------------------------
 
 
@@ -173,7 +177,7 @@ for inner in inner_paths:
 #---------------------------------NODE ACTIVITY & CENTRALITY--------------------------
 
 
-
+"""
 from NodeActivity.track_node_activity import *
 #from NodeActivity.centrality import *
 #from NodeActivity.extract_from_centrality import *
@@ -193,7 +197,7 @@ for inner in inner_paths:
    # my_class = Centrality(inner) 
    # my_class = ExtractCentrality(inner)
 
-
+"""
 #-------------------------------------------------------------------------------------
 
 

@@ -39,9 +39,10 @@ class PartitionWorker():
 
         self.num_total_slices = len(self.partition_dict.keys())
     
-        self.identify_largest_cluster()
-        self.extract_number_of_clusters()
-        self.extract_cluster_size_dist()
+        #self.identify_largest_cluster()
+        #self.extract_number_of_clusters()
+        #self.extract_cluster_size_dist()
+        self.extract_combined_total_size_dists()
 
 
     def identify_largest_cluster(self):
@@ -98,6 +99,35 @@ class PartitionWorker():
 
         with open(self.path_to_stats_results + self.filename_cluster_size_dist, "w") as fp:
             json.dump(slices, fp)
+
+
+
+    def extract_combined_total_size_dists(self):
+        methods = ["leiden", "louvain", "lprop"]
+        comb_dict = {}
+        for m in methods:
+            comb_dict[m] = {}
+            with open(self.path_to_stats_results + f"cluster_size_distribution_{m}.json", "r") as inff:
+                m_dict = json.load(inff)
+
+            for s in m_dict.keys():   #Loop over all slices
+                slice = m_dict[s]     #Extract list where idx = size, value = num clusters with that size
+                num_sizes = len(slice)
+                for size in range(num_sizes):  #Loop over all indices/sizes 
+                    num_clusters = slice[size]
+                    if num_clusters > 0:
+                        try:
+                            comb_dict[m][str(size)] += slice[size]  #If already exists add on
+                        except KeyError:
+                            comb_dict[m][str(size)] = slice[size]   #If new idx make new
+
+
+        with open(self.path_to_stats_results + "cluster_size_distribution_all_slices_all_methods.json", "w") as ouf:
+            json.dump(comb_dict,ouf)
+
+
+
+          
 
 
 

@@ -16,6 +16,7 @@ class PlotClusterStats:
         self.path_to_stats = path + "statistics/partition_worker/"
         self.method = method
         self.path_to_plots = self.path + "plots/Clustering/Plot_cluster_stats/" + self.method.title() + "/"
+        self.path_to_overleaf = "./p_2_overleaf/" + self.path.strip("./") + "/" + self.method.title() + "/"
 
         if not os.path.exists(self.path_to_plots):
             os.makedirs(self.path_to_plots)
@@ -25,9 +26,11 @@ class PlotClusterStats:
         self.filename_number_of_clusters = "number_partitions_" + self.method + ".txt"
         self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
 
-        self.nodes_in_largest_cluster()
-        self.cluster_size_dist_experiment()
+        #self.nodes_in_largest_cluster()
+        #self.cluster_size_dist_experiment()
         #self.cluster_size_dist()
+        self.plot_combined_cluster_size_dist()
+
         
 
     def nodes_in_largest_cluster(self):
@@ -168,6 +171,108 @@ class PlotClusterStats:
             plt.savefig(loglog_path + "LOG_cluster_size_distribution_slice" + s + ".pdf")
             plt.clf()
 
-        
+    
+    def plot_combined_cluster_size_dist(self):
+        path_to_these_plots = self.path + "plots/Clustering/Plot_cluster_stats/"
+        this_path_to_overleaf = "./p_2_overleaf/" + self.path.strip("./") + "/"
+        print("\n NEW EXP \n")
+        with open(self.path_to_stats + "cluster_size_distribution_leiden.json","r") as test_f:
+            reference_dict = json.load(test_f)
+
+        num_slices = len(reference_dict.keys())
+
+        with open(self.path_to_stats + "cluster_size_distribution_all_slices_all_methods.json","r") as inff:
+            comb_dict = json.load(inff)
+
+
+        comp_order = {}
+        orders = [1, 10, 10**2, 10**3, 10**18] 
+
+        fz = 14
+        for m in comb_dict.keys():
+            comp_order[m] = []
+            m_dict = comb_dict[m]
+            sizes = m_dict.keys()
+            int_sizes = []
+            int_nums = []
+            for s in sizes:
+                int_sizes.append(int(s))
+                int_nums.append(int(m_dict[s]))
+
+            int_sizes, int_nums = zip(*sorted(zip(int_sizes,int_nums)))
+
+            int_sizes = np.array(int_sizes)
+            int_nums = np.array(int_nums)/num_slices    #Since num nodes is the sum over all slices
+
+            plt.plot(int_sizes,int_nums,".",label = f"{m.title()}")
+
+            for o in range(len(orders)-1):
+                start = np.where(orders[o] <= int_sizes)[0][0]
+                end = np.where(int_sizes < orders[o+1])[0][-1]
+                comp_order[m].append(np.sum(int_nums[start:end+1]))
+
+
+        plt.xscale("log")
+        plt.yscale("log")
+        plt.xlabel("Cluster size", fontsize = fz)
+        plt.ylabel("Mean number of nodes", fontsize = fz)
+        plt.xticks(fontsize = fz)
+        plt.yticks(fontsize = fz)
+        plt.legend(fontsize = fz)
+
+
+        #in_ax = fig.add_axes([.45, .35, .4, .4], facecolor='white')
+
+        plt.savefig(path_to_these_plots + "cluster_size_vs_num_nodes_ALL_METHODS.pdf")
+        plt.savefig(this_path_to_overleaf + "cluster_size_vs_num_nodes_ALL_METHODS.pdf")
+        plt.clf()
+
+
+        leiden,louvain,lprop = np.array(comp_order["leiden"]), np.array(comp_order["louvain"]), np.array(comp_order["lprop"])
+
+
+        le_lo = leiden - louvain 
+        le_lp = leiden - lprop
+        lo_lp = louvain - lprop
+
+        new_labels = ["1-9", "10-99", "100-999", "1000-"]
+        new_ax_vals = [1, 2, 3, 4]
+
+        ref_dict = {
+            "Leiden - Louvain" : [le_lo,"forestgreen"],
+            "Leiden - Label Propagation" : [le_lp,"cornflowerblue"],
+            "Louvain - Label Propagation": [lo_lp, "gold"]
+        }
+    
+        lw = 20
+        for oo in range(len(leiden)):
+            vals = []
+            keyss = []
+            for k in ref_dict.keys():
+                vals.append(abs(ref_dict[k][0][oo]))
+                keyss.append(k)
+            
+            vals, keyss = zip(*sorted(zip(vals,keyss),reverse = True))
+            for nk in keyss:
+                plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(ref_dict[nk][0][oo]), color=ref_dict[nk][1],linewidth=lw, label = nk)
+
+
+            #plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(le_lo[oo]), color='forestgreen',linewidth=20)
+            #plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(le_lp[oo]), color='cornflowerblue',linewidth=20)
+            #plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(lo_lp[oo]), color='gold', linewidth=20)
+
+            if oo == 0:
+                plt.legend([keyss[0],keyss[1], keyss[2]], fontsize = fz-2)
+
+        #plt.legend() #Just tested if i got the right labels + color combo each time
+        plt.xticks(new_ax_vals, new_labels, fontsize = fz)
+        plt.yticks(fontsize = fz)
+        plt.xlabel("Cluster sizes", fontsize = fz)
+        plt.ylabel("Absolute difference in number of nodes", fontsize = fz)
+        plt.yscale("log")
+        plt.savefig(path_to_these_plots + "cluster_size_vs_diff_nodes_ALL_METHODS.pdf")
+        plt.savefig(this_path_to_overleaf + "cluster_size_vs_diff_nodes_ALL_METHODS.pdf")
+        plt.clf()
+
 
     

@@ -66,6 +66,7 @@ class Louvain(Graphs):
 
             part_s = time.perf_counter()
             partition = cluster_louvain.best_partition(G)
+            print(partition)
             part_e = time.perf_counter()
             print(f"Time spent making partitions is {part_e-part_s:0.4f} s")
 
@@ -84,15 +85,18 @@ class Louvain(Graphs):
 
             # self.plot_louvain(G,partition)
         
-        with open(self.path_to_dict + "modularity_score_louvain.json","w") as ouf:
-            json.dump(Modularity_score,ouf)
+        #with open(self.path_to_dict + "modularity_score_louvain.json","w") as ouf:
+            #json.dump(Modularity_score,ouf)
 
-        with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
-            json.dump(self.partition_dict, fp)
+        #with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
+            #json.dump(self.partition_dict, fp)
        
 
     def nx_make_partition_dict(self, G, partition):
         """[summary]
+
+            The Louvain partitions have the form "vertex" : partition_num,
+            this method saves partitions as a dictionary with "partition_num" : [vertex_0,..,vertex_P]
 
         Args:
             G ([type]): [description]
@@ -124,21 +128,9 @@ class Louvain(Graphs):
 
         # color the nodes according to their partition
         cmap = cm.get_cmap("viridis", max(partition.values()) + 1)
-        nx.draw_networkx_nodes(
-            G,
-            pos,
-            partition.keys(),
-            node_size=1,
-            cmap=cmap,
-            node_color=list(partition.values()),
-        )
+        nx.draw_networkx_nodes(G, pos, partition.keys(), node_size=1, cmap=cmap, node_color=list(partition.values()))
         nx.draw_networkx_edges(G, pos, alpha=0.5)
-        plt.savefig(
-            self.path_to_plots
-            + "NetworkX_colored_partition_slice"
-            + self.slice_num
-            + ".pdf"
-        )
+        plt.savefig(self.path_to_plots + "NetworkX_colored_partition_slice" + self.slice_num + ".pdf")
         plt.close()
 
         induced_G = cluster_louvain.induced_graph(partition, G)
