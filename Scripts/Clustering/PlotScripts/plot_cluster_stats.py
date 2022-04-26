@@ -262,7 +262,7 @@ class PlotClusterStats:
             
             vals, keyss = zip(*sorted(zip(vals,keyss),reverse = True))
             for nk in keyss:
-                plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(ref_dict[nk][0][oo])*100, color=ref_dict[nk][1],linewidth=lw, label = nk)
+                plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(ref_dict[nk][0][oo]), color=ref_dict[nk][1],linewidth=lw, label = nk)
 
             if oo == 0:
                 plt.legend([keyss[0],keyss[1], keyss[2]], fontsize = fz-2)
@@ -270,8 +270,8 @@ class PlotClusterStats:
         plt.xticks(new_ax_vals, new_labels, fontsize = fz)
         plt.yticks(fontsize = fz)
         plt.xlabel("Cluster sizes", fontsize = fz)
-        plt.ylabel("Percentage of total nodes", fontsize = fz)
-        #plt.yscale("log")
+        plt.ylabel("Nodes in size-bin / total nodes", fontsize = fz)
+        plt.yscale("log")
         plt.savefig(path_to_these_plots + "cluster_size_vs_percent_nodes_ALL_METHODS.pdf")
         plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_nodes_ALL_METHODS.pdf")
         plt.clf()
