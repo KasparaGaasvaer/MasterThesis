@@ -190,7 +190,7 @@ class PlotClusterStats:
 
         fz = 14
         for m in comb_dict.keys():
-            comp_order[m] = []
+            comp_order[m] = [[],[]]
             m_dict = comb_dict[m]
             sizes = m_dict.keys()
             int_sizes = []
@@ -203,13 +203,14 @@ class PlotClusterStats:
 
             int_sizes = np.array(int_sizes)
             int_nums = np.array(int_nums)/num_slices    #Since num nodes is the sum over all slices
+            comp_order[m][1].append(np.sum(int_nums))
 
             plt.plot(int_sizes,int_nums,".",label = f"{m.title()}")
 
             for o in range(len(orders)-1):
                 start = np.where(orders[o] <= int_sizes)[0][0]
                 end = np.where(int_sizes < orders[o+1])[0][-1]
-                comp_order[m].append(np.sum(int_nums[start:end+1]))
+                comp_order[m][0].append(np.sum(int_nums[start:end+1]))
 
 
         plt.xscale("log")
@@ -228,23 +229,54 @@ class PlotClusterStats:
         plt.clf()
 
 
-        leiden,louvain,lprop = np.array(comp_order["leiden"]), np.array(comp_order["louvain"]), np.array(comp_order["lprop"])
+        leiden,louvain,lprop = np.array(comp_order["leiden"][0])/comp_order["leiden"][1][0], np.array(comp_order["louvain"][0])/comp_order["louvain"][1][0], np.array(comp_order["lprop"][0])/comp_order["lprop"][1][0]
 
-
+        """
         le_lo = leiden - louvain 
         le_lp = leiden - lprop
         lo_lp = louvain - lprop
-
-        new_labels = ["1-9", "10-99", "100-999", "1000-"]
-        new_ax_vals = [1, 2, 3, 4]
 
         ref_dict = {
             "Leiden - Louvain" : [le_lo,"forestgreen"],
             "Leiden - Label Propagation" : [le_lp,"cornflowerblue"],
             "Louvain - Label Propagation": [lo_lp, "gold"]
         }
+        """
+
+        new_labels = ["1-9", "10-99", "100-999", "1000-"]
+        new_ax_vals = [1, 2, 3, 4]
     
+        ref_dict = {
+            "Leiden" : [leiden,"forestgreen"],
+            "Label Propagation" : [lprop,"cornflowerblue"],
+            "Louvain": [louvain, "gold"]
+        }
+
         lw = 20
+        for oo in range(len(leiden)):
+            vals = []
+            keyss = []
+            for k in ref_dict.keys():
+                vals.append(abs(ref_dict[k][0][oo]))
+                keyss.append(k)
+            
+            vals, keyss = zip(*sorted(zip(vals,keyss),reverse = True))
+            for nk in keyss:
+                plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(ref_dict[nk][0][oo]), color=ref_dict[nk][1],linewidth=lw, label = nk)
+
+            if oo == 0:
+                plt.legend([keyss[0],keyss[1], keyss[2]], fontsize = fz-2)
+
+        plt.xticks(new_ax_vals, new_labels, fontsize = fz)
+        plt.yticks(fontsize = fz)
+        plt.xlabel("Cluster sizes", fontsize = fz)
+        plt.ylabel("Percentage of total nodes", fontsize = fz)
+        plt.yscale("log")
+        plt.savefig(path_to_these_plots + "cluster_size_vs_percent_nodes_ALL_METHODS.pdf")
+        plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_nodes_ALL_METHODS.pdf")
+        plt.clf()
+
+        """
         for oo in range(len(leiden)):
             vals = []
             keyss = []
@@ -273,6 +305,7 @@ class PlotClusterStats:
         plt.savefig(path_to_these_plots + "cluster_size_vs_diff_nodes_ALL_METHODS.pdf")
         plt.savefig(this_path_to_overleaf + "cluster_size_vs_diff_nodes_ALL_METHODS.pdf")
         plt.clf()
+        """
 
 
     
