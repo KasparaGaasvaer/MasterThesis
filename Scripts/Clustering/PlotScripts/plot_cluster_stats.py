@@ -216,7 +216,7 @@ class PlotClusterStats:
         plt.xscale("log")
         plt.yscale("log")
         plt.xlabel("Cluster size", fontsize = fz)
-        plt.ylabel("Mean number of nodes", fontsize = fz)
+        plt.ylabel("Mean number of clusters", fontsize = fz)
         plt.xticks(fontsize = fz)
         plt.yticks(fontsize = fz)
         plt.legend(fontsize = fz)
