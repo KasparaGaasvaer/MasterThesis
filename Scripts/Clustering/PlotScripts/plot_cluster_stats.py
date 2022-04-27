@@ -224,8 +224,8 @@ class PlotClusterStats:
 
         #in_ax = fig.add_axes([.45, .35, .4, .4], facecolor='white')
 
-        plt.savefig(path_to_these_plots + "cluster_size_vs_num_nodes_ALL_METHODS.pdf")
-        plt.savefig(this_path_to_overleaf + "cluster_size_vs_num_nodes_ALL_METHODS.pdf")
+        plt.savefig(path_to_these_plots + "cluster_size_vs_num_clusters_ALL_METHODS.pdf")
+        plt.savefig(this_path_to_overleaf + "cluster_size_vs_num_clusters_ALL_METHODS.pdf")
         plt.clf()
 
 
@@ -270,10 +270,10 @@ class PlotClusterStats:
         plt.xticks(new_ax_vals, new_labels, fontsize = fz)
         plt.yticks(fontsize = fz)
         plt.xlabel("Cluster sizes", fontsize = fz)
-        plt.ylabel("Nodes in size-bin / total nodes", fontsize = fz)
+        plt.ylabel("Clusters in size-bin / total number of clusters ", fontsize = fz)
         plt.yscale("log")
-        plt.savefig(path_to_these_plots + "cluster_size_vs_percent_nodes_ALL_METHODS.pdf")
-        plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_nodes_ALL_METHODS.pdf")
+        plt.savefig(path_to_these_plots + "cluster_size_vs_percent_clusters_ALL_METHODS.pdf")
+        plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_clusters_ALL_METHODS.pdf")
         plt.clf()
 
         """
