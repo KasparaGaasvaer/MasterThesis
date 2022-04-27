@@ -14,7 +14,7 @@ class CompareMethods:
 
         self.path_to_results = self.path + "plots/CompareMethods/"
         self.path_to_save_stats = self.path_to_stats + "CompareMethods/"
-        self.path_to_results_overleaf = self.path + "p_2_overleaf/CompareMethods/"
+        self.path_to_results_overleaf = "p_2_overleaf/" +self.path.strip("./") + "/CompareMethods/"
 
         if not os.path.exists(self.path_to_results):
             os.makedirs(self.path_to_results)
@@ -130,7 +130,7 @@ class CompareMethods:
         plt.xlabel("Slice")
         plt.ylabel("Vertices in 10% largest clusters / vertices in slice")
         plt.savefig(self.path_to_results + "rel_size_top10p_largest_c.pdf")
-        plt.savefig(self.path_to_results_overleaf + "rel_size_largest_c.pdf")
+        plt.savefig(self.path_to_results_overleaf + "rel_size_top10p_largest_c.pdf")
         plt.clf()
 
 
