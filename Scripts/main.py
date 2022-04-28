@@ -111,17 +111,17 @@ for inner in inner_paths:
 
 
 #--------------------------------CLUSTER TRACKER----------------------------------
-"""
+
 from Clustering.cluster_tracker import *
 
-inner_paths = ["./experiment800/"]#, "./experiment600/"]#["./experiment6/","./experiment8/","./experiment9/"]
+inner_paths = ["./experiment800/","./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
     for method in methods:
         print("new method")
         my_class = ClusterTracker(inner,method)
-"""
+
 #----------------------------------------------------------------------------------
 
 
@@ -201,7 +201,7 @@ for inner in inner_paths:
 """
 #-------------------------------------------------------------------------------------
 
-
+"""
 from Clustering.compare_methods import *
 
 inner_paths = ["./experiment800/","./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
@@ -209,3 +209,4 @@ inner_paths = ["./experiment800/","./experiment600/","./experiment6/","./experim
 for path in inner_paths:
     my_class = CompareMethods(path)
     my_class.plot_size_largest_clusters()
+"""

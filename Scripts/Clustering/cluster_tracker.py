@@ -31,12 +31,12 @@ class ClusterTracker:
 
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
-        self.track_largest()
-        NL = 10
-        self.plot_track_largest()
-        self.track_reid_largest_from_im12i()
-        self.table_biggest_cluster_size()
-        self.compare_clusters(NL, expnum)
+        #self.track_largest()
+        #NL = 10
+        #self.plot_track_largest()
+        #self.track_reid_largest_from_im12i()
+        #self.table_biggest_cluster_size()
+        #self.compare_clusters(NL, expnum)
         #self.compare_N_largest_across_slices(NL)
         self.track_largest_branch()
 
