@@ -114,12 +114,13 @@ for inner in inner_paths:
 
 from Clustering.cluster_tracker import *
 
-inner_paths = ["./experiment800/","./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
+inner_paths = ["./experiment6/"]#,"./experiment800/","./experiment600/","./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
 
 for inner in inner_paths:
+    print(inner)
     for method in methods:
-        print("new method")
+        print(method, "\n")
         my_class = ClusterTracker(inner,method)
 
 #----------------------------------------------------------------------------------
