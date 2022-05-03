@@ -112,6 +112,7 @@ for inner in inner_paths:
 
 #--------------------------------CLUSTER TRACKER----------------------------------
 
+"""
 from Clustering.cluster_tracker import *
 
 inner_paths = ["./experiment6/"]#,"./experiment800/","./experiment600/","./experiment8/","./experiment9/"]
@@ -122,7 +123,7 @@ for inner in inner_paths:
     for method in methods:
         print(method, "\n")
         my_class = ClusterTracker(inner,method)
-
+"""
 #----------------------------------------------------------------------------------
 
 
@@ -132,20 +133,19 @@ for inner in inner_paths:
 
 
 
-"""
-from Clustering.mass_velocity import *
-min_cluster_sizes = [1000,800,600,400,300,200,100,50,10]#10,50,100,200,300,400,600,800,1000]
-inner_paths = ["./experiment600/"]# "./experiment600/"]#["./experiment6/"]
-methods = ["leiden", "louvain", "lprop"]
 
+from Clustering.mass_velocity import *
+#min_cluster_sizes = [1000,800,600,400,300,200,100,50,10]#10,50,100,200,300,400,600,800,1000]
+inner_paths = ["./experiment6/","./experiment800/","./experiment600/"]
+methods = ["leiden","louvain", "lprop"]
+
+mi = 1
 for inner in inner_paths:
     print(inner)
-    for mi in min_cluster_sizes:
-        print(f"Min size = {mi}")
-        for me in methods:
-            print(f"Method = {me}\n")
-            my_class = MassVelocity(inner,me,mi)
-"""
+    for me in methods:
+        print(f"Method = {me}\n")
+        my_class = MassVelocity(inner,me,mi)
+
 
 #------------------------------------------------------------------------------------
 

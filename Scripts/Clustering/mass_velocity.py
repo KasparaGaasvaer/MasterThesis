@@ -13,9 +13,10 @@ class MassVelocity:
         self.min_size_cluster_im1 = min_size_cluster #minimum size of a cluster in Sim1 must have to be concidered
 
         self.setup()
-        self.track_growth(N_largest)
+        #self.track_growth(N_largest)
+        self.track_largest_growth()
         
-        self.plot_growth_track(N_largest)
+        #self.plot_growth_track(N_largest)
 
 
     def setup(self):
@@ -24,15 +25,7 @@ class MassVelocity:
         expnum = int(expnum.split("t")[1])   
 
         self.clusters = self.path + "parsed_dictionaries/partitions_" + self.method + ".json"
-        if not os.path.exists(self.clusters):
-            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
-            if int(k_value):
-                self.path = self.path + "k_" + str(k_value) + "/"
-                self.clusters = self.path + "parsed_dictionaries/partitions_" + self.method + ".json"
-                expnum = str(expnum) + "_k" + str(k_value)
-              
-        
-
+     
         self.path_to_save_stats = self.path + "statistics/Mass_velocity/" + self.method.title() + "/"
         if not os.path.exists(self.path_to_save_stats):
             os.makedirs(self.path_to_save_stats)
@@ -43,6 +36,74 @@ class MassVelocity:
             os.makedirs(self.path_to_plots)
 
         self.path_to_overleaf_plots = "./p_2_overleaf" + self.path.strip(".") + self.method.title() + "/"
+
+
+    def track_largest_growth(self):
+
+        with open(self.clusters, "r") as inf:
+            clusters = json.load(inf)
+
+        self.num_slices = len(clusters.keys())
+        sim1 = clusters["1"]
+
+
+        L_absolute = []
+        S_absolute = []
+        L_relative = []   
+        ID_A = []
+        ID_R = []
+
+        for s in range(2,self.num_slices +1):
+            ss = str(s)
+            si = clusters[ss]   
+
+            largest_cluster =  max(len(item) for item in si.values())
+            crit = largest_cluster//2    #Only check clusters if they are at least 50% the size of the largest
+
+            considered_clusters = 0
+            la = 0   #Largest absolute growth
+            sa = 0   #Size of la
+            lr = 0   #Largest relative growth (relative to size of cluster)
+            ida = "lol"
+            idr = "lol2"
+
+            t_s = time.perf_counter()
+            for im1_k in sim1.keys():
+                v_im1 = set(sim1[im1_k])
+                num_nodes_vim1 = len(v_im1)
+                if num_nodes_vim1 >= crit:  #checks if cluster is large enough to be concidered
+                    considered_clusters += 1
+                    for i_k in si.keys():
+                        v_i = set(si[i_k])
+                        num_nodes_vi = len(v_i)
+
+                        inters_a = len(v_im1.intersection(v_i))
+                        inters_rel = inters_a/num_nodes_vim1
+                        num_new = num_nodes_vi - num_nodes_vim1
+                        if inters_rel > 0.5: #and num_new > 0:   #only growing clusters
+                            if inters_a > la:
+                                la = inters_a
+                                sa = num_nodes_vim1
+                                ida = i_k
+                            if inters_rel > lr:
+                                lr = inters_rel
+                                idr = i_k
+
+            L_absolute.append(la)
+            S_absolute.append(sa)
+            L_relative.append(lr)
+            ID_A.append(ida)
+            ID_R.append(idr)
+
+            t_e = time.perf_counter()
+            print(f"Time spent comparing {s-1} to {s} = {t_e-t_s:0.4f} s. Num C considered:  {considered_clusters}")
+            sim1 = si
+
+        with open(self.path_to_save_stats + "largest_growth_mass_vel.txt","w") as ouf:
+            ouf.write("S : LA,id : SA : LR,id\n")
+            for t in range(len(L_absolute)):
+                ouf.write(f"{t+1} : {L_absolute[t]},{ID_A[t]} : {S_absolute[t]} : {L_relative[t]},{ID_R[t]}\n")
+
 
 
     def track_growth(self,N):
@@ -85,7 +146,7 @@ class MassVelocity:
                             inters_n = v_im1.intersection(v_i)
                             inters_per = float(len(inters_n))/num_nodes_vim1
                             num_new = num_nodes_vi - num_nodes_vim1
-                            if inters_per > 0.9: #and num_new > 0:   #only growing clusters
+                            if inters_per > 0.5: #and num_new > 0:   #only growing clusters
                                 num_intersect_l_min += 1
                                 si_intersect[int(im1_k)][int(i_k)] = inters_per
                                 rel_growth = num_new/num_nodes_vim1
