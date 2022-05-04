@@ -269,6 +269,7 @@ class NodeActivity(Graphs):
     
         plt.savefig(self.path_to_plots + "node_activity_distribution.pdf")
         plt.savefig(self.path_to_overleaf_plots + "node_activity_distribution.pdf")
+        plt.clf()
 
 
     def mapping_dict(self):
@@ -332,7 +333,7 @@ class NodeActivity(Graphs):
     
             
     def plot_NAC(self):
-        centrality_measure = "9_mean" #"0.9_median"
+        centrality_measure = "9_mean"#"0.9_median" #
 
         self.find_ids(centrality_measure)
 

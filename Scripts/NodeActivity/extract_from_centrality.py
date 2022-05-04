@@ -24,7 +24,7 @@ class ExtractCentrality:
             os.makedirs(self.path_to_overleaf_plots)
 
 
-        #self.avg_assortativity()
+        self.avg_assortativity()
         self.degree_distibution()
 
 

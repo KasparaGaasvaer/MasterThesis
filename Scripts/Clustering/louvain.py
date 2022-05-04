@@ -66,7 +66,6 @@ class Louvain(Graphs):
 
             part_s = time.perf_counter()
             partition = cluster_louvain.best_partition(G)
-            print(partition)
             part_e = time.perf_counter()
             print(f"Time spent making partitions is {part_e-part_s:0.4f} s")
 
@@ -85,11 +84,11 @@ class Louvain(Graphs):
 
             # self.plot_louvain(G,partition)
         
-        #with open(self.path_to_dict + "modularity_score_louvain.json","w") as ouf:
-            #json.dump(Modularity_score,ouf)
+        with open(self.path_to_dict + "modularity_score_louvain.json","w") as ouf:
+            json.dump(Modularity_score,ouf)
 
-        #with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
-            #json.dump(self.partition_dict, fp)
+        with open(self.path_to_dict + "partitions_louvain.json", "w") as fp:
+            json.dump(self.partition_dict, fp)
        
 
     def nx_make_partition_dict(self, G, partition):

@@ -22,15 +22,7 @@ class LargestClusters:
         expnum = int(expnum.split("t")[1])   
 
         self.clusters = self.path + "parsed_dictionaries/partitions_" + self.method + ".json"
-        if not os.path.exists(self.clusters):
-            k_value = input("Is this a k-value experiment? Please input k-value\nIf this is NOT a k-value experiment please input no\n")
-            if int(k_value):
-                self.path = self.path + "k_" + str(k_value) + "/"
-                self.clusters = self.path + "parsed_dictionaries/partitions_" + self.method + ".json"
-                expnum = str(expnum) + "_k" + str(k_value)
-                
-        
-
+     
         self.path_to_save_stats = self.path + "statistics/Largest_clusters/" + self.method.title() + "/"
         if not os.path.exists(self.path_to_save_stats):
             os.makedirs(self.path_to_save_stats)

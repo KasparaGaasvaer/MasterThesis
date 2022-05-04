@@ -31,13 +31,13 @@ class ClusterTracker:
 
         self.filename_tracking_largest = self.path_to_save_stats + "tracking_largest_cluster_SD_" + self.method + ".txt"
 
-        #self.track_largest()
-        #NL = 10
-        #self.plot_track_largest()
-        #self.track_reid_largest_from_im12i()
-        #self.table_biggest_cluster_size()
-        #self.compare_clusters(NL, expnum)
-        #self.compare_N_largest_across_slices(NL)
+        self.track_largest()
+        NL = 10
+        self.plot_track_largest()
+        self.track_reid_largest_from_im12i()
+        self.table_biggest_cluster_size()
+        self.compare_clusters(NL, expnum)
+        self.compare_N_largest_across_slices(NL)
         self.track_largest_branch()
 
     def track_reid_largest_from_im12i(self):
@@ -526,7 +526,10 @@ class ClusterTracker:
                 Matches.append(M_id)
                 per_intersects.append(max_intersect)
                 Lsizes.append(ci_size)
-                cim1 = set(si[str(M_id)])
+                try:
+                    cim1 = set(si[str(M_id)])
+                except KeyError:
+                    cim1 = set([-1,-2,-3])    #When branch cant be tracked
                 im1_size = len(cim1)
 
             
@@ -538,7 +541,7 @@ class ClusterTracker:
         with open(self.path_to_save_stats + "break_off_branches.txt","w") as bf:
             for b in range(len(path_breaks)):
                 bf.write(f"{path_breaks[b][0]},{path_breaks[b][1]}\n")
-        """
+        
         with open(self.path_to_save_stats + "tracking_all_branches_largest_cluster_in_each_slice.txt","w") as ouf:
             ouf.write("startS:ids:intersects:sizes:num_slices\n")
             for i in range(len(MASTER_INTERSECTS)):
@@ -547,6 +550,6 @@ class ClusterTracker:
                 n_slices =  NUM_SLICES_IN_ROUND[i]
                 sizes_i = MASTER_SIZES[i]
                 ouf.write(f"{i+1}:{ids_i}:{ints_i}:{sizes_i}:{n_slices}\n")
-        """
+        
 
 

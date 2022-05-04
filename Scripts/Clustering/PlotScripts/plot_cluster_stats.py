@@ -26,10 +26,10 @@ class PlotClusterStats:
         self.filename_number_of_clusters = "number_partitions_" + self.method + ".txt"
         self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
 
-        #self.nodes_in_largest_cluster()
-        #self.cluster_size_dist_experiment()
-        #self.cluster_size_dist()
-        self.plot_combined_cluster_size_dist()
+        self.nodes_in_largest_cluster()
+        self.cluster_size_dist_experiment()
+        self.cluster_size_dist()
+        #self.plot_combined_cluster_size_dist()
 
         
 
