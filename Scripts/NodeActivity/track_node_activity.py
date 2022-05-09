@@ -47,6 +47,7 @@ class NodeActivity(Graphs):
 
         self.compare_NAC_2_contacts()
         """
+        
 
     def make_graphs(self):
         
@@ -82,7 +83,7 @@ class NodeActivity(Graphs):
 
     def compare_NAC_2_contacts(self):
 
-        methods = ["Leiden", "Louvain", "Java"]
+        methods = ["Java"]#"Leiden", "Louvain", "Java"]
         #std_n = 4
 
         with open(self.path_to_stats + "activity_dict.json","r") as inff:
@@ -130,7 +131,7 @@ class NodeActivity(Graphs):
                 
 
                 perc_in_top  = (num_top_acts/nodes) *100
-
+                """
                 plt.plot(self.num_slices,max_acts, label = "Activity of most active node")
                 plt.plot(self.num_slices, contacts, label = "Total number of contacts")
                 plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})")
@@ -149,19 +150,30 @@ class NodeActivity(Graphs):
                 plt.savefig(self.path_to_plots + f"max_NAC_and_largest_cluster_{method_name}.pdf")
                 plt.savefig(self.path_to_overleaf_plots + f"max_NAC_and_largest_cluster_{method_name}.pdf")
                 plt.clf()
+                """
 
-                fig, axs = plt.subplots(1, 2)
+                fz = 14
+                fig, axs = plt.subplots(1, 2,figsize=(10, 6), dpi=80)
                 axs[0].plot(self.num_slices, top_acts, label = "Activity of most active nodes")
                 axs[0].plot(self.num_slices, contacts, label = "Total number of contacts")
-                axs[0].set_title(f"Cut off = mean + {std_n}std")
-                axs[0].set(xlabel = "Slice")#, ylabel = "Nodes")
+                axs[0].set_title(f"Cut off = mean + {std_n}std", fontsize = fz+2)
+                axs[0].set_xlabel("Slice", fontsize = fz)#, ylabel = "Nodes")
                 axs[0].ticklabel_format(axis='y', style='scientific',scilimits=(0,0))
-                axs[1].plot(self.num_slices, perc_in_top, ".")
-                axs[1].set_title("% Most active nodes")
-                axs[1].set(xlabel = "Slice")#, ylabel = "Contacts")
-                axs[1].ticklabel_format(axis='y', style='scientific',scilimits=(0,0))
+                axs[0].yaxis.get_offset_text().set_fontsize(fz)
+                axs[0].legend(loc = 2, fontsize = fz)
+                axs[0].tick_params(labelsize = fz)
+                
+
+                axs[1].plot(self.num_slices, perc_in_top)
+                axs[1].set_xlabel("Slice", fontsize = fz)#, ylabel = "Nodes")
+                axs[1].set_title("% Most active nodes", fontsize = fz+2)
+                axs[1].set(ylim = [0,10])#, ylabel = "Contacts")
+                #axs[1].ticklabel_format(axis='y', style='scientific',scilimits=(0,0))
+                plt.gca().set_yticklabels([f'{x/100:.0%}' for x in plt.gca().get_yticks()], fontsize = fz) 
+                axs[1].yaxis.get_offset_text().set_fontsize(fz)
+                axs[1].tick_params(labelsize = fz)
+                
                 fig.tight_layout(pad=1.0)
-                axs[0].legend()
                 plt.savefig(self.path_to_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
                 plt.savefig(self.path_to_overleaf_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
                 plt.clf()
