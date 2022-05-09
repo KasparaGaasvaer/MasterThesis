@@ -127,7 +127,7 @@ class PartitionWorker():
             sizes = sizes[0]
 
             if s == "68":
-                spl = UnivariateSpline(sizes,freq,k = 2)
+                spl = UnivariateSpline(sizes,freq,k = 1)
                 plt.plot(sizes,freq,"*")
                 plt.plot(sizes, spl(sizes), label = f"{spl.get_coeffs()}")
                 plt.xlabel("Sizes")
