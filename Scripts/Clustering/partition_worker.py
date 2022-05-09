@@ -105,7 +105,7 @@ class PartitionWorker():
         """Fit distribution of cluster sizes as exponential
         """
         from scipy.optimize import curve_fit
-        from scipy.interpolate import UnivariateSpline
+        #from scipy.interpolate import UnivariateSpline
 
         with open(self.path_to_stats_results + self.filename_cluster_size_dist,"r") as inff:
             dist_dict = json.load(inff)
@@ -125,11 +125,16 @@ class PartitionWorker():
                 
             freq = freq[sizes]
             sizes = sizes[0]
+            freq = np.log(freq)
+            sizes = np.log(sizes)
+            popt, pcov = curve_fit(f_lin, sizes, freq, maxfev = 2000)
+            fit_var[s] = [popt[0],popt[1]]
 
             if s == "68":
-                spl = UnivariateSpline(sizes,freq,k = 1)
-                plt.plot(sizes,freq,"*")
-                plt.plot(sizes, spl(sizes), label = f"{spl.get_coeffs()}")
+                #spl = UnivariateSpline(sizes,freq,k = 1)
+                plt.plot(sizes, f_lin(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+                plt.plot(sizes,freq,"*", label  = "Datapoints")
+                #plt.plot(sizes, spl(sizes), label = f"{spl.get_coeffs()}")
                 plt.xlabel("Sizes")
                 plt.ylabel("Frequency")
                 plt.legend()
@@ -138,53 +143,9 @@ class PartitionWorker():
                 plt.savefig(f"s{s}_test_{self.method}.pdf")
                 plt.clf()
 
-
-            #freq = np.log(freq)
-            #sizes = np.log(sizes)
-            """
-
-            popt, pcov = curve_fit(f_lin, sizes, freq, maxfev = 2000)
-            fit_var[s] = [popt[0],popt[1]]
-
-            if s == "68":
-                plt.plot(sizes, f_lin(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
-                print(popt)
-                plt.plot(sizes, freq, "*",label = "Datapoints")
-                plt.legend()
-                plt.xlabel("Sizes")
-                plt.ylabel("Frequency")
-                plt.savefig(f"s{s}_test_{self.method}.pdf")
-                plt.clf()
-
-        """
-        #with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","w") as ouf:
-            #json.dump(fit_var,ouf)
-
-
-            #plt.plot(sizes, f_exp(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
-            # print(popt)
-            # plt.plot(sizes, freq, "*",label = "Datapoints")
-            # plt.legend()
-            # plt.xlabel("Sizes")
-            # plt.ylabel("Frequency")
-            # plt.savefig("lol_test.pdf")
-            # plt.clf()
-            #print(freq)
-            
-            #log_freq = np.log(freq)
-            #log_size = np.log(sizes)
-
-            #plt.plot(log_size,log_freq,"*")
-            #plt.savefig("lol_test.pdf")
-            #plt.clf()
-
-            # exps = np.polyfit(sizes,log_freq, deg = 1)
-            # plt.plot(sizes, freq)
-            # plt.plot(sizes, np.exp(exps[1])*np.exp(exps[0]*sizes))
-            # plt.savefig("lol_test.pdf")
-            # plt.clf()
-            #print(slice)
     
+        with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","w") as ouf:
+            json.dump(fit_var,ouf)
 
 
 
