@@ -110,6 +110,7 @@ class PartitionWorker():
             dist_dict = json.load(inff)
 
         f_exp = lambda x,a,b: np.exp(a*x + b)
+        f_lin = lambda x,a,b: a*x + b
         fit_var = {}
 
         for s in dist_dict.keys():
@@ -126,11 +127,14 @@ class PartitionWorker():
                 print(freq)
             sizes = sizes[0]
 
-            popt, pcov = curve_fit(f_exp, sizes, freq, maxfev = 2000)
+            freq = np.log(freq)
+            sizes = np.log(sizes)
+
+            popt, pcov = curve_fit(f_lin, sizes, freq, maxfev = 2000)
             fit_var[s] = [popt[0],popt[1]]
 
             if s == "68":
-                #plt.plot(sizes, f_exp(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+                plt.plot(sizes, f_lin(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
                 print(popt)
                 plt.plot(sizes, freq, "*",label = "Datapoints")
                 plt.legend()
