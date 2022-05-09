@@ -105,6 +105,7 @@ class PartitionWorker():
         """Fit distribution of cluster sizes as exponential
         """
         from scipy.optimize import curve_fit
+        from scipy.interpolate import UnivariateSpline
 
         with open(self.path_to_stats_results + self.filename_cluster_size_dist,"r") as inff:
             dist_dict = json.load(inff)
@@ -123,12 +124,19 @@ class PartitionWorker():
             
                 
             freq = freq[sizes]
-            if s == "68":
-                print(freq)
             sizes = sizes[0]
 
-            freq = np.log(freq)
-            sizes = np.log(sizes)
+            if s == "68":
+                spl = UnivariateSpline(sizes,freq,k = 3)
+                plt.plot(sizes,freq,"*")
+                plt.plot(sizes, spl(sizes), label = f"{spl.get_coeffs()}")
+                plt.savefig(f"s{s}_test_{self.method}.pdf")
+                plt.clf()
+
+
+            #freq = np.log(freq)
+            #sizes = np.log(sizes)
+            """
 
             popt, pcov = curve_fit(f_lin, sizes, freq, maxfev = 2000)
             fit_var[s] = [popt[0],popt[1]]
@@ -143,9 +151,9 @@ class PartitionWorker():
                 plt.savefig(f"s{s}_test_{self.method}.pdf")
                 plt.clf()
 
-        
-        with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","w") as ouf:
-            json.dump(fit_var,ouf)
+        """
+        #with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","w") as ouf:
+            #json.dump(fit_var,ouf)
 
 
             #plt.plot(sizes, f_exp(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
