@@ -68,7 +68,7 @@ for inner in inner_paths:
 
 #--------------------------------PARTITION WORKER----------------------------------
 
-"""
+
 from Clustering.partition_worker import *
 
 inner_paths = ["./experiment7/"]#["./experiment800/", "./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
@@ -80,8 +80,8 @@ for inner in inner_paths:
         print("New method\n")
         my_class = PartitionWorker(inner,method) 
 
-my_class.extract_combined_total_size_dists()
-"""
+#my_class.extract_combined_total_size_dists()
+
 #----------------------------------------------------------------------------------
 
 
@@ -204,7 +204,7 @@ for inner in inner_paths:
 """
 #-------------------------------------------------------------------------------------
 
-
+"""
 from Clustering.compare_methods import *
 
 inner_paths = ["./experiment7/"]#["./experiment800/","./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
@@ -213,3 +213,4 @@ for path in inner_paths:
     my_class = CompareMethods(path)
     my_class.size_largest_clusters()
     my_class.plot_size_largest_clusters()
+"""

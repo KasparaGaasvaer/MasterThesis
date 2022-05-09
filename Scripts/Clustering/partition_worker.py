@@ -39,11 +39,11 @@ class PartitionWorker():
 
         self.num_total_slices = len(self.partition_dict.keys())
     
-        self.identify_largest_cluster()
-        self.extract_number_of_clusters()
-        self.extract_cluster_size_dist()
+        #self.identify_largest_cluster()
+        #self.extract_number_of_clusters()
+        #self.extract_cluster_size_dist()
         #self.extract_combined_total_size_dists()
-
+        self.fit_cluster_size_dist()
 
     def identify_largest_cluster(self):
         largest_partitions = []
@@ -99,6 +99,71 @@ class PartitionWorker():
 
         with open(self.path_to_stats_results + self.filename_cluster_size_dist, "w") as fp:
             json.dump(slices, fp)
+
+
+    def fit_cluster_size_dist(self):
+        """Fit distribution of cluster sizes as exponential
+        """
+        from scipy.optimize import curve_fit
+
+        with open(self.path_to_stats_results + self.filename_cluster_size_dist,"r") as inff:
+            dist_dict = json.load(inff)
+
+        f_exp = lambda x,a,b: np.exp(a*x + b)
+        fit_var = {}
+
+        for s in dist_dict.keys():
+
+            slice = dist_dict[s]
+            print(s)
+
+            freq = np.array(slice)
+            sizes = np.where(freq != 0)
+            freq = freq[sizes]
+            sizes = sizes[0]
+
+            popt, pcov = curve_fit(f_exp, sizes, freq, maxfev = 2000)
+            fit_var[s] = [popt[0],popt[1]]
+
+            if s == "68":
+                plt.plot(sizes, f_exp(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+                print(popt)
+                plt.plot(sizes, freq, "*",label = "Datapoints")
+                plt.legend()
+                plt.xlabel("Sizes")
+                plt.ylabel("Frequency")
+                plt.savefig(f"s68_test_{self.method}.pdf")
+                plt.clf()
+
+        
+        with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","w") as ouf:
+            json.dump(fit_var,ouf)
+
+
+            #plt.plot(sizes, f_exp(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+            # print(popt)
+            # plt.plot(sizes, freq, "*",label = "Datapoints")
+            # plt.legend()
+            # plt.xlabel("Sizes")
+            # plt.ylabel("Frequency")
+            # plt.savefig("lol_test.pdf")
+            # plt.clf()
+            #print(freq)
+            
+            #log_freq = np.log(freq)
+            #log_size = np.log(sizes)
+
+            #plt.plot(log_size,log_freq,"*")
+            #plt.savefig("lol_test.pdf")
+            #plt.clf()
+
+            # exps = np.polyfit(sizes,log_freq, deg = 1)
+            # plt.plot(sizes, freq)
+            # plt.plot(sizes, np.exp(exps[1])*np.exp(exps[0]*sizes))
+            # plt.savefig("lol_test.pdf")
+            # plt.clf()
+            #print(slice)
+    
 
 
 
