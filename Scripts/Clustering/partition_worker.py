@@ -129,7 +129,7 @@ class PartitionWorker():
             popt, pcov = curve_fit(f_exp, sizes, freq, maxfev = 2000)
             fit_var[s] = [popt[0],popt[1]]
 
-            if s == "1":
+            if s == "68":
                 #plt.plot(sizes, f_exp(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
                 print(popt)
                 plt.plot(sizes, freq, "*",label = "Datapoints")
