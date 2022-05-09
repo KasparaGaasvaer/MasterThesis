@@ -130,7 +130,7 @@ class PartitionWorker():
             popt, pcov = curve_fit(f_lin, sizes, freq, maxfev = 2000)
             fit_var[s] = [popt[0],popt[1]]
 
-            if s == "68":
+            if s == "1":
                 #spl = UnivariateSpline(sizes,freq,k = 1)
                 plt.plot(sizes, f_lin(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
                 plt.plot(sizes,freq,"*", label  = "Datapoints")
