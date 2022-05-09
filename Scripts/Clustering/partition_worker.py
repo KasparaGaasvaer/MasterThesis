@@ -130,6 +130,9 @@ class PartitionWorker():
                 spl = UnivariateSpline(sizes,freq,k = 3)
                 plt.plot(sizes,freq,"*")
                 plt.plot(sizes, spl(sizes), label = f"{spl.get_coeffs()}")
+                plt.xlabel("Sizes")
+                plt.ylabel("Frequency")
+                plt.legend()
                 plt.savefig(f"s{s}_test_{self.method}.pdf")
                 plt.clf()
 
