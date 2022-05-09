@@ -43,7 +43,8 @@ class PartitionWorker():
         #self.extract_number_of_clusters()
         #self.extract_cluster_size_dist()
         #self.extract_combined_total_size_dists()
-        self.fit_cluster_size_dist()
+        #self.fit_cluster_size_dist()
+        self.plot_fit_cluster_coeff()
 
     def identify_largest_cluster(self):
         largest_partitions = []
@@ -100,6 +101,26 @@ class PartitionWorker():
         with open(self.path_to_stats_results + self.filename_cluster_size_dist, "w") as fp:
             json.dump(slices, fp)
 
+    def plot_fit_cluster_coeff(self):
+        with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","r") as inff:
+            coeff_dict = json.load(inff)
+
+
+        a = []
+        b = []
+        s = [i+1 for i in range(len(coeff_dict.keys()))]
+
+        for k in coeff_dict.keys():
+            c = coeff_dict[k]
+            a.append(c[0])
+            b.append(c[1])
+
+        plt.plot(s,a, label = "a")
+        plt.plot(s,b, label = "b")
+        plt.legend()
+        plt.savefig(f"LOLLLLLL_{self.method}.pdf")
+        plt.clf()
+
 
     def fit_cluster_size_dist(self):
         """Fit distribution of cluster sizes as exponential
@@ -111,6 +132,7 @@ class PartitionWorker():
             dist_dict = json.load(inff)
 
         f_exp = lambda x,a,b: np.exp(a*x + b)
+        f_exp2 = lambda x,a,b: b*np.exp(a*x)
         f_lin = lambda x,a,b: a*x + b
         fit_var = {}
 
@@ -125,8 +147,8 @@ class PartitionWorker():
                 
             freq = freq[sizes]
             sizes = sizes[0]
-            freq = np.log(freq)
-            sizes = np.log(sizes)
+            freq = np.log10(freq)
+            sizes = np.log10(sizes)
             popt, pcov = curve_fit(f_lin, sizes, freq, maxfev = 2000)
             fit_var[s] = [popt[0],popt[1]]
 
@@ -138,14 +160,14 @@ class PartitionWorker():
                 plt.xlabel("Sizes")
                 plt.ylabel("Frequency")
                 plt.legend()
-                #plt.xscale("log")
+               # plt.xscale("log")
                 #plt.yscale("log")
                 plt.savefig(f"s{s}_test_{self.method}.pdf")
                 plt.clf()
 
     
-        with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","w") as ouf:
-            json.dump(fit_var,ouf)
+        #with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","w") as ouf:
+            #json.dump(fit_var,ouf)
 
 
 
