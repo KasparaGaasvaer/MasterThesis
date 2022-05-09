@@ -138,8 +138,8 @@ class PartitionWorker():
                 plt.xlabel("Sizes")
                 plt.ylabel("Frequency")
                 plt.legend()
-                plt.xscale("log")
-                plt.yscale("log")
+                #plt.xscale("log")
+                #plt.yscale("log")
                 plt.savefig(f"s{s}_test_{self.method}.pdf")
                 plt.clf()
 
