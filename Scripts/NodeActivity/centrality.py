@@ -269,31 +269,34 @@ class Centrality(Graphs):
         x = np.log10(np.array(kv))
         y = np.log10(np.array(kavg))
 
-        plt.scatter(x, y)
+  
+        fz = 14
+        fig, ax = plt.subplots()
+        ax.scatter(x,y)
 
         x_2d = x.reshape((-1, 1))
         model = linear_model.LinearRegression().fit(x_2d,y)
         y_pred = model.predict(x_2d)
 
-        plt.plot(x,y_pred, label = f"K(k) ~ {model.coef_[0]:.4f}k + {model.intercept_:.4f}", color = "r")
-        plt.legend()
-        plt.xlabel("Degree k")
-        plt.ylabel("ANND K(k)")
-        plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
-        plt.savefig(self.path_to_overleaf_plots + "over_all_slices_degree_connectivity.pdf")
-        plt.clf()
-
-        fig, ax = plt.subplots()
         ax.plot(x,y_pred, label = f"K(k) ~ {model.coef_[0]:.4f}k + {model.intercept_:.4f}", color = "r")
+
+        ax.set_xticks(ax.get_xticks()[1::2])
+        ax.set_yticks(ax.get_yticks()[1::2])
+
         x_l = ax.get_xticks()
         new_x = [r"$10^{%.1f}$"%x for x in x_l]
         ax.set_xticklabels(new_x)
+
         y_l = ax.get_yticks()
         new_y = [r"$10^{%.1f}$"%y for y in y_l]
         ax.set_yticklabels(new_y)
-        plt.legend()
-        plt.xlabel("Degree k")
-        plt.ylabel("ANND K(k)")
+
+        plt.legend(fontsize = fz)
+        plt.xlabel("Degree k", fontsize = fz)
+        plt.ylabel("ANND K(k)", fontsize = fz)
+        plt.xticks(fontsize = fz-2)
+        plt.yticks(fontsize = fz-2)
+        plt.tight_layout()
         plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
         plt.savefig(self.path_to_overleaf_plots + "over_all_slices_degree_connectivity.pdf")
         plt.clf()
@@ -351,24 +354,44 @@ class Centrality(Graphs):
             x = np.log10(np.array(kv))
             y = np.log10(np.array(kavg))
 
-            plt.scatter(x, y, color = "b")
+
+            fz = 14
+            fig, ax = plt.subplots()
+            ax.scatter(x,y)
 
             x_2d = x.reshape((-1, 1))
             lin_model = linear_model.LinearRegression().fit(x_2d,y)
             y_pred = lin_model.predict(x_2d)
 
+            ax.plot(x,y_pred, label = f"K(k) ~ {lin_model.coef_[0]:.4f}k + {lin_model.intercept_:.4f}", color = "r")
+
+            ax.set_xticks(ax.get_xticks()[1::2])
+            ax.set_yticks(ax.get_yticks()[1::2])
+
+            x_l = ax.get_xticks()
+            new_x = [r"$10^{%.1f}$"%x for x in x_l]
+            ax.set_xticklabels(new_x)
+
+            y_l = ax.get_yticks()
+            new_y = [r"$10^{%.1f}$"%y for y in y_l]
+            ax.set_yticklabels(new_y)
+
+            plt.legend(fontsize = fz)
+            plt.xlabel("Degree k", fontsize = fz)
+            plt.ylabel("ANND K(k)", fontsize = fz)
+            plt.title(f"Phase {j}", fontsize = fz)
+            plt.xticks(fontsize = fz-2)
+            plt.yticks(fontsize = fz-2)
+            plt.tight_layout()
+            plt.savefig(path_to_these_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
+            plt.savefig(self.path_to_overleaf_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
+            plt.clf()
+
             #f = lambda x,a: x**a
             #pow_coeff, cov = curve_fit(f, x, y)
 
             #plt.plot(x,f(x,*pow_coeff),"g.", label = f"K(k) ~ k^{pow_coeff[0]}")
-            plt.plot(x,y_pred, label = f"K(k) ~ {lin_model.coef_[0]:.4f}k + {lin_model.intercept_:.4f}", color = "r")
-            plt.legend()
-            plt.xlabel("Degree k")
-            plt.title(f"Phase {j}")
-            plt.ylabel("ANND K(k)")
-            plt.savefig(path_to_these_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
-            plt.savefig(self.path_to_overleaf_plots + f"over_all_slices_degree_connectivity_phase_{j}.pdf")
-            plt.clf()
+        
 
     def is_scale_free(self):
 
