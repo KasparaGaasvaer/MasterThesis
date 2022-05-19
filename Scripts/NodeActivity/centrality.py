@@ -284,8 +284,8 @@ class Centrality(Graphs):
         """
 
 
-        x = np.log(np.array(kv))
-        y = np.log(np.array(kavg))
+        x = np.log10(np.array(kv))
+        y = np.log10(np.array(kavg))
 
   
         fz = 14
@@ -302,11 +302,11 @@ class Centrality(Graphs):
         ax.set_yticks(ax.get_yticks()[1::2])
 
         x_l = ax.get_xticks()
-        new_x = [r"$e^{%.1f}$"%x for x in x_l]
+        new_x = [r"$10^{%.1f}$"%x for x in x_l]
         ax.set_xticklabels(new_x)
 
         y_l = ax.get_yticks()
-        new_y = [r"$e^{%.1f}$"%y for y in y_l]
+        new_y = [r"$10^{%.1f}$"%y for y in y_l]
         ax.set_yticklabels(new_y)
 
         plt.legend(fontsize = fz)
@@ -318,6 +318,7 @@ class Centrality(Graphs):
         plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
         plt.savefig(self.path_to_overleaf_plots + "over_all_slices_degree_connectivity.pdf")
         plt.clf()
+        
     
         
 
@@ -371,8 +372,8 @@ class Centrality(Graphs):
                 kv.append(int(k))
                 kavg.append(np.mean(all_dict[k]))
             
-            x = np.log(np.array(kv))
-            y = np.log(np.array(kavg))
+            x = np.log10(np.array(kv))
+            y = np.log10(np.array(kavg))
 
 
             fz = 14
@@ -389,11 +390,11 @@ class Centrality(Graphs):
             ax.set_yticks(ax.get_yticks()[1::2])
 
             x_l = ax.get_xticks()
-            new_x = [r"$e^{%.1f}$"%x for x in x_l]
+            new_x = [r"$10^{%.1f}$"%x for x in x_l]
             ax.set_xticklabels(new_x)
 
             y_l = ax.get_yticks()
-            new_y = [r"$e^{%.1f}$"%y for y in y_l]
+            new_y = [r"$10^{%.1f}$"%y for y in y_l]
             ax.set_yticklabels(new_y)
 
             plt.legend(fontsize = fz)
