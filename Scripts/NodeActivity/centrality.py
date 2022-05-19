@@ -26,7 +26,7 @@ class Centrality(Graphs):
             os.makedirs(self.path_to_overleaf_plots)
 
 
-        self.make_graphs()
+        #self.make_graphs()
         self.calculate_centralities()
 
 
@@ -49,9 +49,9 @@ class Centrality(Graphs):
         #self.degdeg_plot() #denne som gir de stygge plottene
         #self.avg_degree_connectivity()
         self.N_phases_deg_connectivity_plot()
-        self.is_scale_free()
-        self.deg_connectivity_plot()
-        self.assortativity_coeff()
+        #self.is_scale_free()
+        #self.deg_connectivity_plot()
+        #self.assortativity_coeff()
         #self.closeness_c() #takes forever?
         #self.betweenness_c()
  

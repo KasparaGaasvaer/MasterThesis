@@ -68,7 +68,7 @@ for inner in inner_paths:
 
 #--------------------------------PARTITION WORKER----------------------------------
 
-
+"""
 from Clustering.partition_worker import *
 
 inner_paths = ["./experiment7/"]#["./experiment800/", "./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
@@ -81,7 +81,7 @@ for inner in inner_paths:
         my_class = PartitionWorker(inner,method) 
 
 #my_class.extract_combined_total_size_dists()
-
+"""
 #----------------------------------------------------------------------------------
 
 
@@ -180,28 +180,28 @@ for inner in inner_paths:
 
 
 
-from NodeActivity.track_node_activity import *
-#from NodeActivity.centrality import *
+#from NodeActivity.track_node_activity import *
+from NodeActivity.centrality import *
 #from NodeActivity.extract_from_centrality import *
 
 inner_paths = ["./experiment7/","./experiment8/", "./experiment9/"]
 
-for inner in inner_paths:
-    activity_class = NodeActivity(inner)
+#for inner in inner_paths:
+    #activity_class = NodeActivity(inner)
     #activity_class.make_graphs()
     #activity_class.make_NAC_dict()
     #activity_class.sort_NAC_dict()
     #activity_class.plot_NAC_distribution(make_dist_dict=True)
     #activity_class.mapping_dict()
     #activity_class.plot_NAC()
-    activity_class.compare_NAC_2_contacts()
+    #activity_class.compare_NAC_2_contacts()
 
-"""
+
 for inner in inner_paths:
    my_class = Centrality(inner) 
-   my_class = ExtractCentrality(inner)
+   #my_class = ExtractCentrality(inner)
 
-"""
+
 #-------------------------------------------------------------------------------------
 
 """
