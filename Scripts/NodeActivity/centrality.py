@@ -283,6 +283,22 @@ class Centrality(Graphs):
         plt.savefig(self.path_to_overleaf_plots + "over_all_slices_degree_connectivity.pdf")
         plt.clf()
 
+        fig, ax = plt.subplots()
+        ax.plot(x,y_pred, label = f"K(k) ~ {model.coef_[0]:.4f}k + {model.intercept_:.4f}", color = "r")
+        x_l = ax.get_xticks()
+        new_x = [r"$10^{%.1f}$"%x for x in x_l]
+        ax.set_xticklabels(new_x)
+        y_l = ax.get_yticks()
+        new_y = [r"$10^{%.1f}$"%y for y in y_l]
+        ax.set_yticklabels(new_y)
+        plt.legend()
+        plt.xlabel("Degree k")
+        plt.ylabel("ANND K(k)")
+        plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "over_all_slices_degree_connectivity.pdf")
+        plt.clf()
+
+
 
     def N_phases_deg_connectivity_plot(self):
         print("PHASE PLOT")
