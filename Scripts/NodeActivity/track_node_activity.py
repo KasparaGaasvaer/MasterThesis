@@ -264,7 +264,7 @@ class NodeActivity(Graphs):
 
         ax.set_ylabel("Frequency", fontsize = fz)
         ax.set_xlabel("Num Neighbours", fontsize = fz)
-        labels = [item.get_text() for item in ax.get_xticklabels()]
+        labels = ax.get_xticks().tolist()
         labels[0] = '1'
 
         ax.set_xticklabels(labels)
@@ -285,10 +285,10 @@ class NodeActivity(Graphs):
         for v,f in zip(zoomed_v,zoomed_f):
             right_inset_ax.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=1)
 
-        labels = [item.get_text() for item in right_inset_ax.get_xticklabels()]
-        labels[0] = '1'
+        labels_in = right_inset_ax.get_xticks().tolist()
+        labels_in[0] = '1'
 
-        right_inset_ax.set_xticklabels(labels)
+        right_inset_ax.set_xticklabels(labels_in)
         plt.yscale("log")
         plt.xticks(fontsize = fz-2)
         plt.yticks(fontsize = fz-2)
