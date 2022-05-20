@@ -259,7 +259,7 @@ class NodeActivity(Graphs):
         fig, ax = plt.subplots(figsize=(16,10), facecolor='white', dpi= 80)
         fz = 25
         for v,f in zip(values,frequencies):
-            ax.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=10)
+            ax.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=20)
 
 
         ax.set_ylabel("Frequency", fontsize = fz)
@@ -285,7 +285,7 @@ class NodeActivity(Graphs):
         
         right_inset_ax = fig.add_axes([.45, .35, .4, .4], facecolor='white')
         for v,f in zip(zoomed_v,zoomed_f):
-            right_inset_ax.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=10)
+            right_inset_ax.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=20)
 
         labels_in = right_inset_ax.get_xticks().tolist()
         labels_in[1] = 1
