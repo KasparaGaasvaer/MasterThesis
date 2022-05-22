@@ -26,9 +26,9 @@ class PlotClusterStats:
         self.filename_number_of_clusters = "number_partitions_" + self.method + ".txt"
         self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
 
-        self.nodes_in_largest_cluster()
-        self.cluster_size_dist_experiment()
-        self.cluster_size_dist()
+        #self.nodes_in_largest_cluster()
+        #self.cluster_size_dist_experiment()
+        #self.cluster_size_dist()
         #self.plot_combined_cluster_size_dist()
 
         
@@ -270,7 +270,8 @@ class PlotClusterStats:
         plt.xticks(new_ax_vals, new_labels, fontsize = fz)
         plt.yticks(fontsize = fz)
         plt.xlabel("Cluster sizes", fontsize = fz)
-        plt.ylabel("Clusters in size-bin / total number of clusters ", fontsize = fz)
+        #plt.ylabel("Clusters in size-bin / total number of clusters ", fontsize = fz)
+        plt.ylabel("Fraction of total number of clusters", fontsize = fz)
         plt.yscale("log")
         plt.savefig(path_to_these_plots + "cluster_size_vs_percent_clusters_ALL_METHODS.pdf")
         plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_clusters_ALL_METHODS.pdf")
