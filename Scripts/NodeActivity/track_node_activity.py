@@ -131,7 +131,7 @@ class NodeActivity(Graphs):
                 
 
                 perc_in_top  = (num_top_acts/nodes) *100
-                """
+                
                 plt.plot(self.num_slices,max_acts, label = "Activity of most active vertex")
                 plt.plot(self.num_slices, contacts, label = "Total number of contacts")
                 plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})")
@@ -183,7 +183,7 @@ class NodeActivity(Graphs):
                 plt.savefig(self.path_to_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
                 plt.savefig(self.path_to_overleaf_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
                 plt.clf()
-                """
+                
                 
 
     def sort_NAC_dict(self):
