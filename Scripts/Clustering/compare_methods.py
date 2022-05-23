@@ -112,7 +112,8 @@ class CompareMethods:
         
         plt.legend()
         plt.xlabel("Slice")
-        plt.ylabel("Vertices in largest cluster / vertices in slice")
+        #plt.ylabel("Vertices in largest cluster / vertices in slice")
+        plt.ylabel("Fraction of vertices in largest cluster")
         plt.savefig(self.path_to_results + "rel_size_largest_c.pdf")
         plt.savefig(self.path_to_results_overleaf + "rel_size_largest_c.pdf")
         plt.clf()
@@ -128,7 +129,8 @@ class CompareMethods:
         
         plt.legend()
         plt.xlabel("Slice")
-        plt.ylabel("Vertices in 10% largest clusters / vertices in slice")
+        #plt.ylabel("Vertices in 10% largest clusters / vertices in slice")
+        plt.ylabel("Fraction of vertices in top 10% largest clusters")
         plt.savefig(self.path_to_results + "rel_size_top10p_largest_c.pdf")
         plt.savefig(self.path_to_results_overleaf + "rel_size_top10p_largest_c.pdf")
         plt.clf()

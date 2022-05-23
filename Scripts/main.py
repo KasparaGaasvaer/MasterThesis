@@ -90,23 +90,23 @@ for inner in inner_paths:
 
 #--------------------------------PLOT CLUSTER STATS--------------------------------
 
-
+"""
 from Clustering.PlotScripts.plot_cluster_stats import *
 
 inner_paths = ["./experiment7/","./experiment800/","./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
 methods = ["leiden", "louvain", "lprop"]
-"""
+
 for inner in inner_paths:
     for method in methods:
         print("new method\n")
         my_class = PlotClusterStats(inner,method)
 
-"""
+
 for inner in inner_paths:
     my_class = PlotClusterStats(inner,"lprop")
     my_class.plot_combined_cluster_size_dist()
 
-
+"""
 #----------------------------------------------------------------------------------
 
 
@@ -207,13 +207,12 @@ for inner in inner_paths:
 
 #-------------------------------------------------------------------------------------
 
-"""
+
 from Clustering.compare_methods import *
 
-inner_paths = ["./experiment7/"]#["./experiment800/","./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
+inner_paths = ["./experiment7/","./experiment800/","./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
 
 for path in inner_paths:
     my_class = CompareMethods(path)
-    my_class.size_largest_clusters()
+    #my_class.size_largest_clusters()
     my_class.plot_size_largest_clusters()
-"""
