@@ -91,7 +91,7 @@ class NodeActivity(Graphs):
 
         self.num_slices = [i for i in range(1,len(master_dict.keys())+1)]
 
-        stds = [1]#[1,2,3,4,5]
+        stds = [3]#[1,2,3,4,5]
         for std_n in stds:
             for method in methods:
                 method_name = method
@@ -131,8 +131,8 @@ class NodeActivity(Graphs):
                 
 
                 perc_in_top  = (num_top_acts/nodes) *100
-                """
-                plt.plot(self.num_slices,max_acts, label = "Activity of most active node")
+                
+                plt.plot(self.num_slices,max_acts, label = "Activity of most active vertex")
                 plt.plot(self.num_slices, contacts, label = "Total number of contacts")
                 plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})")
                 plt.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
@@ -141,11 +141,11 @@ class NodeActivity(Graphs):
                 plt.savefig(self.path_to_plots + f"max_NAC_vs_num_contacts_clusters_{method_name}.pdf")
                 plt.savefig(self.path_to_overleaf_plots + f"max_NAC_vs_num_contacts_clusters_{method_name}.pdf")
                 plt.clf()
-                """
+                
                 
                 fz = 12
                 fig, ax = plt.subplots()
-                plt.plot(self.num_slices,max_acts, label = "Activity of most active user")
+                plt.plot(self.num_slices,max_acts, label = "Activity of most active vertex")
                 plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})")
                 plt.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
                 plt.xlabel("Slice", fontsize = fz)
@@ -156,10 +156,11 @@ class NodeActivity(Graphs):
                 plt.savefig(self.path_to_overleaf_plots + f"max_NAC_and_largest_cluster_{method_name}.pdf")
                 plt.clf()
                 
-                """
+                
+                
                 fz = 14
                 fig, axs = plt.subplots(1, 2,figsize=(10, 6), dpi=80)
-                axs[0].plot(self.num_slices, top_acts, label = "Activity of most active nodes")
+                axs[0].plot(self.num_slices, top_acts, label = "Activity of most active vertex")
                 axs[0].plot(self.num_slices, contacts, label = "Total number of contacts")
                 axs[0].set_title(f"Cut off = mean + {std_n}std", fontsize = fz+2)
                 axs[0].set_xlabel("Slice", fontsize = fz)#, ylabel = "Nodes")
@@ -182,7 +183,7 @@ class NodeActivity(Graphs):
                 plt.savefig(self.path_to_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
                 plt.savefig(self.path_to_overleaf_plots + f"{std_n}std_NAC_vs_num_contacts.pdf")
                 plt.clf()
-                """
+                
 
     def sort_NAC_dict(self):
 
