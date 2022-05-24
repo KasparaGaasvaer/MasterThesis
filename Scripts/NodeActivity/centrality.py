@@ -286,6 +286,8 @@ class Centrality(Graphs):
 
         #x = np.log10(np.array(kv))
         #y = np.log10(np.array(kavg))
+        x = np.array(kv)
+        y = np.array(kavg)
 
   
         fz = 14
@@ -310,6 +312,7 @@ class Centrality(Graphs):
         #ax.set_yticklabels(new_y)
 
         #plt.legend(fontsize = fz)
+        plt.scatter(x,y)
         plt.xlabel("Degree k", fontsize = fz)
         plt.ylabel("ANND K(k)", fontsize = fz)
         plt.xticks(fontsize = fz-2)
@@ -374,8 +377,8 @@ class Centrality(Graphs):
                 kv.append(int(k))
                 kavg.append(np.mean(all_dict[k]))
             
-            x = np.log10(np.array(kv))
-            y = np.log10(np.array(kavg))
+            x = np.array(kv)#np.log10(np.array(kv))
+            y = np.array(kavg)#np.log10(np.array(kavg))
 
 
             fz = 14
@@ -400,6 +403,7 @@ class Centrality(Graphs):
             # ax.set_yticklabels(new_y)
 
             #plt.legend(fontsize = fz)
+            plt.scatter(x,y)
             plt.xlabel("Degree k", fontsize = fz)
             plt.ylabel("ANND K(k)", fontsize = fz)
             plt.title(f"Phase {j}", fontsize = fz)
