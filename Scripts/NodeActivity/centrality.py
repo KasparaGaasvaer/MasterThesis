@@ -284,36 +284,38 @@ class Centrality(Graphs):
         """
 
 
-        x = np.log10(np.array(kv))
-        y = np.log10(np.array(kavg))
+        #x = np.log10(np.array(kv))
+        #y = np.log10(np.array(kavg))
 
   
         fz = 14
-        fig, ax = plt.subplots()
-        ax.scatter(x,y)
+        #fig, ax = plt.subplots()
+        #ax.scatter(x,y)
 
-        x_2d = x.reshape((-1, 1))
-        model = linear_model.LinearRegression().fit(x_2d,y)
-        y_pred = model.predict(x_2d)
+        #x_2d = x.reshape((-1, 1))
+        #model = linear_model.LinearRegression().fit(x_2d,y)
+       # y_pred = model.predict(x_2d)
 
-        ax.plot(x,y_pred, label = f"K(k) ~ {model.coef_[0]:.4f}k + {model.intercept_:.4f}", color = "r")
+        #ax.plot(x,y_pred, label = f"K(k) ~ {model.coef_[0]:.4f}k + {model.intercept_:.4f}", color = "r")
 
-        ax.set_xticks(ax.get_xticks()[1::2])
-        ax.set_yticks(ax.get_yticks()[1::2])
+        #ax.set_xticks(ax.get_xticks()[1::2])
+        #ax.set_yticks(ax.get_yticks()[1::2])
 
-        x_l = ax.get_xticks()
-        new_x = [r"$10^{%.1f}$"%x for x in x_l]
-        ax.set_xticklabels(new_x)
+        #x_l = ax.get_xticks()
+        #new_x = [r"$10^{%.1f}$"%x for x in x_l]
+        #ax.set_xticklabels(new_x)
 
-        y_l = ax.get_yticks()
-        new_y = [r"$10^{%.1f}$"%y for y in y_l]
-        ax.set_yticklabels(new_y)
+        #y_l = ax.get_yticks()
+        #new_y = [r"$10^{%.1f}$"%y for y in y_l]
+        #ax.set_yticklabels(new_y)
 
-        plt.legend(fontsize = fz)
+        #plt.legend(fontsize = fz)
         plt.xlabel("Degree k", fontsize = fz)
         plt.ylabel("ANND K(k)", fontsize = fz)
         plt.xticks(fontsize = fz-2)
         plt.yticks(fontsize = fz-2)
+        plt.yscale("log")
+        plt.xscale("log")
         plt.tight_layout()
         plt.savefig(path_to_these_plots + "over_all_slices_degree_connectivity.pdf")
         plt.savefig(self.path_to_overleaf_plots + "over_all_slices_degree_connectivity.pdf")
@@ -377,30 +379,32 @@ class Centrality(Graphs):
 
 
             fz = 14
-            fig, ax = plt.subplots()
-            ax.scatter(x,y)
+            # fig, ax = plt.subplots()
+            # ax.scatter(x,y)
 
-            x_2d = x.reshape((-1, 1))
-            lin_model = linear_model.LinearRegression().fit(x_2d,y)
-            y_pred = lin_model.predict(x_2d)
+            # x_2d = x.reshape((-1, 1))
+            # lin_model = linear_model.LinearRegression().fit(x_2d,y)
+            # y_pred = lin_model.predict(x_2d)
 
-            ax.plot(x,y_pred, label = f"K(k) ~ {lin_model.coef_[0]:.4f}k + {lin_model.intercept_:.4f}", color = "r")
+            # ax.plot(x,y_pred, label = f"K(k) ~ {lin_model.coef_[0]:.4f}k + {lin_model.intercept_:.4f}", color = "r")
 
-            ax.set_xticks(ax.get_xticks()[1::2])
-            ax.set_yticks(ax.get_yticks()[1::2])
+            # ax.set_xticks(ax.get_xticks()[1::2])
+            # ax.set_yticks(ax.get_yticks()[1::2])
 
-            x_l = ax.get_xticks()
-            new_x = [r"$10^{%.1f}$"%x for x in x_l]
-            ax.set_xticklabels(new_x)
+            # x_l = ax.get_xticks()
+            # new_x = [r"$10^{%.1f}$"%x for x in x_l]
+            # ax.set_xticklabels(new_x)
 
-            y_l = ax.get_yticks()
-            new_y = [r"$10^{%.1f}$"%y for y in y_l]
-            ax.set_yticklabels(new_y)
+            # y_l = ax.get_yticks()
+            # new_y = [r"$10^{%.1f}$"%y for y in y_l]
+            # ax.set_yticklabels(new_y)
 
-            plt.legend(fontsize = fz)
+            #plt.legend(fontsize = fz)
             plt.xlabel("Degree k", fontsize = fz)
             plt.ylabel("ANND K(k)", fontsize = fz)
             plt.title(f"Phase {j}", fontsize = fz)
+            plt.yscale("log")
+            plt.xscale("log")
             plt.xticks(fontsize = fz-2)
             plt.yticks(fontsize = fz-2)
             plt.tight_layout()

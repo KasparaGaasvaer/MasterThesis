@@ -208,6 +208,64 @@ class NodeActivity(Graphs):
         with open(self.path_to_stats + "sorted_activity_dict.json","w") as ouf:
             json.dump(sorted_dict, ouf)
 
+    def make_dist_dict_ind_slices(self):
+        with open(self.path_to_stats + "activity_dict.json","r") as inff:
+            master_dict = json.load(inff)
+        
+        dist_dict = {}
+        for s in master_dict.keys():
+            slice = master_dict[s]
+            dist_dict[s] = []
+            entry_s = dist_dict[s]
+            for id in slice.keys():
+                degree = slice[id]
+                entry_s.append(degree)
+
+        with open(self.path_to_stats + "activity_lists_for_slices.json", "w") as ouff:
+            json.dump(dist_dict,ouff)
+
+    def measures_of_dist_to_file(self):
+        with open(self.path_to_stats + "activity_lists_for_slices.json", "r") as inff:
+            master_dict = json.load(inff)
+
+        with open(self.path_to_stats + "activity_dist_measures.txt","w") as ouff:
+            ouff.write("Mean      Std         Max      Min\n")
+            for s in master_dict.keys():
+                vals = np.array(master_dict[s])
+                mean = np.mean(vals)
+                std = np.std(vals)
+                max_v = np.max(vals)
+                min_v = np.min(vals)
+                ouff.write(f"{mean:.2f}     {std:.2f}       {max_v:.2f}     {min_v:.2f}\n")
+
+    def plot_mean_std_of_activity_dist(self):
+
+        with open(self.path_to_stats + "activity_lists_for_slices.json", "r") as inff:
+            master_dict = json.load(inff)
+
+        means = []
+        stds = []
+        slices = []
+        for s in master_dict.keys():
+            slices.append(int(s))
+            vals = np.array(master_dict[s])
+            mean = np.mean(vals)
+            std = np.std(vals)
+            means.append(mean)
+            stds.append(std)
+        
+
+        means = np.array(means)
+        stds = np.array(stds)
+        slices = np.array(slices)
+
+        plt.errorbar(slices[:100], means[:100], stds[:100], linestyle='None', marker='o', mfc='red')
+        plt.xlabel("Slice")
+        plt.ylabel("Mean vertex activity")
+        plt.savefig(self.path_to_plots + "mean_std_NAC_dist.pdf")
+        plt.clf()
+
+
     def make_distribution_dict(self):
         if self.path == "./experiment6/":
             with open(self.path_to_stats + "activity_dict.json","r") as inff:
