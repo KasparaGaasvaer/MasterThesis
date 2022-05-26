@@ -5,6 +5,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np 
+from scipy.optimize import curve_fit
 
 from Utils.graphs import Graphs
 
@@ -297,6 +298,34 @@ class NodeActivity(Graphs):
         with open(self.path_to_stats + "activity_distribution_dict.json", "w") as ouf:
             json.dump(dist_dict,ouf)
 
+    def plot_NAC_dist_exp_6_loglog(self):
+        with open(self.path_to_stats + "activity_distribution_dict.json","r") as inff:
+                dist_dict = json.load(inff)
+
+        values = []
+        frequencies = []
+        for num_n in dist_dict.keys():
+            values.append(int(num_n))
+            frequencies.append(int(dist_dict[num_n]))
+        
+        values, frequencies = zip(*sorted(zip(values, frequencies)))
+
+        
+        f = lambda x,a,b: a*x**(b)
+        values,frequencies = np.array(values), np.array(frequencies)
+        popt, pcov = curve_fit(f, values, frequencies)
+        plt.scatter(values,frequencies, color = "forestgreen")
+        plt.plot(values, f(values, *popt),  'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+        plt.legend()
+        plt.yscale("log")
+        plt.xscale("log")
+        plt.ylabel("Frequency", fontsize = 14)
+        plt.xlabel("Degree", fontsize = 14)
+
+        plt.savefig(self.path_to_plots + "node_activity_distribution_EXP6_LOGLOG_FIT.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "node_activity_distribution_EXP6_LOGLOG_FIT.pdf")
+        plt.clf()
+
     def plot_NAC_distribution(self, make_dist_dict = False):
         from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, inset_axes
         from mpl_toolkits.axes_grid1.inset_locator import mark_inset
@@ -323,7 +352,7 @@ class NodeActivity(Graphs):
 
 
         ax.set_ylabel("Frequency", fontsize = fz)
-        ax.set_xlabel("Num Neighbours", fontsize = fz)
+        ax.set_xlabel("Degree", fontsize = fz)
         labels = ax.get_xticks().tolist()
         labels = [int(l) for l in labels]
         labels[1] = 1
@@ -360,6 +389,8 @@ class NodeActivity(Graphs):
         plt.savefig(self.path_to_plots + "node_activity_distribution.pdf")
         plt.savefig(self.path_to_overleaf_plots + "node_activity_distribution.pdf")
         plt.clf()
+
+
 
 
     def mapping_dict(self):

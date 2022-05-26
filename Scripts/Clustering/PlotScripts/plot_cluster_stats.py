@@ -3,6 +3,7 @@ import sys
 import json
 import numpy as np
 import os
+from scipy.optimize import curve_fit
 
 sys.path.append(
     ".."
@@ -187,6 +188,8 @@ class PlotClusterStats:
 
         comp_order = {}
         orders = [1, 10, 10**2, 10**3, 10**18] 
+        color_list = ["blue", "red", "forestgreen"]
+        count = 0
 
         fz = 14
         for m in comb_dict.keys():
@@ -200,17 +203,24 @@ class PlotClusterStats:
                 int_nums.append(int(m_dict[s]))
 
             int_sizes, int_nums = zip(*sorted(zip(int_sizes,int_nums)))
-
             int_sizes = np.array(int_sizes)
             int_nums = np.array(int_nums)/num_slices    #Since num nodes is the sum over all slices
             comp_order[m][1].append(np.sum(int_nums))
-
-            plt.plot(int_sizes,int_nums,".",label = f"{m.title()}")
+            f = lambda x,a,b: a*x**(b)
+            if m == "louvain" or m == "leiden":
+                popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:])
+            else:
+                popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:]) #fix his when labelprob is ok
+            plt.scatter(int_sizes,int_nums, color = color_list[count], alpha = 0.5,label = f"{m.title()}")
+            plt.plot(int_sizes, f(int_sizes, *popt), color = color_list[count], label=f'fit {m.title()}: a={popt[0]:5.3f}, b={popt[1]:5.3f}')# % tuple(popt))
+        #plt.plot(int_sizes,int_nums,".",label = f"{m.title()}")
 
             for o in range(len(orders)-1):
                 start = np.where(orders[o] <= int_sizes)[0][0]
                 end = np.where(int_sizes < orders[o+1])[0][-1]
                 comp_order[m][0].append(np.sum(int_nums[start:end+1]))
+            count +=1
+            
 
 
         plt.xscale("log")
@@ -224,12 +234,14 @@ class PlotClusterStats:
 
         #in_ax = fig.add_axes([.45, .35, .4, .4], facecolor='white')
 
-        plt.savefig(path_to_these_plots + "cluster_size_vs_num_clusters_ALL_METHODS.pdf")
-        plt.savefig(this_path_to_overleaf + "cluster_size_vs_num_clusters_ALL_METHODS.pdf")
+        plt.savefig(path_to_these_plots + "cluster_size_vs_num_clusters_ALL_METHODS_fit.pdf")
+        plt.savefig(this_path_to_overleaf + "cluster_size_vs_num_clusters_ALL_METHODS_fit.pdf")
         plt.clf()
 
 
         leiden,louvain,lprop = np.array(comp_order["leiden"][0])/comp_order["leiden"][1][0], np.array(comp_order["louvain"][0])/comp_order["louvain"][1][0], np.array(comp_order["lprop"][0])/comp_order["lprop"][1][0]
+        
+
 
         """
         le_lo = leiden - louvain 
@@ -245,6 +257,28 @@ class PlotClusterStats:
 
         new_labels = ["1-9", "10-99", "100-999", "1000-"]
         new_ax_vals = [1, 2, 3, 4]
+
+
+        Ygirls = [10,20,20,40]
+        Zboys = [20,30,25,30]
+        
+        X_axis = np.arange(len(new_labels))
+        
+        plt.bar(X_axis, leiden, 0.2,label = "Leiden")
+        plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain')
+        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation')
+        
+        plt.xticks(X_axis, new_labels, fontsize = fz)
+        plt.yticks(fontsize = fz)
+        plt.xlabel("Size bins", fontsize =fz)
+        plt.ylabel("Fraction of total number of clusters", fontsize = fz)
+        plt.yscale("log")
+        #plt.title("Number of Students in each group")
+        plt.legend(fontsize = fz)
+        plt.tight_layout()
+        plt.savefig(path_to_these_plots + "cluster_size_vs_percent_clusters_ALL_METHODS_separate.pdf")
+        plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_clusters_ALL_METHODS_separate.pdf")
+        plt.clf()
     
         ref_dict = {
             "Leiden" : [leiden,"forestgreen"],
