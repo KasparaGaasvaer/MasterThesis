@@ -315,15 +315,18 @@ class NodeActivity(Graphs):
         values,frequencies = np.array(values), np.array(frequencies)
         popt, pcov = curve_fit(f, values, frequencies)
         plt.scatter(values,frequencies, color = "forestgreen")
-        plt.plot(values, f(values, *popt),  'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
-        plt.legend()
+        #plt.plot(values, f(values, *popt),  'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+        #plt.legend()
         plt.yscale("log")
         plt.xscale("log")
+        plt.xticks(fontsize = 14)
+        plt.yticks(fontsize = 14)
         plt.ylabel("Frequency", fontsize = 14)
         plt.xlabel("Degree", fontsize = 14)
+        plt.tight_layout()
 
-        plt.savefig(self.path_to_plots + "node_activity_distribution_EXP6_LOGLOG_FIT.pdf")
-        plt.savefig(self.path_to_overleaf_plots + "node_activity_distribution_EXP6_LOGLOG_FIT.pdf")
+        plt.savefig(self.path_to_plots + "node_activity_distribution_EXP6_LOGLOG.pdf")
+        plt.savefig(self.path_to_overleaf_plots + "node_activity_distribution_EXP6_LOGLOG.pdf")
         plt.clf()
 
     def plot_NAC_distribution(self, make_dist_dict = False):

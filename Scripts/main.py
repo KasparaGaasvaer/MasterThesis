@@ -90,7 +90,7 @@ for inner in inner_paths:
 
 #--------------------------------PLOT CLUSTER STATS--------------------------------
 
-
+"""
 from Clustering.PlotScripts.plot_cluster_stats import *
 
 inner_paths = ["./experiment7/","./experiment800/","./experiment600/","./experiment6/","./experiment8/","./experiment9/"]
@@ -106,7 +106,7 @@ for inner in inner_paths:
     my_class = PlotClusterStats(inner,"lprop")
     my_class.plot_combined_cluster_size_dist()
 
-
+"""
 #----------------------------------------------------------------------------------
 
 
@@ -181,7 +181,6 @@ for inner in inner_paths:
 
 #---------------------------------NODE ACTIVITY & CENTRALITY--------------------------
 
-"""
 
 from NodeActivity.track_node_activity import *
 #from NodeActivity.centrality import *
@@ -197,7 +196,7 @@ for inner in inner_paths:
     #activity_class.make_graphs()
     #activity_class.make_NAC_dict()
     #activity_class.sort_NAC_dict()
-    activity_class.plot_NAC_distribution(make_dist_dict= False)#True)
+    #activity_class.plot_NAC_distribution(make_dist_dict= False)#True)
     activity_class.plot_NAC_dist_exp_6_loglog()
     #activity_class.mapping_dict()
     #activity_class.plot_NAC()
@@ -208,7 +207,7 @@ for inner in inner_paths:
    #my_class = Centrality(inner) 
    #my_class = ExtractCentrality(inner)
 
-"""
+
 #-------------------------------------------------------------------------------------
 
 """

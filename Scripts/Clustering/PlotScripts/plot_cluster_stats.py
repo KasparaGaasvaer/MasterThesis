@@ -273,7 +273,6 @@ class PlotClusterStats:
         plt.xlabel("Size bins", fontsize =fz)
         plt.ylabel("Fraction of total number of clusters", fontsize = fz)
         plt.yscale("log")
-        #plt.title("Number of Students in each group")
         plt.legend(fontsize = fz)
         plt.tight_layout()
         plt.savefig(path_to_these_plots + "cluster_size_vs_percent_clusters_ALL_METHODS_separate.pdf")
