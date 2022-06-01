@@ -32,6 +32,7 @@ class NodeActivity(Graphs):
             os.makedirs(self.path_to_overleaf_plots)
 
 
+        self.cmap = cm.get_cmap('plasma')
 
         """
         self.make_graphs()
@@ -133,9 +134,9 @@ class NodeActivity(Graphs):
 
                 perc_in_top  = (num_top_acts/nodes) *100
                 
-                plt.plot(self.num_slices,max_acts, label = "Activity of most active vertex")
-                plt.plot(self.num_slices, contacts, label = "Total number of contacts")
-                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})")
+                plt.plot(self.num_slices,max_acts, label = "Activity of most active vertex", color = self.cmap(0))
+                plt.plot(self.num_slices, contacts, label = "Total number of contacts", color = self.cmap(0.8))
+                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})",color = self.cmap(0.5))
                 plt.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
                 plt.xlabel("Slice")
                 plt.legend()
@@ -146,8 +147,8 @@ class NodeActivity(Graphs):
                 
                 fz = 12
                 fig, ax = plt.subplots()
-                plt.plot(self.num_slices,max_acts, label = "Activity of most active vertex")
-                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})")
+                plt.plot(self.num_slices,max_acts, label = "Activity of most active vertex",color = self.cmap(0))
+                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})",color = self.cmap(0.5))
                 plt.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
                 plt.xlabel("Slice", fontsize = fz)
                 plt.tick_params(labelsize = fz)
@@ -161,8 +162,8 @@ class NodeActivity(Graphs):
                 
                 fz = 14
                 fig, axs = plt.subplots(1, 2,figsize=(10, 6), dpi=80)
-                axs[0].plot(self.num_slices, top_acts, label = "Activity of most active vertex")
-                axs[0].plot(self.num_slices, contacts, label = "Total number of contacts")
+                axs[0].plot(self.num_slices, top_acts, label = "Activity of most active vertex",color = self.cmap(0))
+                axs[0].plot(self.num_slices, contacts, label = "Total number of contacts",color = self.cmap(0.8))
                 axs[0].set_title(f"Cut off = mean + {std_n}std", fontsize = fz+2)
                 axs[0].set_xlabel("Slice", fontsize = fz)#, ylabel = "Nodes")
                 axs[0].ticklabel_format(axis='y', style='scientific',scilimits=(0,0))
@@ -171,7 +172,7 @@ class NodeActivity(Graphs):
                 axs[0].tick_params(labelsize = fz)
                 
 
-                axs[1].plot(self.num_slices, perc_in_top)
+                axs[1].plot(self.num_slices, perc_in_top,color = self.cmap(0))
                 axs[1].set_xlabel("Slice", fontsize = fz)#, ylabel = "Nodes")
                 axs[1].set_title("% Most active vertices", fontsize = fz+2)
                 axs[1].set(ylim = [0,10])#, ylabel = "Contacts")
@@ -314,7 +315,7 @@ class NodeActivity(Graphs):
         f = lambda x,a,b: a*x**(b)
         values,frequencies = np.array(values), np.array(frequencies)
         popt, pcov = curve_fit(f, values, frequencies)
-        plt.scatter(values,frequencies, color = "forestgreen")
+        plt.scatter(values,frequencies, color = self.cmap(0.5))
         #plt.plot(values, f(values, *popt),  'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
         #plt.legend()
         plt.yscale("log")
@@ -351,7 +352,7 @@ class NodeActivity(Graphs):
         fig, ax = plt.subplots(figsize=(16,10), facecolor='white', dpi= 80)
         fz = 25
         for v,f in zip(values,frequencies):
-            ax.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=20)
+            ax.vlines(x=v, ymin=0, ymax=f, color=self.cmap(0.5), alpha=0.7, linewidth=20)
 
 
         ax.set_ylabel("Frequency", fontsize = fz)
@@ -377,7 +378,7 @@ class NodeActivity(Graphs):
         
         right_inset_ax = fig.add_axes([.45, .35, .4, .4], facecolor='white')
         for v,f in zip(zoomed_v,zoomed_f):
-            right_inset_ax.vlines(x=v, ymin=0, ymax=f, color='forestgreen', alpha=0.7, linewidth=20)
+            right_inset_ax.vlines(x=v, ymin=0, ymax=f, color=self.cmap(0.5), alpha=0.7, linewidth=20)
 
         labels_in = right_inset_ax.get_xticks().tolist()
         labels_in[1] = 1
