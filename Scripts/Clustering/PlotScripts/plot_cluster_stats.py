@@ -189,7 +189,7 @@ class PlotClusterStats:
         comp_order = {}
         orders = [1, 10, 10**2, 10**3, 10**18] 
         #color_list = ["blue", "red", "forestgreen"]
-        color_dict = {"leiden":"cyan", "louvain":"fuchsia", "lprop":"coral"}
+        color_dict = {"leiden":"deepskyblue", "louvain":"coral", "lprop":"lime"}
         #count = 0
 
         fz = 14
@@ -213,7 +213,7 @@ class PlotClusterStats:
             else:
                 popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:]) #fix his when labelprob is ok
             plt.scatter(int_sizes,int_nums, color = color_dict[m], alpha = 0.5,label = f"{m.title()}")
-            plt.plot(int_sizes, f(int_sizes, *popt), color = color_dict[m], label=f'fit {m.title()}: a={popt[0]:5.3f}, b={popt[1]:5.3f}')# % tuple(popt))
+            #plt.plot(int_sizes, f(int_sizes, *popt), color = color_dict[m], label=f'fit {m.title()}: a={popt[0]:5.3f}, b={popt[1]:5.3f}')# % tuple(popt))
         #plt.plot(int_sizes,int_nums,".",label = f"{m.title()}")
 
             for o in range(len(orders)-1):
@@ -235,8 +235,8 @@ class PlotClusterStats:
 
         #in_ax = fig.add_axes([.45, .35, .4, .4], facecolor='white')
 
-        plt.savefig(path_to_these_plots + "cluster_size_vs_num_clusters_ALL_METHODS_fit.pdf")
-        plt.savefig(this_path_to_overleaf + "cluster_size_vs_num_clusters_ALL_METHODS_fit.pdf")
+        plt.savefig(path_to_these_plots + "cluster_size_vs_num_clusters_ALL_METHODS.pdf")
+        plt.savefig(this_path_to_overleaf + "cluster_size_vs_num_clusters_ALL_METHODS.pdf")
         plt.clf()
 
 
@@ -261,9 +261,9 @@ class PlotClusterStats:
         
         X_axis = np.arange(len(new_labels))
         
-        plt.bar(X_axis, leiden, 0.2,label = "Leiden", color = "cyan")
-        plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain', color = "fuchsia")
-        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation', color = "coral")
+        plt.bar(X_axis, leiden, 0.2,label = "Leiden", color = "deepskyblue",alpha = 0.5)
+        plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain', color = "coral",alpha = 0.5)
+        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation', color = "lime",alpha = 0.5)
         
         plt.xticks(X_axis, new_labels, fontsize = fz)
         plt.yticks(fontsize = fz)
