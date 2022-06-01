@@ -212,7 +212,7 @@ class PlotClusterStats:
                 popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:])
             else:
                 popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:]) #fix his when labelprob is ok
-            plt.scatter(int_sizes,int_nums, color = color_dict[m], alpha = 0.5,label = f"{m.title()}")
+            plt.scatter(int_sizes,int_nums, color = color_dict[m], label = f"{m.title()}")
             #plt.plot(int_sizes, f(int_sizes, *popt), color = color_dict[m], label=f'fit {m.title()}: a={popt[0]:5.3f}, b={popt[1]:5.3f}')# % tuple(popt))
         #plt.plot(int_sizes,int_nums,".",label = f"{m.title()}")
 
@@ -261,9 +261,9 @@ class PlotClusterStats:
         
         X_axis = np.arange(len(new_labels))
         
-        plt.bar(X_axis, leiden, 0.2,label = "Leiden", color = "deepskyblue",alpha = 0.5)
-        plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain', color = "coral",alpha = 0.5)
-        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation', color = "limegreen",alpha = 0.5)
+        plt.bar(X_axis, leiden, 0.2,label = "Leiden", color = "deepskyblue")
+        plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain', color = "coral")
+        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation', color = "limegreen")
         
         plt.xticks(X_axis, new_labels, fontsize = fz)
         plt.yticks(fontsize = fz)
