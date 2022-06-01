@@ -189,7 +189,7 @@ class PlotClusterStats:
         comp_order = {}
         orders = [1, 10, 10**2, 10**3, 10**18] 
         #color_list = ["blue", "red", "forestgreen"]
-        color_dict = {"leiden":"deepskyblue", "louvain":"coral", "lprop":"lime"}
+        color_dict = {"leiden":"deepskyblue", "louvain":"coral", "lprop":"limegreen"}
         #count = 0
 
         fz = 14
@@ -263,7 +263,7 @@ class PlotClusterStats:
         
         plt.bar(X_axis, leiden, 0.2,label = "Leiden", color = "deepskyblue",alpha = 0.5)
         plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain', color = "coral",alpha = 0.5)
-        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation', color = "lime",alpha = 0.5)
+        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation', color = "limegreen",alpha = 0.5)
         
         plt.xticks(X_axis, new_labels, fontsize = fz)
         plt.yticks(fontsize = fz)
