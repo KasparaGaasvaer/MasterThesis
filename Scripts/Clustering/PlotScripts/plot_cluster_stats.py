@@ -188,8 +188,9 @@ class PlotClusterStats:
 
         comp_order = {}
         orders = [1, 10, 10**2, 10**3, 10**18] 
-        color_list = ["blue", "red", "forestgreen"]
-        count = 0
+        #color_list = ["blue", "red", "forestgreen"]
+        color_dict = {"leiden":"cyan", "louvain":"fuchsia", "lprop":"coral"}
+        #count = 0
 
         fz = 14
         for m in comb_dict.keys():
@@ -211,15 +212,15 @@ class PlotClusterStats:
                 popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:])
             else:
                 popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:]) #fix his when labelprob is ok
-            plt.scatter(int_sizes,int_nums, color = color_list[count], alpha = 0.5,label = f"{m.title()}")
-            plt.plot(int_sizes, f(int_sizes, *popt), color = color_list[count], label=f'fit {m.title()}: a={popt[0]:5.3f}, b={popt[1]:5.3f}')# % tuple(popt))
+            plt.scatter(int_sizes,int_nums, color = color_dict[m], alpha = 0.5,label = f"{m.title()}")
+            plt.plot(int_sizes, f(int_sizes, *popt), color = color_dict[m], label=f'fit {m.title()}: a={popt[0]:5.3f}, b={popt[1]:5.3f}')# % tuple(popt))
         #plt.plot(int_sizes,int_nums,".",label = f"{m.title()}")
 
             for o in range(len(orders)-1):
                 start = np.where(orders[o] <= int_sizes)[0][0]
                 end = np.where(int_sizes < orders[o+1])[0][-1]
                 comp_order[m][0].append(np.sum(int_nums[start:end+1]))
-            count +=1
+            #count +=1
             
 
 
@@ -256,17 +257,13 @@ class PlotClusterStats:
         """
 
         new_labels = ["1-9", "10-99", "100-999", "1000-"]
-        new_ax_vals = [1, 2, 3, 4]
-
-
-        Ygirls = [10,20,20,40]
-        Zboys = [20,30,25,30]
+        #new_ax_vals = [1, 2, 3, 4]
         
         X_axis = np.arange(len(new_labels))
         
-        plt.bar(X_axis, leiden, 0.2,label = "Leiden")
-        plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain')
-        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation')
+        plt.bar(X_axis, leiden, 0.2,label = "Leiden", color = "cyan")
+        plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain', color = "fuchsia")
+        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation', color = "coral")
         
         plt.xticks(X_axis, new_labels, fontsize = fz)
         plt.yticks(fontsize = fz)
@@ -278,11 +275,12 @@ class PlotClusterStats:
         plt.savefig(path_to_these_plots + "cluster_size_vs_percent_clusters_ALL_METHODS_separate.pdf")
         plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_clusters_ALL_METHODS_separate.pdf")
         plt.clf()
-    
+
+        """
         ref_dict = {
-            "Leiden" : [leiden,"forestgreen"],
-            "Label Propagation" : [lprop,"cornflowerblue"],
-            "Louvain": [louvain, "gold"]
+            "Leiden" : [leiden,"cyan"],
+            "Label Propagation" : [lprop,"coral"],
+            "Louvain": [louvain, "fuchsia"]
         }
 
         lw = 20
@@ -310,7 +308,7 @@ class PlotClusterStats:
         plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_clusters_ALL_METHODS.pdf")
         plt.clf()
 
-        """
+        
         for oo in range(len(leiden)):
             vals = []
             keyss = []
@@ -339,6 +337,7 @@ class PlotClusterStats:
         plt.savefig(path_to_these_plots + "cluster_size_vs_diff_nodes_ALL_METHODS.pdf")
         plt.savefig(this_path_to_overleaf + "cluster_size_vs_diff_nodes_ALL_METHODS.pdf")
         plt.clf()
+        
         """
 
 

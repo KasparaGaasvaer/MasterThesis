@@ -49,12 +49,14 @@ class Centrality(Graphs):
         #self.avg_nhood_degree()
         #self.degdeg_plot() #denne som gir de stygge plottene
         #self.avg_degree_connectivity()
-        self.N_phases_deg_connectivity_plot()
+        #self.N_phases_deg_connectivity_plot()
         #self.is_scale_free()
-        self.deg_connectivity_plot()
+        #self.deg_connectivity_plot()
         #self.assortativity_coeff()
         #self.closeness_c() #takes forever?
         #self.betweenness_c()
+        self.deg_con_all_slices()
+   
  
     def deg_c(self):
         print("DEGREE CENTRALITY\n")
@@ -212,6 +214,42 @@ class Centrality(Graphs):
             plt.savefig(path_to_these_plots + f"s{s}_k_vs_kmean.pdf")
             plt.savefig(self.path_to_overleaf_plots + f"s{s}_k_vs_kmean.pdf")
             plt.clf()
+
+
+    def deg_con_all_slices(self):
+        print("DEGCON PLOT ALL SLICES")
+        path_to_these_plots = self.path_to_plots + "degree_connectivity/annd_all_slices/" 
+        if not os.path.exists(path_to_these_plots):
+            os.makedirs(path_to_these_plots)
+
+        with open(self.path_to_stats + "avg_deg_connectivity_dict.json","r") as inff:
+            deg_con = json.load(inff)
+
+        self.num_slices = len(deg_con.keys())
+        fz = 14
+
+        for ss in range(1,self.num_slices+1):
+            print("Slice ", ss)
+            s = str(ss)
+            dc = deg_con[s]
+            
+            key_list = [int(k) for k in dc.keys()]
+            value_list = list(dc.values())
+
+            x,y = zip(*sorted(zip(key_list,value_list)))
+
+            plt.scatter(x, y)
+            plt.title(f"Slice {ss}")
+            plt.ylabel("ANND K(k)", fontsize = fz)
+            plt.xlabel("Degree k", fontsize = fz)
+            plt.xticks(fontsize =fz)
+            plt.yticks(fontsize =fz)
+            plt.yscale("log")
+            plt.xscale("log")
+            plt.tight_layout()
+            plt.savefig(path_to_these_plots + f"jpgs/slice_{ss}.jpg")
+            plt.clf()
+
             
     def deg_connectivity_plot(self):
         print("DEGCON PLOT")
