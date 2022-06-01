@@ -148,7 +148,7 @@ class NodeActivity(Graphs):
                 fz = 12
                 fig, ax = plt.subplots()
                 plt.plot(self.num_slices,max_acts, label = "Activity of most active vertex",color = self.cmap(0))
-                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})",color = self.cmap(0.5))
+                plt.plot(self.num_slices, size_of_largest_cluster, label = f"Size of largest cluster ({method_name})",color = self.cmap(0.8))
                 plt.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
                 plt.xlabel("Slice", fontsize = fz)
                 plt.tick_params(labelsize = fz)
