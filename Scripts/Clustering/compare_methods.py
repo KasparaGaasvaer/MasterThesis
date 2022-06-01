@@ -1,5 +1,6 @@
 import json, os
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import numpy as np 
 
 
@@ -26,6 +27,9 @@ class CompareMethods:
             os.makedirs(self.path_to_save_stats)
         
         self.methods = ["leiden", "louvain", "lprop"]
+
+        self.cmap = cm.get_cmap('plasma')
+        self.colors = {"leiden":self.cmap(0), "louvain":self.cmap(0.5), "lprop":self.cmap(0.8)}
 
 
     
@@ -90,16 +94,16 @@ class CompareMethods:
 
         
         plot_dict = {
-            "leiden" : ["Leiden", "forestgreen"],
-            "lprop" : ["Label Propagation", "cornflowerblue"],
-            "louvain": ["Louvain", "gold"]
+            "leiden" : ["Leiden", self.colors["leiden"]],
+            "lprop" : ["Label Propagation", self.colors["lprop"]],
+            "louvain": ["Louvain", self.colors["louvain"]]
         }
 
         # Top 1
         top_size = {
-            "leiden" : [["Leiden", "forestgreen"],[],[]],
-            "lprop" : [["Label Propagation", "cornflowerblue"],[],[]],
-            "louvain": [["Louvain", "gold"],[],[]]
+            "leiden" : [["Leiden", self.colors["leiden"]],[],[]],
+            "lprop" : [["Label Propagation", self.colors["lprop"]],[],[]],
+            "louvain": [["Louvain", self.colors["louvain"]],[],[]]
         }
 
         for method in self.methods:
