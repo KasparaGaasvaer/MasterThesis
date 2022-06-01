@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import sys
 import json
 import numpy as np
@@ -189,7 +190,8 @@ class PlotClusterStats:
         comp_order = {}
         orders = [1, 10, 10**2, 10**3, 10**18] 
         #color_list = ["blue", "red", "forestgreen"]
-        color_dict = {"leiden":"deepskyblue", "louvain":"coral", "lprop":"limegreen"}
+        cmap = cm.get_cmap('plasma')
+        color_dict = {"leiden":cmap(0), "louvain":cmap(0.5), "lprop":cmap(0.8)}
         #count = 0
 
         fz = 14
@@ -261,9 +263,9 @@ class PlotClusterStats:
         
         X_axis = np.arange(len(new_labels))
         
-        plt.bar(X_axis, leiden, 0.2,label = "Leiden", color = "deepskyblue")
-        plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain', color = "coral")
-        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation', color = "limegreen")
+        plt.bar(X_axis, leiden, 0.2,label = "Leiden", color = color_dict["leiden"])
+        plt.bar(X_axis - 0.2, louvain, 0.2, label = 'Louvain', color = color_dict["louvain"])
+        plt.bar(X_axis + 0.2, lprop, 0.2, label = 'Label Propagation', color = color_dict["lprop"])
         
         plt.xticks(X_axis, new_labels, fontsize = fz)
         plt.yticks(fontsize = fz)
