@@ -38,7 +38,7 @@ class ClusterTracker:
         self.table_biggest_cluster_size()
         self.compare_clusters(NL, expnum)
         self.compare_N_largest_across_slices(NL)
-        self.track_largest_branch()
+        #self.track_largest_branch()
 
     def track_reid_largest_from_im12i(self):
         print("\nTrack reID largest from im1 to i\n")

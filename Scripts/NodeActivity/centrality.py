@@ -50,9 +50,9 @@ class Centrality(Graphs):
         #self.avg_nhood_degree()
         #self.degdeg_plot() #denne som gir de stygge plottene
         #self.avg_degree_connectivity()
-        self.N_phases_deg_connectivity_plot()
+        #self.N_phases_deg_connectivity_plot()
         #self.is_scale_free()
-        #self.deg_connectivity_plot()
+        self.deg_connectivity_plot()
         #self.assortativity_coeff()
         #self.closeness_c() #takes forever?
         #self.betweenness_c()
@@ -351,7 +351,8 @@ class Centrality(Graphs):
         #ax.set_yticklabels(new_y)
 
         #plt.legend(fontsize = fz)
-        plt.scatter(x,y)
+        cmap = cm.get_cmap("plasma")
+        plt.scatter(x,y, color = cmap(0))
         plt.xlabel("Degree k", fontsize = fz)
         plt.ylabel("ANND K(k)", fontsize = fz)
         plt.xticks(fontsize = fz)

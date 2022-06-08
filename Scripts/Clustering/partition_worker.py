@@ -39,12 +39,11 @@ class PartitionWorker():
 
         self.num_total_slices = len(self.partition_dict.keys())
     
-        #self.identify_largest_cluster()
-        #self.extract_number_of_clusters()
-        #self.extract_cluster_size_dist()
-        #self.extract_combined_total_size_dists()
+        self.identify_largest_cluster()
+        self.extract_number_of_clusters()
+        self.extract_cluster_size_dist()
         #self.fit_cluster_size_dist()
-        self.plot_fit_cluster_coeff()
+        #self.plot_fit_cluster_coeff()
 
     def identify_largest_cluster(self):
         largest_partitions = []
