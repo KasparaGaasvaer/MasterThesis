@@ -5,6 +5,8 @@ import pandas as pd
 
 
 class Centrality:
+    """ The Centrality class 
+    """
     def __init__(self, path, type):
 
         self.methods = ["leiden", "louvain", "lprop"]
@@ -29,18 +31,9 @@ class Centrality:
         self.path_to_save_compare = self.path_to_stats + "compare_to_largest/"
         if not os.path.exists(self.path_to_save_compare):
             os.makedirs(self.path_to_save_compare)
-     
-        #self.calculate_centrality()
-        #self.get_top_5_nodes()
-        #self.get_top_1_node()
-        #self.compare_centrality_and_largest_cluster()
-        self.find_id_of_top_5()
 
 
     def calculate_centrality(self):
-
-        # num_nodes = len(labels) - 1 # n-1
-        # for every time a node is part of a contact add one to centrality score 
         
         for s in self.slice_nums:
             print(s)
@@ -49,7 +42,7 @@ class Centrality:
             labels = path_to_slice + "labels_" + str(s) + ".csv"
             graph = path_to_slice + "graph_" + str(s) + ".csv"
 
-            labels_df = pd.read_csv(labels, header = 0, usecols=[1]) #pick out only node id 
+            labels_df = pd.read_csv(labels, header = 0, usecols=[1])
             N_users = len(labels_df)
             labels_vec = labels_df.to_numpy()
             labels_vec = labels_vec[:,0]
@@ -57,7 +50,6 @@ class Centrality:
             user_dict = {}
             for u in labels_vec:
                 user_dict[str(u)] = 0
-            #print(user_dict)
 
             types = ["source", "target", "weight"]
             graph_df = pd.read_csv(graph, names = types)
@@ -182,20 +174,7 @@ class Centrality:
         df.to_csv(self.path_to_save_compare + "compare_Lc_2_CNc.txt", index=False, sep = " ")
 
 
-        # leiden louvain evt java 
-        # last inn fil av største cluster for alle 
-        # loop over alle clustere i hver slice, finn cluster hvor mest sentral node er
-        # largre cluster id 
-
-        # får da | leiden | louvain (| java |)
-        #      s1|id, id_L|id, id_L (|  id, id_L   |)
-        #      -------------------------------
-        #      -------------------------------
-        #      sN|id, id_L|id, id_L (|  id, id_L   |)
-
-
     def find_id_of_top_5(self):
-        # Find Cid and size of 5 largest
         m =0
         M_info = []
         num_methods = 3

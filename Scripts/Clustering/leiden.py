@@ -19,8 +19,10 @@ import leidenalg as la
 # check out leidenalg.find_partition_temporal
 from Utils.graphs import Graphs
 
-# ==============================Leiden Cluster Detection==============================
+# ==============================Leiden Community Detection==============================
 
+# Method for Leiden community detection on networkx graphs.
+# - Inherits self.graphs from super Graphs.
 
 class Leiden(Graphs):
     """Class for Leiden cluster detection on igraph and networkx graphs.
@@ -87,13 +89,7 @@ class Leiden(Graphs):
             dict_e = time.perf_counter()
             print(f"Time spent making dict is {dict_e-dict_s:0.4f} s")
         
-        """
-        partition = la.find_partition(G, la.CPMVertexPartition, resolution_parameter = 0.05)
-        ig.plot(partition)
-        layout = G.layout(layout='auto')
-        ig.plot(G, layout = layout)
-        plt.show()
-        """
+
         with open(self.path_to_dict + "modularity_score_leiden.json","w") as ouf:
             json.dump(Modularity_score,ouf)
 

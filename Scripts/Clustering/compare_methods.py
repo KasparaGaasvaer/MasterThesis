@@ -3,10 +3,19 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np 
 
+# ==============================Compare Methods==============================
 
+# Class for producing visual comparissons between the methods used for community detection;
+# Leiden, Louvain, and Label Propagation.
 
 class CompareMethods:
+
     def __init__(self, path_to_experiment):
+        """Constructor. Sets global paths.
+
+        Args:
+            path_to_experiment (string): Path to experiment.
+        """
 
         self.path = path_to_experiment
 
@@ -116,7 +125,6 @@ class CompareMethods:
         
         plt.legend()
         plt.xlabel("Slice")
-        #plt.ylabel("Vertices in largest cluster / vertices in slice")
         plt.ylabel("Fraction of vertices in largest cluster")
         plt.savefig(self.path_to_results + "rel_size_largest_c.pdf")
         plt.savefig(self.path_to_results_overleaf + "rel_size_largest_c.pdf")
@@ -133,16 +141,13 @@ class CompareMethods:
         
         plt.legend()
         plt.xlabel("Slice")
-        #plt.ylabel("Vertices in 10% largest clusters / vertices in slice")
         plt.ylabel("Fraction of vertices in top 10% largest clusters")
         plt.savefig(self.path_to_results + "rel_size_top10p_largest_c.pdf")
         plt.savefig(self.path_to_results_overleaf + "rel_size_top10p_largest_c.pdf")
         plt.clf()
 
 
-         
-
-        #for slice in range(num_slices):
+    
 
 
 

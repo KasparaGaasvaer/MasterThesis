@@ -1,16 +1,10 @@
 import networkx as nx
-import networkx.algorithms.community as nx_comm
-import igraph as ig
-import numpy as np
-import pandas as pd
 import os
 import sys
-import copy
 import json
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import time
-from copy import deepcopy
 
 sys.path.append(
     ".."
@@ -19,12 +13,11 @@ sys.path.append(
 import community as cluster_louvain
 from Utils.graphs import Graphs
 
-# ==============================Louvain Cluster Detection==============================
+# ==============================Louvain Community Detection==============================
 
 
-# Method for Louvain cluster detection on igraph and networkx graphs.
+# Method for Louvain community detection on networkx graphs.
 # - Inherits self.graphs from super Graphs.
-
 
 
 class Louvain(Graphs):
@@ -55,6 +48,8 @@ class Louvain(Graphs):
             self.ig_louvain()
 
     def nx_louvain(self):
+        """Louvain algorithm for NetworkX-graphs
+        """
 
         Modularity_score = {}
         self.partition_dict = {}
@@ -62,7 +57,6 @@ class Louvain(Graphs):
             self.slice_num = str(i)
             print("Starting with with slice ", i)
             G = self.graphs[str(i)]["graph"]
-            # print(f"Number of nodes = {G.number_of_nodes()}")
 
             part_s = time.perf_counter()
             partition = cluster_louvain.best_partition(G)
@@ -98,8 +92,8 @@ class Louvain(Graphs):
             this method saves partitions as a dictionary with "partition_num" : [vertex_0,..,vertex_P]
 
         Args:
-            G ([type]): [description]
-            partition ([type]): [description]
+            G (NetworkX graph object)
+            partition (dict): Dictionary of partitions from the cluster_louvain.best_partition(G) method
         """
         self.partition_dict[self.slice_num] = {}
         s = self.partition_dict[self.slice_num]
@@ -116,11 +110,11 @@ class Louvain(Graphs):
         
 
     def plot_louvain(self, G, partition):
-        """[summary]
+        """ Method for plotting networks after partioning using the Louvain method.
 
-        Args:
-            G ([type]): [description]
-            partition ([type]): [description]
+       Args:
+            G (NetworkX graph object)
+            partition (dict): Dictionary of partitions from the cluster_louvain.best_partition(G) method
         """
         # draw the graph
         pos = nx.kamada_kawai_layout(G)
@@ -138,28 +132,3 @@ class Louvain(Graphs):
             self.path_to_plots + "NetworkX_induced_slice" + self.slice_num + ".pdf"
         )
         plt.close()
-
-    def ig_louvain(self):
-        """[summary]
-        """
-
-        # Loading graph
-        g = self.graphs["1"]["graph"]
-        G = g.to_networkx()
-
-        partition = cluster_louvain.best_partition(G)
-
-        # draw the graph
-        pos = nx.spring_layout(G)
-        # color the nodes according to their partition
-        cmap = cm.get_cmap("viridis", max(partition.values()) + 1)
-        nx.draw_networkx_nodes(
-            G,
-            pos,
-            partition.keys(),
-            node_size=40,
-            cmap=cmap,
-            node_color=list(partition.values()),
-        )
-        nx.draw_networkx_edges(G, pos, alpha=0.5)
-        plt.show()

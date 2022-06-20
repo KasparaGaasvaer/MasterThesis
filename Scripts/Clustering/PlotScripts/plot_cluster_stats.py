@@ -13,6 +13,12 @@ sys.path.append(
 
 class PlotClusterStats:
     def __init__(self, path, method):
+        """Constructor. Sets global paths and filenames.
+
+        Args:
+            path (string): Path to experiment folder.
+            method (string): Name of chosen community detection algorithm. 
+        """
         
         self.path = path
         self.path_to_stats = path + "statistics/partition_worker/"
@@ -27,16 +33,12 @@ class PlotClusterStats:
         self.filename_nodes_in_largest_cluster = "largest_partitions_" + self.method + ".txt"
         self.filename_number_of_clusters = "number_partitions_" + self.method + ".txt"
         self.filename_cluster_size_dist = "cluster_size_distribution_" + self.method + ".json"
-
-        self.nodes_in_largest_cluster()
-        self.cluster_size_dist_experiment()
-        #self.cluster_size_dist()
-        #self.plot_combined_cluster_size_dist()
-
         
 
     def nodes_in_largest_cluster(self):
-        print("Nodes in Largest Cluster")
+        """Method for retrieving and plotting node distributions. 
+        """
+      
         clusters = []
         num_nodes = []
         slices = []
@@ -92,52 +94,9 @@ class PlotClusterStats:
         plt.clf()
 
 
-    def cluster_size_dist_experiment(self):
-        print("Cluster Size Dist Experiment\n")
-        with open(self.path_to_stats + self.filename_cluster_size_dist, "r") as fp:
-            all_data = json.load(fp)
-        
-        path = self.path_to_plots + "Cluster_Size_Dist/all_slices/"
-        if not os.path.exists(path):
-            os.makedirs(path)
-
-        dist = all_data["1"]
-  
-        for k in range(1,len(all_data.keys())+1):
-            ks = str(k)
-            
-            new_dist = all_data[ks]
-
-            diff = len(dist)-len(new_dist) # = 0 if same lenght, < 0 if new dist is larger, > 0 if old dist is larger
-
-            if diff < 0:
-                for m in range(abs(diff)):
-                    dist.append(0)
-            
-            if diff > 0:
-                for m in range(diff):
-                    new_dist.append(0)
-
-            dist = [sum(x) for x in zip(dist, new_dist)]
-        
-
-        plt.xlabel("Num nodes in cluster", fontsize=14)
-        plt.ylabel("Frequency", fontsize=14)
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
-        plt.bar(range(len(dist)), dist)
-        plt.savefig(path + "cluster_size_distribution.pdf")
-        plt.yscale("log")
-        plt.savefig(path + "yLOG_cluster_size_distribution_slice.pdf")
-        plt.xscale("log")
-        plt.savefig(path + "LOG_cluster_size_distribution.pdf")
-        plt.clf()
-
-
-        
-
-
     def cluster_size_dist(self):
+        """Method for retrieving and plotting cluster size distributions.
+        """
         with open(self.path_to_stats + self.filename_cluster_size_dist, "r") as fp:
             all_data = json.load(fp)
         
@@ -175,6 +134,8 @@ class PlotClusterStats:
 
     
     def plot_combined_cluster_size_dist(self):
+        """Method for retrieving and plotting cluster size distributions for all methods combined.
+        """
         path_to_these_plots = self.path + "plots/Clustering/Plot_cluster_stats/"
         this_path_to_overleaf = "./p_2_overleaf/" + self.path.strip("./") + "/"
         print("\n NEW EXP \n")
@@ -189,10 +150,9 @@ class PlotClusterStats:
 
         comp_order = {}
         orders = [1, 10, 10**2, 10**3, 10**18] 
-        #color_list = ["blue", "red", "forestgreen"]
+  
         cmap = cm.get_cmap('plasma')
         color_dict = {"leiden":cmap(0), "louvain":cmap(0.5), "lprop":cmap(0.8)}
-        #count = 0
 
         fz = 14
         for m in comb_dict.keys():
@@ -207,22 +167,18 @@ class PlotClusterStats:
 
             int_sizes, int_nums = zip(*sorted(zip(int_sizes,int_nums)))
             int_sizes = np.array(int_sizes)
-            int_nums = np.array(int_nums)/num_slices    #Since num nodes is the sum over all slices
+            int_nums = np.array(int_nums)/num_slices    #Num nodes is the sum over all slices
             comp_order[m][1].append(np.sum(int_nums))
             f = lambda x,a,b: a*x**(b)
-            if m == "louvain" or m == "leiden":
-                popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:])
-            else:
-                popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:]) #fix his when labelprob is ok
-            plt.scatter(int_sizes,int_nums, color = color_dict[m], label = f"{m.title()}")
-            #plt.plot(int_sizes, f(int_sizes, *popt), color = color_dict[m], label=f'fit {m.title()}: a={popt[0]:5.3f}, b={popt[1]:5.3f}')# % tuple(popt))
-        #plt.plot(int_sizes,int_nums,".",label = f"{m.title()}")
 
+            popt, pcov = curve_fit(f, int_sizes[1:], int_nums[1:])
+            plt.scatter(int_sizes,int_nums, color = color_dict[m], label = f"{m.title()}")
+        
             for o in range(len(orders)-1):
                 start = np.where(orders[o] <= int_sizes)[0][0]
                 end = np.where(int_sizes < orders[o+1])[0][-1]
                 comp_order[m][0].append(np.sum(int_nums[start:end+1]))
-            #count +=1
+        
             
 
 
@@ -234,9 +190,6 @@ class PlotClusterStats:
         plt.yticks(fontsize = fz)
         plt.legend(fontsize = fz)
 
-
-        #in_ax = fig.add_axes([.45, .35, .4, .4], facecolor='white')
-
         plt.savefig(path_to_these_plots + "cluster_size_vs_num_clusters_ALL_METHODS.pdf")
         plt.savefig(this_path_to_overleaf + "cluster_size_vs_num_clusters_ALL_METHODS.pdf")
         plt.clf()
@@ -245,21 +198,7 @@ class PlotClusterStats:
         leiden,louvain,lprop = np.array(comp_order["leiden"][0])/comp_order["leiden"][1][0], np.array(comp_order["louvain"][0])/comp_order["louvain"][1][0], np.array(comp_order["lprop"][0])/comp_order["lprop"][1][0]
         
 
-
-        """
-        le_lo = leiden - louvain 
-        le_lp = leiden - lprop
-        lo_lp = louvain - lprop
-
-        ref_dict = {
-            "Leiden - Louvain" : [le_lo,"forestgreen"],
-            "Leiden - Label Propagation" : [le_lp,"cornflowerblue"],
-            "Louvain - Label Propagation": [lo_lp, "gold"]
-        }
-        """
-
         new_labels = ["1-9", "10-99", "100-999", "1000-"]
-        #new_ax_vals = [1, 2, 3, 4]
         
         X_axis = np.arange(len(new_labels))
         
@@ -278,69 +217,7 @@ class PlotClusterStats:
         plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_clusters_ALL_METHODS_separate.pdf")
         plt.clf()
 
-        """
-        ref_dict = {
-            "Leiden" : [leiden,"cyan"],
-            "Label Propagation" : [lprop,"coral"],
-            "Louvain": [louvain, "fuchsia"]
-        }
-
-        lw = 20
-        for oo in range(len(leiden)):
-            vals = []
-            keyss = []
-            for k in ref_dict.keys():
-                vals.append(abs(ref_dict[k][0][oo]))
-                keyss.append(k)
-            
-            vals, keyss = zip(*sorted(zip(vals,keyss),reverse = True))
-            for nk in keyss:
-                plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(ref_dict[nk][0][oo]), color=ref_dict[nk][1],linewidth=lw, label = nk)
-
-            if oo == 0:
-                plt.legend([keyss[0],keyss[1], keyss[2]], fontsize = fz-2)
-
-        plt.xticks(new_ax_vals, new_labels, fontsize = fz)
-        plt.yticks(fontsize = fz)
-        plt.xlabel("Cluster sizes", fontsize = fz)
-        #plt.ylabel("Clusters in size-bin / total number of clusters ", fontsize = fz)
-        plt.ylabel("Fraction of total number of clusters", fontsize = fz)
-        plt.yscale("log")
-        plt.savefig(path_to_these_plots + "cluster_size_vs_percent_clusters_ALL_METHODS.pdf")
-        plt.savefig(this_path_to_overleaf + "cluster_size_vs_percent_clusters_ALL_METHODS.pdf")
-        plt.clf()
-
-        
-        for oo in range(len(leiden)):
-            vals = []
-            keyss = []
-            for k in ref_dict.keys():
-                vals.append(abs(ref_dict[k][0][oo]))
-                keyss.append(k)
-            
-            vals, keyss = zip(*sorted(zip(vals,keyss),reverse = True))
-            for nk in keyss:
-                plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(ref_dict[nk][0][oo]), color=ref_dict[nk][1],linewidth=lw, label = nk)
-
-
-            #plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(le_lo[oo]), color='forestgreen',linewidth=20)
-            #plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(le_lp[oo]), color='cornflowerblue',linewidth=20)
-            #plt.vlines(x = new_ax_vals[oo], ymin=0, ymax=abs(lo_lp[oo]), color='gold', linewidth=20)
-
-            if oo == 0:
-                plt.legend([keyss[0],keyss[1], keyss[2]], fontsize = fz-2)
-
-        #plt.legend() #Just tested if i got the right labels + color combo each time
-        plt.xticks(new_ax_vals, new_labels, fontsize = fz)
-        plt.yticks(fontsize = fz)
-        plt.xlabel("Cluster sizes", fontsize = fz)
-        plt.ylabel("Absolute difference in number of nodes", fontsize = fz)
-        plt.yscale("log")
-        plt.savefig(path_to_these_plots + "cluster_size_vs_diff_nodes_ALL_METHODS.pdf")
-        plt.savefig(this_path_to_overleaf + "cluster_size_vs_diff_nodes_ALL_METHODS.pdf")
-        plt.clf()
-        
-        """
+      
 
 
     

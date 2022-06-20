@@ -13,8 +13,20 @@ sys.path.append(
     ".."
 )  # Adds higher directory to python modules path, looking for Graphs-class one level up
 
+
+#==============================Track Node Activity==============================
+
+# Class containing metgods for trackig and analysing vertex activity (degree centrality).
+
+
 class NodeActivity(Graphs):
+
     def __init__(self,path):
+        """Constructor. Sets global paths.
+
+        Args:
+            path (string): Path to experiment. 
+        """
 
         self.path = path 
 
@@ -34,24 +46,9 @@ class NodeActivity(Graphs):
 
         self.cmap = cm.get_cmap('plasma')
 
-        """
-        self.make_graphs()
-
-        self.make_NAC_dict()
-
-        self.sort_NAC_dict()
-
-        self.plot_NAC_distribution(make_dist_dict=True)
-
-        self.mapping_dict()
-        
-        self.plot_NAC()
-
-        self.compare_NAC_2_contacts()
-        """
-        
-
     def make_graphs(self):
+        """Method for generating NetworkX graphs needed for calculating centralities.
+        """
         
         self.path_to_dict = self.path + "parsed_dictionaries/"
 
@@ -62,7 +59,10 @@ class NodeActivity(Graphs):
 
         self.num_slices = len(self.graphs.keys())
 
+
     def make_NAC_dict(self):
+        """Method for producing vertex activity dictionary. 
+        """
         master_dict = {}
 
         for s in range(1,self.num_slices+1):
@@ -84,7 +84,8 @@ class NodeActivity(Graphs):
             json.dump(master_dict, ouf)
 
     def compare_NAC_2_contacts(self):
-
+        """Method for comparing vertex activity to clusters and total number of edges across slices. 
+        """
         methods = ["Java"]#"Leiden", "Louvain", "Java"]
         #std_n = 4
 
@@ -189,6 +190,8 @@ class NodeActivity(Graphs):
                 
 
     def sort_NAC_dict(self):
+        """Method for sorting vertex activiy dictionary.
+        """
 
         with open(self.path_to_stats + "activity_dict.json","r") as inff:
             master_dict = json.load(inff)
@@ -316,8 +319,6 @@ class NodeActivity(Graphs):
         values,frequencies = np.array(values), np.array(frequencies)
         popt, pcov = curve_fit(f, values, frequencies)
         plt.scatter(values,frequencies, color = self.cmap(0.5))
-        #plt.plot(values, f(values, *popt),  'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
-        #plt.legend()
         plt.yscale("log")
         plt.xscale("log")
         plt.xticks(fontsize = 14)

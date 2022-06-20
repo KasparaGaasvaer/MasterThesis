@@ -14,7 +14,7 @@ from Utils.dict_opener import OpenDict
 
 class Graphs(OpenDict):
     def __init__(self, path, graph_type, attributes_bool):
-        """XXXXX
+        """Constructor. Opens dictionaries and calls chosen method for graph production.
 
         Args:
             path (string): path to experiment data

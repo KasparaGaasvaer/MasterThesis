@@ -4,16 +4,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams['text.usetex'] = True
 plt.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+
+# ==============================Largest Cluster==============================
+
+
 class LargestClusters:
     def __init__(self, path, method):
+        """Constructor. Sets global paths.
+
+        Args:
+            path (string): Path to experiment.
+            method (string): Chosen method for community detection.
+        """
 
         self.method = method
         self.path = path
 
-   
-        self.setup()
-        self.extract_largest_cluster()
-        self.plot_largest_cluster()
+
 
 
     def setup(self):
@@ -124,17 +131,6 @@ class LargestClusters:
         plt.savefig(self.path_to_plots + "LC_size.pdf")
         plt.savefig(self.path_to_overleaf_plots + "LC_size.pdf")
         plt.clf()
-        
-
-        #mean_LC_div_n = np.mean(s_div_n)
-        #std_LC_div_n = np.std(s_div_c)
-        #print(f"mean : {mean_LC_div_n}, std : {std_LC_div_n}")
-
-        #standard_error = np.std(s_div_c)/np.sqrt(len(s_div_c))
-        #plt.errorbar(slice, s_div_n, yerr=standard_error, capsize=2, fmt = ".k")
-        #plt.savefig(self.path_to_plots + "TEST.pdf")
-
-
         
 
 

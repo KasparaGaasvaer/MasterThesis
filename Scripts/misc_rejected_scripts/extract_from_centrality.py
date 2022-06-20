@@ -24,11 +24,6 @@ class ExtractCentrality:
             os.makedirs(self.path_to_overleaf_plots)
 
 
-        self.avg_assortativity()
-        self.degree_distibution()
-
-
-
     def avg_assortativity(self):
 
         num_phases = 3
@@ -70,7 +65,6 @@ class ExtractCentrality:
 
 
     def degree_distibution(self):
-        # inte alle vals i deg_c dict, telle hvor mange ganger en hver oppstår 
 
         with open(self.path_to_stats + "deg_c_dict.json", "r") as inff:
             cents = json.load(inff)
@@ -100,12 +94,10 @@ class ExtractCentrality:
         import pdb
 
 
-        #pdb.set_trace()
+
         all = np.array(all)
 
         sns.histplot(all, binwidth=10)
-        #plt.bar(x_vals, y_vals)
-        #plt.xscale("log")
         plt.xlabel("Number of neighbours")
         plt.yscale("log")
         plt.savefig("TEST.pdf")

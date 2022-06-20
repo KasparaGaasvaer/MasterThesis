@@ -6,9 +6,9 @@ import os
 
 from Utils.parse_slices import *
 from Utils.extract_from_slice import *
-from Utils.plot_graph_stats import *
+from old_scripts.plot_graph_stats import *
 from Utils.restore_graph_node_id import *
-from Utils.re_ordering_k_experiments import *
+from misc_rejected_scripts.re_ordering_k_experiments import *
 
 from Clustering.louvain import *
 from Clustering.leiden import *

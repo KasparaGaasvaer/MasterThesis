@@ -16,11 +16,11 @@ from Utils.dict_opener import OpenDict
 
 class PartitionWorker():
     def __init__(self, path, method):
-        """[summary]
+        """Constructor. Sets global paths, variables and filenames.
 
         Args:
-            path (string): [description]
-            method (string): [description]
+            path (string): Path to experiment.
+            method (string): Chosen method for community detection.
         """
         self.path = path
         self.path_to_partitions = path + "parsed_dictionaries/"
@@ -39,11 +39,7 @@ class PartitionWorker():
 
         self.num_total_slices = len(self.partition_dict.keys())
     
-        self.identify_largest_cluster()
-        self.extract_number_of_clusters()
-        self.extract_cluster_size_dist()
-        #self.fit_cluster_size_dist()
-        #self.plot_fit_cluster_coeff()
+
 
     def identify_largest_cluster(self):
         largest_partitions = []
@@ -100,32 +96,12 @@ class PartitionWorker():
         with open(self.path_to_stats_results + self.filename_cluster_size_dist, "w") as fp:
             json.dump(slices, fp)
 
-    def plot_fit_cluster_coeff(self):
-        with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","r") as inff:
-            coeff_dict = json.load(inff)
-
-
-        a = []
-        b = []
-        s = [i+1 for i in range(len(coeff_dict.keys()))]
-
-        for k in coeff_dict.keys():
-            c = coeff_dict[k]
-            a.append(c[0])
-            b.append(c[1])
-
-        plt.plot(s,a, label = "a")
-        plt.plot(s,b, label = "b")
-        plt.legend()
-        plt.savefig(f"LOLLLLLL_{self.method}.pdf")
-        plt.clf()
 
 
     def fit_cluster_size_dist(self):
         """Fit distribution of cluster sizes as exponential
         """
         from scipy.optimize import curve_fit
-        #from scipy.interpolate import UnivariateSpline
 
         with open(self.path_to_stats_results + self.filename_cluster_size_dist,"r") as inff:
             dist_dict = json.load(inff)
@@ -151,22 +127,20 @@ class PartitionWorker():
             popt, pcov = curve_fit(f_lin, sizes, freq, maxfev = 2000)
             fit_var[s] = [popt[0],popt[1]]
 
-            if s == "1":
-                #spl = UnivariateSpline(sizes,freq,k = 1)
-                plt.plot(sizes, f_lin(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
-                plt.plot(sizes,freq,"*", label  = "Datapoints")
-                #plt.plot(sizes, spl(sizes), label = f"{spl.get_coeffs()}")
-                plt.xlabel("Sizes")
-                plt.ylabel("Frequency")
-                plt.legend()
-               # plt.xscale("log")
-                #plt.yscale("log")
-                plt.savefig(f"s{s}_test_{self.method}.pdf")
-                plt.clf()
+      
+            plt.plot(sizes, f_lin(sizes, *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+            plt.plot(sizes,freq,"*", label  = "Datapoints")
+            plt.xlabel("Sizes")
+            plt.ylabel("Frequency")
+            plt.legend()
+            plt.xscale("log")
+            plt.yscale("log")
+            plt.savefig(f"s{s}_fitted_distribution__{self.method}.pdf")
+            plt.clf()
 
     
-        #with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","w") as ouf:
-            #json.dump(fit_var,ouf)
+        with open(self.path_to_stats_results + f"dist_fit_variables_{self.method}.json","w") as ouf:
+            json.dump(fit_var,ouf)
 
 
 

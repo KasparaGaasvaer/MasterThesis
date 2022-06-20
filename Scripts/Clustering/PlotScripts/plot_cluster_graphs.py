@@ -9,7 +9,7 @@ sys.path.append(
     ".."   #../.. ?
 )  # Adds higher directory to python modules path, looking for Graphs-class one level up
 
-#os.chdir('../..')
+
 from Utils.graphs import Graphs
 from Utils.dict_opener import OpenDict
 import community as cluster_louvain
@@ -24,7 +24,7 @@ class PlotClusterGraphs(Graphs):
         super().__init__(self.path, "nx", attributes_bool)
 
         self.num_total_slices = len(self.graphs.keys())
-        self.pick_selection(selection)
+        self.selection = self.num_total_slices + 1
         self.method = method
 
         OpenDicts = OpenDict(self.path)
@@ -41,7 +41,6 @@ class PlotClusterGraphs(Graphs):
             print("Slice ", s)
             G = self.graphs[str(s)]["graph"]
             p = self.partition_dict[str(s)]
-            # keys = len(p) + 1
             P = {}
 
             for part in p.keys():
@@ -64,12 +63,3 @@ class PlotClusterGraphs(Graphs):
             plt.savefig(self.path_to_plots + "Induced/"+ self.method + "_induced_slice" + str(s) + ".pdf")
             plt.close()
 
-    def pick_selection(self, selection):
-        if selection == "10":
-            self.selection = 11
-
-        elif selection == "all":
-            self.selection = self.num_total_slices + 1
-
-        else:
-            raise ValueError(selection + " is not a valid selection.")

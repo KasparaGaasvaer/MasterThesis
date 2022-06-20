@@ -1,0 +1,1 @@
+### This folder contains all figures to be included in the LaTex-project for this thesis. Made for easy merging between repositories.
