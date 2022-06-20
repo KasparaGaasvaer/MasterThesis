@@ -4,3 +4,6 @@
 </p>
 
 ### This repository contains the main python scripts developed by *Kaspara Skovli Gåsvær* for her thesis submitted for the degree of *Master in Computational Science: Physics*.
+
+
+See sub-directories for more detailed information about individual scripts and running instructions.
