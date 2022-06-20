@@ -1,7 +1,7 @@
 
-# Towards predicting Harmful Conspiracies through Phase Transitions in Complex Interaction Networks
-## A Computational Study of the 5G and COVID-19 Misinformation Event 
-### The Repository for the Master Thesis of Kaspara Skovli Gåsvær 
+<p align="center">
+<img src="https://github.com/KasparaGaasvaer/MasterThesis/blob/main/HEADER_repo.png" width="500" height="288">
+</p>
 
 This repository contains the main python scripts developed bt Kaspara Skovli Gåsvær for the thesis submitted for the degree of
 Master in Computational Science: Physics.
